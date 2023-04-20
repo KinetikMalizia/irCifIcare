@@ -6,7 +6,7 @@
 /*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/20 10:36:18 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/20 10:55:29 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <netinet/in.h> // Needed to use struct sockaddr_in
 #include <iostream>
 #include <unistd.h> // needed for read() replace later
+#include "server.hpp"
 
 #define SERVER_PORT 18000
 #define MAXLINE 4096
