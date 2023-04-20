@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/19 11:34:06 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/20 10:36:18 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,15 @@ int	main(void)
 
 	for(; ;)
 	{
+		//struct sockaddr_in addr;
+		// socklen_t addr_len; 
+		// char client_address[MAXLINE + 1]
 	
 		std::cout << "\n----------------------------------------\nWaiting for connection on port " << SERVER_PORT << "\n----------------------------------------" <<std::endl;
 		connfd = accept(listenfd, (SA *)NULL, NULL); //accept connection form everywhere, don't store address of connect
+		//connfd = accept(listenfd, (SA *), &addr, &addr_len);
+		// instead of NULL we will need to add the address of the client.
+		// inet_ntop(AF_INET, &addr, client_address, MAXLINE);
 		
 		memset(recvline, 0, MAXLINE);
 		while ((n = read(connfd, recvline, MAXLINE - 1)) > 0) //replace with c++ function later
