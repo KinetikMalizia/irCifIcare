@@ -3,90 +3,87 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/20 10:55:29 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/20 16:56:32 by jcarlen          ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/socket.h> // Needed for socket creating and binding
-#include <netinet/in.h> // Needed to use struct sockaddr_in
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <cstring>
 #include <iostream>
-#include <unistd.h> // needed for read() replace later
-#include "server.hpp"
 
-#define SERVER_PORT 18000
+#define SERVER_PORT 6667
 #define MAXLINE 4096
-#define SA struct sockaddr
 
+int main() {
+    int listenfd, connfd;
+    struct sockaddr_in servaddr;
+    char buff[MAXLINE], recvline[MAXLINE];
 
+    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+        std::cerr << "SOCKET ERROR\n";
+        return 1;
+    }
 
-int	main(void)
-{
-	int	listenfd, connfd, n;
-	struct sockaddr_in	servaddr;
-	uint8_t	buff[MAXLINE + 1];
-	uint8_t	recvline[MAXLINE + 1];
+    std::memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(SERVER_PORT);
 
-	if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)//create the socket
-	{
-		std::cout << "SOCKET ERROR\n";
-		return (1);
-	}
-	
-	bzero(&servaddr, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);//listen to any address -- change to a certain IP later
-	servaddr.sin_port = htons(SERVER_PORT);//set the port you listen on
-	bzero(&servaddr.sin_zero, 8); //set the unused info to 0
-	
-	if ((bind(listenfd, (SA  *) &servaddr, sizeof(servaddr))) < 0)//bind the fd to the address
-	{
-		std::cout << "BIND ERROR\n";
-		return (1);
-	}
-	if ((listen(listenfd, 10)) < 0)//listen to the fd
-	{
-		std::cout << "LISTEN ERROR\n";
-		return (1);
-	}
+    if (bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) == -1) {
+        std::cerr << "BIND ERROR\n";
+        return 1;
+    }
 
-	// server setup done, now infinite loop
+    if (listen(listenfd, 10) == -1) {
+        std::cerr << "LISTEN ERROR\n";
+        return 1;
+    }
 
-	for(; ;)
-	{
-		//struct sockaddr_in addr;
-		// socklen_t addr_len; 
-		// char client_address[MAXLINE + 1]
-	
-		std::cout << "\n----------------------------------------\nWaiting for connection on port " << SERVER_PORT << "\n----------------------------------------" <<std::endl;
-		connfd = accept(listenfd, (SA *)NULL, NULL); //accept connection form everywhere, don't store address of connect
-		//connfd = accept(listenfd, (SA *), &addr, &addr_len);
-		// instead of NULL we will need to add the address of the client.
-		// inet_ntop(AF_INET, &addr, client_address, MAXLINE);
-		
-		memset(recvline, 0, MAXLINE);
-		while ((n = read(connfd, recvline, MAXLINE - 1)) > 0) //replace with c++ function later
-		{
-			std::cout << recvline << std::endl;//print recieved line
+    std::cout << "----------------------------------------\nServer started, listening on port " << SERVER_PORT << "\n----------------------------------------" << std::endl;
+    bool running = true;
+    while (running) {
+        connfd = accept(listenfd, (struct sockaddr *)NULL, NULL);
+        std::cout << "New connection established" << std::endl;
 
-			if (recvline[n - 1] == '\n')//find the end of the message
-			{
-				break;
+        for (;;) {
+            std::memset(recvline, 0, MAXLINE);
+            int n = read(connfd, recvline, MAXLINE - 1);
+            if (n < 0) {
+                std::cerr << "READ ERROR\n";
+                break;
+            }
+            else if (n == 0) {
+                std::cout << "Connection closed by client" << std::endl;
+                break;
+            }
+            recvline[n] = '\0';
+            std::cout << "Received: " << recvline << std::endl;
+
+            if (std::strncmp(recvline, "PING", 4) == 0) {
+                std::cout << "Sending PONG" << std::endl;
+                snprintf(buff, sizeof(buff), "PONG\n");
+                write(connfd, buff, std::strlen(buff));
+            }
+			if (std::strncmp(recvline, "MODE jcarlen +i", 10) == 0) {
+                snprintf(buff, sizeof(buff), "jcarlen!~jcarlen@freenode-o6d.g28.dc9e5h.IP MODE jcarlen :+wRix\n");
+                write(connfd, buff, std::strlen(buff));
 			}
-			memset(recvline, 0, MAXLINE);//reset memory
-		}
-		if (n < 0)
-		{
-			std::cout << "READ ERROR\n";
-			return (1);
-		}
+            else
+			{
+                std::cout << "Sending welcome message" << std::endl;
+                snprintf(buff, sizeof(buff), ":local.host.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\n");
+                write(connfd, buff, std::strlen(buff));
+            }
+        }
+        close(connfd);
+        std::cout << "Connection closed" << std::endl;
+    }
 
-		//snprintf (6:47) here
-		snprintf((char*)buff, sizeof(buff), "HTTP/1.0 200OK\r\n\r\nWEBPAGE!");//format string before sending
-		
-		write(connfd, (char*)buff, strlen((char*)buff));//write back to the user
-		close(connfd);
-	}
+    close(listenfd);
+    return 0;
 }
