@@ -31,35 +31,41 @@ int main(void) {
         std::cout << "CONNECT ERROR\n";
         return 1;
     }
-
-	for (;;) {
-		// Send "PING" message
 		memset(sendline, 0, MAXLINE);
-		snprintf(sendline, sizeof(sendline), "PING\n");
+		snprintf(sendline, sizeof(sendline), "QSERV\r\n");
 		if (write(sockfd, sendline, strlen(sendline)) < 0) {
 			std::cout << "WRITE ERROR\n";
 			return 1;
 		}
-		std::cout << "Sent: " << sendline;
+// 	//for (;;) {
+// 		// Send "PING" message
+// 		memset(sendline, 0, MAXLINE);
+// 		snprintf(sendline, sizeof(sendline), "/QSERV\r\n");
+// 		if (write(sockfd, sendline, strlen(sendline)) < 0) {
+// 			std::cout << "WRITE ERROR\n";
+// 			return 1;
+// 	//	}
+// 		std::cout << "Sent: " << sendline;
 
-		// Wait for "PONG" response
-		bool received_pong = false;
-		while (!received_pong) {
-			memset(recvline, 0, MAXLINE);
-			if ((n = read(sockfd, recvline, MAXLINE)) < 0) {
-				std::cout << "READ ERROR\n";
-				return 1;
-			} else if (n == 0) {
-				std::cout << "CONNECTION CLOSED BY SERVER\n";
-				return 1;
-			}
-			std::cout << "Received: " << recvline;
-			if (strcmp(recvline, "PONG\n") == 0) {
-				received_pong = true;
-			}
-		}
-    sleep(10);
-}
+// 		// // Wait for "PONG" response
+// 		// bool received_pong = false;
+// 		// while (!received_pong) {
+// 		// 	memset(recvline, 0, MAXLINE);
+// 		// 	if ((n = read(sockfd, recvline, MAXLINE)) < 0) {
+// 		// 		std::cout << "READ ERROR\n";
+// 		// 		return 1;
+// 		// 	} else if (n == 0) {
+// 		// 		std::cout << "CONNECTION CLOSED BY SERVER\n";
+// 		// 		return 1;
+// 		// 	}
+// 		// 	std::cout << "Received: " << recvline;
+// 		// 	if (strcmp(recvline, "PONG\n") == 0) {
+// 		// 		received_pong = true;
+// 		// 	}
+// 		// }
+//     	// sleep(10);
+// }
+	shutdown(sockfd, 2);
     close(sockfd);
     return 0;
 }
