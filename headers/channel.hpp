@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:33:31 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/21 15:45:38 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/24 15:41:44 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "irc.h";
+#include "irc.h"
 
 class Channel
 {
