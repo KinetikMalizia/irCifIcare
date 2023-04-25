@@ -6,7 +6,7 @@
 /*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/24 17:15:01 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/25 12:20:12 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 int main(int ac, char **av)
 {
-	Server ourServer;
+	Server ourServer("hostname", av[1], av[2]);
 	
 	// if (ac < 3)
 	// 	std::cout << "Please enter a valid port number and password for connection" << std:: endl;
@@ -29,24 +29,24 @@ int main(int ac, char **av)
 	(void)ac;
 	(void)av;
 	int listenfd, connfd;
-	int rc, on = 1;
+	int pollfd, on = 1;
 	struct sockaddr_in servaddr;
 	char buff[MAXLINE], recvline[MAXLINE];
-
+	//loop through each fd to create a socket? one socket for all fds
+	
 	if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		std::cerr << "SOCKET ERROR\n";
 		return 1;
 	}
 	//allow socket descriptor to be reusable
-	rc = setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
-	if (rc < 0)
+	pollfd = setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
+	if (pollfd < 0)
 	{
 		std::cerr << "SETSOCKOPT ERROR\n";
 		return 1;
 	}
 	// set socket to be nonblocking
-
-	// fcntl()
+	fcntl(listenfd, F_SETFL, O_NONBLOCK);
 	
 	std::memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
@@ -68,7 +68,7 @@ int main(int ac, char **av)
 
 	struct sockaddr_in new_addr;
 	int timeout;
-	struct pollfd fds[200];
+	struct pollfd fds[POLL_SIZE];
 	int nfds = 1; 
 	int current_size = 0; 
 	int i, j;
@@ -83,26 +83,27 @@ int main(int ac, char **av)
 	timeout = (3 * 60 * 1000);
 	
 	//loop waiting for incoming connects or data on connected sockets
-	rc = poll(fds, nfds, timeout);
-	if (rc < 0)
+	// add poll in the infinite loop ?
+	pollfd = poll(fds, nfds, timeout);
+	if (pollfd < 0)
 	{
 		std::cout << "Poll failed" << std::endl;
 	}
 	current_size = nfds;
-	for (i = 0; i < current_size; i++)
+	for (i = 0; i < POLL_SIZE; i++)
 	{
 		//loop through to find the fds that returned POLLIN
 		if (fds[i].revents == 0)
 			continue ;
 		if (fds[i].revents != POLLIN)//POLLIN == data is ready to read
-		{
 			std::cout << "Error revents =" << fds[i].revents << std::endl;
-		}
 		if (fds[i].fd == listenfd)
 		{
 			//listening descriptor is readable
 			//accpet all incoming connections that are queued up on the listening socket
 			//call accept
+			//we need to add the new client socket to the pollfd structure (socket of accept)
+			//get out of infinite loop and then read and write
 		}
 	}
 	bool running = true;

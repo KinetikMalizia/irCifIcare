@@ -6,25 +6,18 @@
 /*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 13:48:56 by nnemeth           #+#    #+#             */
-/*   Updated: 2023/04/24 17:10:24 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/25 12:23:33 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "headers/server.hpp"
 
-Server:: Server()
+Server:: Server(std::string host_name, std:: string portnumber, std:: string password))
 {
 	//move the creation of the socket etc from main
 
-
 }
 
-Server:: ~Server()
-{
-    
-    //disconnect all clients, close sockets
-    
-}
 
 void Server:: check_args(char **av)
 {
@@ -61,4 +54,13 @@ int Server::Nick(std::vector<std::string> token)
 		}
 }
 
-// poll 
+Server:: ~Server()
+{
+    
+    //disconnect all clients, close sockets
+    
+}
+
+//getsockname - returns the current address to which the socket sockfd is bound
+//getprotobyname - returns a pointer to a protoent structure for the network protocol specified on the call.
+//gethostbyname - 

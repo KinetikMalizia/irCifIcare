@@ -6,7 +6,7 @@
 /*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:08 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/24 15:44:46 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/25 12:22:39 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class Server
 
 	public:
 		Server();
+		Server(std::string host_name, std:: string portnumber, std:: string password);
 		void check_args(char **av);
 		// int add_client(int listenfd, (struct sockaddr *)NULL, NULL); //accept connections when users connect (poll())
 		int add_modes();

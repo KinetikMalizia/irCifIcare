@@ -6,7 +6,7 @@
 /*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:25:40 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/24 16:56:37 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/25 10:35:06 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <sys/select.h>
 #include <netinet/in.h>
 #include <sys/poll.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
