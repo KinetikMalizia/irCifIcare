@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:17:38 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/21 15:45:12 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/25 16:41:38 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	tokenize(std::string &str, char delim, std::vector<std::string> &out)
+#include "headers/irc.h"
+
+void	tokenize(std::string str, char delim, std::vector<std::string> &out)
 {
 	std::stringstream ss(str);
 	std::string s;

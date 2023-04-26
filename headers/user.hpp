@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   user.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:24 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/21 14:44:52 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/25 16:41:41 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#pragma once
 
 #include "irc.h"
 
@@ -16,9 +18,11 @@ class User
 {
 	public:
 			User();
+			User(std::vector<std::string> tokens, int fd_user);
 			~User();
+			
 
-			int			conn_fd;
+			int			fd_user;
 			std::string user_name;
 			std::string user_nick;
 			std::string user_mode;
