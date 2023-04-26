@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/25 12:20:12 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/25 14:18:41 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ int main(int ac, char **av)
 				std::cout << "Shutting down server" << std::endl;
 				running = false;
 				break;
-        	}
+			}
 			if (start == true)
 			{
 				std::cout << "Sending welcome message" << std::endl;
