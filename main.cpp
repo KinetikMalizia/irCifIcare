@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 16:05:30 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/26 17:00:29 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 int main(int ac, char **av)
 {
-	Server ourServer("hostname", NULL, NULL);;
+	Server ourServer("hostname", "TEST", "TEST");
 	int listenfd;
 	int connfd;
 	(void)ac;
@@ -27,56 +27,15 @@ int main(int ac, char **av)
 	// {
 	listenfd = ourServer.create_socket();
 	// }
-	// int pollfd, on = 1;
-	// struct sockaddr_in servaddr;
 	char buff[MAXLINE];
 	char recvline[MAXLINE];
 	
 	int timeout;
-	// struct pollfd fds[POLL_SIZE];
 	ourServer.nfds = 1; 
 	int current_size = 0; 
 	int i;
 	t_svec	recToken;
-	// Server	our_serv;
-	//loop through each fd to create a socket? one socket for all fds
-	
-	// if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-	// 	std::cerr << "SOCKET ERROR\n";
-	// 	return 1;
-	// }
-	//allow socket descriptor to be reusable
-	// pollfd = setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
-	// if (pollfd < 0)
-	// {
-	// 	std::cerr << "SETSOCKOPT ERROR\n";
-	// 	return 1;
-	// }
-	// set socket to be nonblocking
-	// fcntl(listenfd, F_SETFL, O_NONBLOCK);
-	
-	// std::memset(&servaddr, 0, sizeof(servaddr));
-	// servaddr.sin_family = AF_INET;
-	// servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	// servaddr.sin_port = htons(SERVER_PORT);
 
-	// if (bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) == -1) {
-	// 	std::cerr << "BIND ERROR\n";
-	// 	return 1;
-	// }
-
-	// if (listen(listenfd, POLL_SIZE) == -1) {
-	// 	std::cerr << "LISTEN ERROR\n";
-	// 	return 1;
-	// }
-	// std::cout << "----------------------------------------\nServer started, listening on port " << SERVER_PORT << "\n----------------------------------------" << std::endl;
-	// here we will end and return listenfd
-
-
-	//struct sockaddr_in new_addr;
-	//socklen_t addrlen;
-	
-	//Initialize pollfd structure
 	memset(ourServer.fds, 0, sizeof(ourServer.fds));
 	// Set up the initial listening socket  
 	ourServer.fds[0].fd = listenfd;
@@ -114,11 +73,6 @@ int main(int ac, char **av)
 				//we need to add the new client socket to the pollfd structure (socket of accept)
 				//get out of infinite loop and then read and write
 				connfd = ourServer.accept_connection(listenfd);
-				// accept(listenfd, (struct sockaddr *)NULL, NULL);
-				// fds[nfds].fd = connfd;
-				// fds[nfds].events = POLLIN;
-				// nfds++;
-				// std::cout << "New connection established " << fds[nfds - 1].fd << std::endl;
 			}
 			else
 			{
@@ -140,13 +94,6 @@ int main(int ac, char **av)
 				std::cout << "Received: " << recvline << std::endl;
 				tokenize(std::string(recvline), ' ' ,recToken);
 				ourServer.find_cmd(recToken, ourServer.fds[i].fd);
-				//replace recvline with recToken;
-				// if (std::strncmp(recvline, "MODE jcarlen +i", 10) == 0) 
-				// {
-				// 	snprintf(buff, sizeof(buff), "jcarlen!~jcarlen@freenode-o6d.g28.dc9e5h.IP MODE jcarlen :+wRix\n");
-				// 	write(connfd, buff, std::strlen(buff));
-				// 	start = false;
-				// }
 				if (std::strncmp((char*)recvline, "QUIT :leaving", 5) == 0)
 				{
 					std::cout << "Shutting down server" << std::endl;

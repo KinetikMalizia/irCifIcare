@@ -23,6 +23,7 @@ Server:: Server(std::string host_name, std:: string portnumber, std:: string pas
 	(void)host_name;
 	(void)portnumber;
 	(void)password;
+	this->default_mode = "i";
 	// 	check_args(av);
 }
 
@@ -74,17 +75,18 @@ int Server:: create_socket()
 
 int Server:: accept_connection(int listenfd)
 {
-	int connfd;
+	int connfd = 0;
 	this->listenfd = listenfd;
 	
-	accept(this->listenfd, (struct sockaddr *)NULL, NULL);
+	connfd = accept(this->listenfd, (struct sockaddr *)NULL, NULL);
 	this->fds[nfds].fd = connfd;
 	this->fds[nfds].events = POLLIN;
 	std::cout << "New connection established " << this->fds[nfds].fd << std::endl;
 	add_client(this->fds[nfds].fd);
-	this->users.find(this->fds[nfds].fd)->user_mode = this->default_mode;
+	this->users.find(this->fds[nfds].fd)->second->user_mode = this->default_mode;
 	this->print_map();
 	nfds++;
+	return (0);
 }
 
 
@@ -151,12 +153,19 @@ void remove_from_poll(struct pollfd fds[], int i, int nfds)
 void	Server::find_cmd(t_svec recToken, int fd)
 {
 		char buff[MAXLINE];
-		User current = (this->users).find(fd);
+		User *current = (this->users).find(fd)->second;
 		
 		std::string firstString = recToken.front();
-		std::cout << "first string in vec is : "<< firstString << std::endl;
-		while(recToken.empty() != 0)
+		// std::cout << "first string in vec is : "<< firstString << std::endl;
+		while(recToken.empty() != 1)
 		{
+			std::cout << "first token is: " << firstString << std::endl;
+			if(firstString.compare("USER") == 0)
+			{
+				current->setInfo(recToken, fd);
+				snprintf(buff, sizeof(buff), "THIS is the message\n");
+				write(fd, buff, std::strlen(buff));
+			}
 			if(firstString.compare("PING") == 0)
 			{
 				std::cout << "recieved PING\n";
@@ -169,20 +178,21 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				snprintf(buff, sizeof(buff), "changing nick\n");
 				write(fd, buff, std::strlen(buff));
 			}
-			if(firstString.compare("MODE " + current.user_nick + " +i") == 0)
+			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
 			{
 				std::cout << "recieved MODE\n";
-				snprintf(buff, sizeof(buff), current.user_nick + "!" + current.user_name + "@" + this->hostname + " MODE " + current.user_nick + ":+" + current.user_mode );
+				std::string cont = current->user_nick + "!" + current->user_name + "@" + this->hostname + " MODE " + current->user_nick + ":+" + current->user_mode;
+				snprintf(buff, sizeof(buff), "%s", cont.c_str());
 				write(fd, buff, std::strlen(buff));
 			}
-			else
-				recToken.erase(recToken.begin());
+			recToken.erase(recToken.begin());
+			firstString = recToken.front();
 		}
 }
 
 int	Server::FillUserInfo(t_svec tokens, int user_fd)
 {
-		User *current = (this->users).find(user_fd);
-		current.setInfo(tokens);
+		User *current = (this->users).find(user_fd)->second;
+		current->setInfo(tokens, user_fd);
 		return (0);
 }

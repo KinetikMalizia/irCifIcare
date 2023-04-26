@@ -6,7 +6,7 @@
 /*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:08 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 16:05:25 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/26 16:25:36 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include "irc.h"
 # define MAXLINE 4096
+# define SERVER_PORT 6667
+# define POLL_SIZE 10
 typedef std::vector<std::string>	t_svec;
 
 class User;

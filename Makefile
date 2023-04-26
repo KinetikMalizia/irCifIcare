@@ -6,7 +6,7 @@
 #    By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/19 10:02:46 by fmalizia          #+#    #+#              #
-#    Updated: 2023/04/25 16:41:33 by fmalizia         ###   ########.ch        #
+#    Updated: 2023/04/26 16:23:18 by fmalizia         ###   ########.ch        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ CXX  = g++
 
 RM  = rm -f
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=address
 
 all:		$(NAME)
 
