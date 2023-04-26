@@ -77,7 +77,12 @@ int Server:: accept_connection(int listenfd)
 {
 	int connfd = 0;
 	this->listenfd = listenfd;
-	
+	//listening descriptor is readable
+	//accpet all incoming connections that are queued up on the listening socket
+	//call accept
+	//we need to add the new client socket to the pollfd structure (socket of accept)
+	//get out of infinite loop and then read and write
+
 	connfd = accept(this->listenfd, (struct sockaddr *)NULL, NULL);
 	this->fds[nfds].fd = connfd;
 	this->fds[nfds].events = POLLIN;
@@ -111,7 +116,8 @@ void	Server::print_map(void)
 
 Server::~Server()
 {
-    
+    // shutdown(this->listenfd, SHUT_RDWR);
+	// close(this->listenfd); 
     //disconnect all clients, close sockets
     
 }

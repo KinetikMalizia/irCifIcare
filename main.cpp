@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 17:00:29 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/26 17:17:25 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,7 @@ int main(int ac, char **av)
 				break;
 			}
 			if (ourServer.fds[i].fd == listenfd)
-			{
-				//listening descriptor is readable
-				//accpet all incoming connections that are queued up on the listening socket
-				//call accept
-				//we need to add the new client socket to the pollfd structure (socket of accept)
-				//get out of infinite loop and then read and write
 				connfd = ourServer.accept_connection(listenfd);
-			}
 			else
 			{
 				std::memset(recvline, 0, MAXLINE);
