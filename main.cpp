@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 10:35:45 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/26 11:22:55 by jcarlen          ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int main(int ac, char **av)
 				int n = read(fds[i].fd, recvline, MAXLINE - 1);
 				if (n < 0)
 				{
-					std::cerr << "READ ERROR\n";
+					std::cerr << "READ ERROR!\n";
 					running = false;
 					break;
 				}
