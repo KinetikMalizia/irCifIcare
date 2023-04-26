@@ -6,12 +6,15 @@
 /*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:25:40 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/25 16:41:34 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/26 16:05:28 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRC_H
 # define IRC_H
+
+# define SERVER_PORT 6667
+# define POLL_SIZE 10
 
 # include <sys/socket.h>
 # include <sys/select.h>
@@ -30,5 +33,7 @@
 # include "channel.hpp"
 
 void	tokenize(std::string str, char sep, std::vector<std::string> &out);
+
+typedef std::vector<std::string>	t_svec;
 
 #endif

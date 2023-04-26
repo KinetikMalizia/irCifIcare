@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:33:31 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/24 15:41:44 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/26 16:05:31 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc.h"
+typedef std::vector<std::string>	t_svec;
 
 class Channel
 {

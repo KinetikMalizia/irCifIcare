@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:44:35 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/25 16:41:43 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/26 15:43:16 by jcarlen          ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ User::User(void)
 User::~User(void)
 {	}
 
-User::User(std::vector<std::string> tokens, int fd_user)
+int	User::setInfo(t_svec tokens, int fd_user)
 {
-	std::vector<std::string>::iterator itr;
+	t_svec::iterator itr;
 
 	this->fd_user = fd_user;
 	for (itr = tokens.begin(); itr != tokens.end(); itr++)
@@ -32,4 +32,5 @@ User::User(std::vector<std::string> tokens, int fd_user)
 		if(itr == tokens.begin() + 5)
 			this->user_name = *itr;
 	}
+	return (0);
 }

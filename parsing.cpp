@@ -6,13 +6,13 @@
 /*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:17:38 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/25 16:41:38 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/26 16:05:28 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "headers/irc.h"
 
-void	tokenize(std::string str, char delim, std::vector<std::string> &out)
+void	tokenize(std::string str, char delim, t_svec &out)
 {
 	std::stringstream ss(str);
 	std::string s;

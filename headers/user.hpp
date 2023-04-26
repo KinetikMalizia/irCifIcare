@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:24 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/25 16:41:41 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/26 16:05:30 by jcarlen          ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 
 #include "irc.h"
 
+typedef std::vector<std::string>	t_svec;
+
 class User
 {
 	public:
 			User();
-			User(std::vector<std::string> tokens, int fd_user);
 			~User();
+			int	setInfo(t_svec tokens, int fd_user);
 			
 
 			int			fd_user;
