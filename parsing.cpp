@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:17:38 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 17:34:13 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/27 10:18:49 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,20 @@
 // or first message different than rest?
 void	tokenize(std::string str, char delim, t_svec &out)
 {
-	std::stringstream ss(str);
-	std::string s;
-	std::string	end;
-	
+	std::stringstream	ss(str);
+	std::string			s;
+	std::string			end;
+	std::size_t			back;
+
 	while (std::getline(ss, s, delim))
 	{
+		back = s.find('\n');
+		if (back != std::string::npos)
+		{
+			// std::cout << "sep: " << s.substr(0,back) << std::endl;
+			out.push_back(s.substr(0,back));
+			s.erase(0,back + 1);
+		}
 		if (s[0] == ':')
 		{
 			std::getline(ss, end);
@@ -30,7 +38,6 @@ void	tokenize(std::string str, char delim, t_svec &out)
 			s += ' ';
 			s += end;
 		}
-		std::cout << s << std::endl;
 		out.push_back(s);
 	}
 }
