@@ -170,6 +170,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			{
 				current->setInfo(recToken, fd);
 				snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\r\n");
+				//							 ":server name	   001 nickname :  welcome message						   !~nickname@hostname\r\n";
 				write(fd, buff, std::strlen(buff));
 			}
 			if(firstString.compare("PING") == 0)
@@ -181,20 +182,39 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			if(firstString.compare("NICK") == 0)
 			{
 				std::cout << "recieved NICK\n";
-				current->user_nick = recToken[1];
+				std::string	reponse;
+				if (!isNickUsed(recToken[1]))
+				{
+					current->user_nick = recToken[1];
+					reponse = "Message de reponse NICK :" + recToken[1] + "\r\n";
+				}
+				else
+				{
+					reponse = "Message d'erreur NICK invalide\r\n";
+				}
 				// snprintf(buff, sizeof(buff), "changing nick\n");
-				// write(fd, buff, std::strlen(buff));
+				write(fd, reponse.c_str(), reponse.length());
 			}
 			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
 			{
 				std::cout << "recieved MODE\n";
 				std::string cont = current->user_nick + "!" + current->user_name + "@" + this->hostname + " MODE " + current->user_nick + ":+" + current->user_mode;
-				snprintf(buff, sizeof(buff), "%s", cont.c_str());
-				write(fd, buff, std::strlen(buff));
+				// snprintf(buff, sizeof(buff), "%s", cont.c_str());
+				write(fd, cont.c_str(), cont.length());
 			}
 			recToken.erase(recToken.begin());
 			firstString = recToken.front();
 		}
+}
+
+int	Server::isNickUsed(std::string nick)
+{
+	for (std::map<int, User*>::iterator iter = this->users.begin(); iter != this->users.end(); iter++)
+	{
+		if (iter->second->user_nick == nick)
+			return (1);
+	}
+	return (0);
 }
 
 int	Server::FillUserInfo(t_svec tokens, int user_fd)

@@ -6,7 +6,7 @@
 /*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:17:38 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 10:18:49 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/27 12:30:27 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,10 @@ void	tokenize(std::string str, char delim, t_svec &out)
 		}
 		out.push_back(s);
 	}
+}
+
+std::string	lower(std::string data)
+{
+	std::transform(data.begin(), data.end(), data.begin(),
+		[](unsigned char c){ return std::tolower(c); });
 }

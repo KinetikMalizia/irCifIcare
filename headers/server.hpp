@@ -6,7 +6,7 @@
 /*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:08 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 16:25:36 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/27 12:17:56 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Server
 		void send_msg(std:: string msg, int msg_code); // reply to client --> create a container with all the possible messages and codes
 		//:irc.example.com 001 borja :Welcome to the Internet Relay Network borja!borja@polaris.cs.uchicago.edu 
 		int	FillUserInfo(t_svec tokens, int user_fd);
+		int	isNickUsed(std::string nick);
 		~Server();
 
 		
