@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 17:17:25 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/27 10:24:41 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int main(int ac, char **av)
 	// {
 	listenfd = ourServer.create_socket();
 	// }
-	char buff[MAXLINE];
+	// char buff[MAXLINE];
 	char recvline[MAXLINE];
 	
 	int timeout;
@@ -43,7 +43,7 @@ int main(int ac, char **av)
 	//initialize the timeout to 3 minutes 
 	timeout = (3 * 60 * 1000);
 	bool running = true;
-	bool start = true;
+	// bool start = true;
 	while (running)
 	{
 		ourServer.pollfd = poll(ourServer.fds, ourServer.nfds, timeout);
@@ -93,13 +93,13 @@ int main(int ac, char **av)
 					running = false;
 					break;
 				}
-				if (start == true)
-				{
-					std::cout << "Sending welcome message" << std::endl;
-					snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\n");
-					write(connfd, buff, std::strlen(buff));
-					start = false;
-				}
+				// if (start == true)
+				// {
+				// 	std::cout << "Sending welcome message" << std::endl;
+				// 	snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\n");
+				// 	write(connfd, buff, std::strlen(buff));
+				// 	start = false;
+				// }
 				recToken.clear();
 			}
 		}

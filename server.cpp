@@ -169,20 +169,21 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			if(firstString.compare("USER") == 0)
 			{
 				current->setInfo(recToken, fd);
-				snprintf(buff, sizeof(buff), "THIS is the message\n");
+				snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\r\n");
 				write(fd, buff, std::strlen(buff));
 			}
 			if(firstString.compare("PING") == 0)
 			{
-				std::cout << "recieved PING\n";
-				snprintf(buff, sizeof(buff), "PONG TO YOU, ONLY YOU\n");
-				write(fd, buff, std::strlen(buff));
+				std::string pong = "PONG " + recToken[1] + "\r\n";
+				// snprintf(buff, sizeof(buff), "%s", pong.c_str());
+				write(fd, pong.c_str(), pong.length());
 			}
 			if(firstString.compare("NICK") == 0)
 			{
 				std::cout << "recieved NICK\n";
-				snprintf(buff, sizeof(buff), "changing nick\n");
-				write(fd, buff, std::strlen(buff));
+				current->user_nick = recToken[1];
+				// snprintf(buff, sizeof(buff), "changing nick\n");
+				// write(fd, buff, std::strlen(buff));
 			}
 			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
 			{
