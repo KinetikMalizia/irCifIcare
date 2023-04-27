@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:25:40 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 12:30:23 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/27 15:08:56 by jcarlen          ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@
 # include "channel.hpp"
 
 void		tokenize(std::string str, char sep, std::vector<std::string> &out);
-std::string	lower(std::string data);
 
 typedef std::vector<std::string>	t_svec;
-
-
 #endif

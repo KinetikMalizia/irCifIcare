@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:17:38 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 12:30:27 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/27 16:00:48 by jcarlen          ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 void	tokenize(std::string str, char delim, t_svec &out)
 {
 	std::stringstream	ss(str);
-	std::string			s;
-	std::string			end;
+	std::string			s,	end,	cut;
 	std::size_t			back;
 
 	while (std::getline(ss, s, delim))
@@ -28,7 +27,10 @@ void	tokenize(std::string str, char delim, t_svec &out)
 		if (back != std::string::npos)
 		{
 			// std::cout << "sep: " << s.substr(0,back) << std::endl;
-			out.push_back(s.substr(0,back));
+			cut = s.substr(0,back);
+			if(cut.back() == '\r')
+				cut.pop_back();
+			out.push_back(cut);
 			s.erase(0,back + 1);
 		}
 		if (s[0] == ':')
@@ -38,12 +40,8 @@ void	tokenize(std::string str, char delim, t_svec &out)
 			s += ' ';
 			s += end;
 		}
+		if(s.back() == '\r')
+			s.pop_back();
 		out.push_back(s);
 	}
-}
-
-std::string	lower(std::string data)
-{
-	std::transform(data.begin(), data.end(), data.begin(),
-		[](unsigned char c){ return std::tolower(c); });
 }

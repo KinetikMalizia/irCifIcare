@@ -10,27 +10,27 @@
 #define MAXLINE 4096
 
 int main(void) {
-    int sockfd, n;
-    struct sockaddr_in servaddr;
-    char sendline[MAXLINE], recvline[MAXLINE + 1];
+	int sockfd, n;
+	struct sockaddr_in servaddr;
+	char sendline[MAXLINE], recvline[MAXLINE + 1];
 
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        std::cout << "SOCKET ERROR\n";
-        return 1;
-    }
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		std::cout << "SOCKET ERROR\n";
+		return 1;
+	}
 
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(SERVER_PORT);
-    if (inet_pton(AF_INET, SERVER_ADDR, &servaddr.sin_addr) <= 0) {
-        std::cout << "INET_PTON ERROR\n";
-        return 1;
-    }
+	memset(&servaddr, 0, sizeof(servaddr));
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(SERVER_PORT);
+	if (inet_pton(AF_INET, SERVER_ADDR, &servaddr.sin_addr) <= 0) {
+		std::cout << "INET_PTON ERROR\n";
+		return 1;
+	}
 
-    if (connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) {
-        std::cout << "CONNECT ERROR\n";
-        return 1;
-    }
+	if (connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) {
+		std::cout << "CONNECT ERROR\n";
+		return 1;
+	}
 		memset(sendline, 0, MAXLINE);
 		snprintf(sendline, sizeof(sendline), "QSERV\r\n");
 		if (write(sockfd, sendline, strlen(sendline)) < 0) {

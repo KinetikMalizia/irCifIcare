@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+         #
+#    By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/19 10:02:46 by fmalizia          #+#    #+#              #
-#    Updated: 2023/04/26 16:23:18 by fmalizia         ###   ########.ch        #
+#    Updated: 2023/04/27 15:08:56 by jcarlen          ###   ########.ch        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = serv
 
-SRCS =	main.cpp parsing.cpp server.cpp user.cpp
+SRCS =	main.cpp parsing.cpp server.cpp user.cpp channel.cpp
 OBJS = ${SRCS:.cpp=.o}
 
 CXX  = g++

@@ -17,10 +17,10 @@ Server::Server(void)
 	this->default_mode = "i";
 }
 
-Server:: Server(std::string host_name, std:: string portnumber, std:: string password)
+Server:: Server(std::string hostname, std:: string portnumber, std:: string password)
 {
 	//move the creation of the socket etc from main
-	(void)host_name;
+	this->hostname = hostname;
 	(void)portnumber;
 	(void)password;
 	this->default_mode = "i";
@@ -89,7 +89,7 @@ int Server:: accept_connection(int listenfd)
 	std::cout << "New connection established " << this->fds[nfds].fd << std::endl;
 	add_client(this->fds[nfds].fd);
 	this->users.find(this->fds[nfds].fd)->second->user_mode = this->default_mode;
-	this->print_map();
+	this->print_users();
 	nfds++;
 	return (0);
 }
@@ -104,8 +104,7 @@ int Server:: add_client(int client_fd) //accept connections when users connect (
 	return(0);
 }
 
-
-void	Server::print_map(void)
+void	Server::print_users(void)
 {
 	std::cout << "KEY & VALUE" << std::endl;
 	for (std::map<int, User*>::iterator iter = this->users.begin(); iter != this->users.end(); iter++)
@@ -158,20 +157,22 @@ void remove_from_poll(struct pollfd fds[], int i, int nfds)
 
 void	Server::find_cmd(t_svec recToken, int fd)
 {
-		char buff[MAXLINE];
+		//char buff[MAXLINE];
 		User *current = (this->users).find(fd)->second;
 		
 		std::string firstString = recToken.front();
-		// std::cout << "first string in vec is : "<< firstString << std::endl;
 		while(recToken.empty() != 1)
 		{
 			std::cout << "first token is: " << firstString << std::endl;
 			if(firstString.compare("USER") == 0)
 			{
 				current->setInfo(recToken, fd);
-				snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\r\n");
+				std::string cont = ":" + this->hostname + " 001 " + current->user_nick + " :" + 
+								"Welcome to 2drunk2code server!!! " + current->user_nick + "!~" + current->user_nick + "@" + 
+								this->hostname + "\r\n";
+				//snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\r\n");
 				//							 ":server name	   001 nickname :  welcome message						   !~nickname@hostname\r\n";
-				write(fd, buff, std::strlen(buff));
+				write(fd, cont.c_str(), cont.length());
 			}
 			if(firstString.compare("PING") == 0)
 			{
@@ -185,15 +186,25 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				std::string	reponse;
 				if (!isNickUsed(recToken[1]))
 				{
+					reponse = ":" + current->user_nick + "!~" + current->user_name + "@" + this->hostname + " NICK :" + recToken[1] + "\r\n";
 					current->user_nick = recToken[1];
-					reponse = "Message de reponse NICK :" + recToken[1] + "\r\n";
+					//:second!~fmalizia@freenode-o6d.g28.dc9e5h.IP NICK :weewoo
 				}
 				else
 				{
-					reponse = "Message d'erreur NICK invalide\r\n";
+					reponse = "Message d'erreur NICK pas dispo\r\n";
 				}
 				// snprintf(buff, sizeof(buff), "changing nick\n");
 				write(fd, reponse.c_str(), reponse.length());
+			}
+			if(firstString.compare("JOIN") == 0)
+			{
+				if (!channelExists(recToken[1]))
+				{
+					this->channels[recToken[1]] = new Channel(recToken[1]);
+					std::cout << "New channel created: " << recToken[1] << std::endl;
+				}
+				std::cout << "Join the CHANNEL\n";
 			}
 			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
 			{
@@ -212,6 +223,16 @@ int	Server::isNickUsed(std::string nick)
 	for (std::map<int, User*>::iterator iter = this->users.begin(); iter != this->users.end(); iter++)
 	{
 		if (iter->second->user_nick == nick)
+			return (1);
+	}
+	return (0);
+}
+
+int	Server::channelExists(std::string name)
+{
+	for (std::map<std::string, Channel*>::iterator iter = this->channels.begin(); iter != this->channels.end(); iter++)
+	{
+		if (iter->first == name)
 			return (1);
 	}
 	return (0);
