@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:08 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 15:08:47 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/28 16:55:00 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # define MAXLINE 4096
 # define SERVER_PORT 6667
 # define POLL_SIZE 10
+# define RED \x1b[31m
 typedef std::vector<std::string>	t_svec;
 
 class User;
@@ -44,6 +45,10 @@ class Server
 		int	FillUserInfo(t_svec tokens, int user_fd);
 		int	isNickUsed(std::string nick);
 		int	channelExists(std::string name);
+		std::string first_message(int fd);
+		int welcome_msg();
+
+
 		~Server();
 
 		

@@ -68,7 +68,7 @@ int Server:: create_socket()
 		std::cerr << "LISTEN ERROR\n";
 		return 1;
 	}
-	std::cout << "----------------------------------------\nServer started, listening on port " << SERVER_PORT << "\n----------------------------------------" << std::endl;
+	welcome_msg();
 	// here we will end and return listenfd
 	return (listenfd);
 }
@@ -121,12 +121,6 @@ Server::~Server()
     
 }
 
-std::string Server:: first_msg()
-{
-	//enter welcome message here
-	return ("Fill This\r\n");
-}
-
 void remove_from_poll(struct pollfd fds[], int i, int nfds)
 {
 	fds[i] = fds[nfds - 1];
@@ -167,9 +161,10 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			if(firstString.compare("USER") == 0)
 			{
 				current->setInfo(recToken, fd);
-				std::string cont = ":" + this->hostname + " 001 " + current->user_nick + " :" + 
-								"Welcome to 2drunk2code server!!! " + current->user_nick + "!~" + current->user_nick + "@" + 
-								this->hostname + "\r\n";
+				std::string cont = first_message(fd);
+				// std::string cont = ":" + this->hostname + " 001 " + current->user_nick + " :" + 
+				// 				"Welcome to 2drunk2code server!!! " + current->user_nick + "!~" + current->user_nick + "@" + 
+				// 				this->hostname + "\r\n";
 				//snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\r\n");
 				//							 ":server name	   001 nickname :  welcome message						   !~nickname@hostname\r\n";
 				write(fd, cont.c_str(), cont.length());
