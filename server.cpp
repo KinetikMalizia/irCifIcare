@@ -29,8 +29,8 @@ Server:: Server(std::string hostname, std:: string portnumber, std:: string pass
 
 void Server:: check_args(char **av)
 {
-	password = av[2];
-	port = atoi(av[1]);
+	password = std::string(av[2]);
+	port = std::atoi(av[1]);
 }
 
 int Server:: create_socket()
@@ -163,7 +163,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 		std::string firstString = recToken.front();
 		while(recToken.empty() != 1)
 		{
-			std::cout << "first token is: " << firstString << std::endl;
+			//std::cout << "first token is: " << firstString << std::endl;
 			if(firstString.compare("USER") == 0)
 			{
 				current->setInfo(recToken, fd);

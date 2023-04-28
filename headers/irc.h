@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:25:40 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 15:08:56 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/28 09:59:27 by fmalizia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include <map>
 # include <string>
 # include <sstream>
+# include <cstdlib>
 # include "server.hpp"
 # include "user.hpp"
 # include "channel.hpp"

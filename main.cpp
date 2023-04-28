@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 09:26:23 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 16:29:49 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/28 09:59:49 by fmalizia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int main(int ac, char **av)
 {
 	Server ourServer("2drunk2code", "TEST", "TEST");
 	int listenfd;
-	int connfd;
+	//int connfd;
 	(void)ac;
 	(void)av;
 
@@ -66,7 +66,7 @@ int main(int ac, char **av)
 				break;
 			}
 			if (ourServer.fds[i].fd == listenfd)
-				connfd = ourServer.accept_connection(listenfd);
+				ourServer.accept_connection(listenfd);
 			else
 			{
 				std::memset(recvline, 0, MAXLINE);

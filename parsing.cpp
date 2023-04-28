@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 14:17:38 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 16:00:48 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/28 09:53:25 by fmalizia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	tokenize(std::string str, char delim, t_svec &out)
 		{
 			// std::cout << "sep: " << s.substr(0,back) << std::endl;
 			cut = s.substr(0,back);
-			if(cut.back() == '\r')
-				cut.pop_back();
+			if(cut[cut.length()-1] == '\r')
+				cut.erase(cut.length()-1, 1);
 			out.push_back(cut);
 			s.erase(0,back + 1);
 		}
@@ -40,8 +40,8 @@ void	tokenize(std::string str, char delim, t_svec &out)
 			s += ' ';
 			s += end;
 		}
-		if(s.back() == '\r')
-			s.pop_back();
+		if(s[s.length()-1] == '\r')
+			s.erase(s.length()-1, 1);
 		out.push_back(s);
 	}
 }
