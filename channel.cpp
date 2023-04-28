@@ -38,7 +38,7 @@ int	Channel::removeMember(User& member)
 	//send confirmation message
 	this->members.erase(member.fd_user);
 	std::cout << member.user_nick << " left " << this->channel_name << std::endl;
-	if (o_pos = member.user_mode.find('o'))
+	if ((o_pos = member.user_mode.find('o')) != 0)
 		member.user_mode.erase(o_pos, 1);
 	this->nmembers--;
 	return (this->nmembers);
