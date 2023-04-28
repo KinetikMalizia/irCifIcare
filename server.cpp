@@ -205,6 +205,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					std::cout << "New channel created: " << recToken[1] << std::endl;
 				}
 				std::cout << "Join the CHANNEL\n";
+				this->channels[recToken[1]]->printMembers();
 			}
 			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
 			{

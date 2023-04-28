@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:33:31 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 15:54:19 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/28 11:20:34 by fmalizia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ class Channel
 
 			std::map<int, User*>	members;
 			std::string				channel_name;
+			int						nmembers;
+
+			int	printMembers();
+			int	addMember(User& member);
+			int	removeMember(User& member);
 };
 
 //  The commands which may only be used by channel operators are:
