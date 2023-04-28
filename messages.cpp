@@ -6,7 +6,7 @@
 /*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 13:37:45 by nnemeth           #+#    #+#             */
-/*   Updated: 2023/04/28 13:55:37 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/28 14:16:51 by nnemeth          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ ERR_UMODEUNKNOWNFLAG (501)
 //current->user_nick + "!" + current->user_name + "@" + this->hostname + " MODE " + current->user_nick + ":+" + current->user_mode;
 //return (":" + this->_name + " " + num + " " + nickname + " " + message + "\n");
 
-const std::string  ERR_NEEDMOREPARAMS(int error_code)
+const std::string  ERR_NEEDMOREPARAMS(User users)
 {
-	return (std::string (": " + this->user_nick + "!" + current->user_name + "@" + this->hostname + error_code + ":Not enough parameters" + "\n");
+	return (std::string (": " + users.user_nick + "!" + users.user_name + "@" + users.hostname + error_code + ":Not enough parameters" + "\n");
 }
 
 const std::string  ERR_ALREADYREGISTRED(int error_code)
