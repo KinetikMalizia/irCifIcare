@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nnemeth <nnemeth@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 13:37:45 by nnemeth           #+#    #+#             */
-/*   Updated: 2023/04/28 17:04:53 by nnemeth          ###   ########.fr       */
+/*   Updated: 2023/04/28 17:09:01 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@
 {
 		User *current = (this->users).find(fd)->second;
 
-  return (":"+ this->hostname + "001" + current->user_nick + " :" + "\x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
+  return (":"+ this->hostname + " 001 " + current->user_nick + " :" + "\x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
   "!~" + current->user_nick + "@" + this->hostname + "\r\n");
 }
 
