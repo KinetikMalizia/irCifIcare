@@ -207,6 +207,23 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				std::cout << "Join the CHANNEL\n";
 				this->channels[recToken[1]]->printMembers();
 			}
+			if(firstString.compare("PRIVMSG") == 0)
+			{
+				if (recToken[1][0] == '#')
+					std::cout << "Do channel message\n";
+				else
+				{
+					int	target_fd = translate(recToken[1]);
+
+					if (target_fd < 0)
+						std::cout << "Nick: "<< recToken[1] << "doesn't exist\n";
+					else
+					{
+						std::string message = ":" + current->user_nick + "!~" + current->user_name + "@" + current->hostname + " PRIVMSG " + recToken[1] + " :" + recToken[2] + "\r\n";
+						write(target_fd, message.c_str(), message.length());
+					}
+				}
+			}
 			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
 			{
 				std::cout << "recieved MODE\n";
@@ -244,4 +261,16 @@ int	Server::FillUserInfo(t_svec tokens, int user_fd)
 		User *current = (this->users).find(user_fd)->second;
 		current->setInfo(tokens, user_fd);
 		return (0);
+}
+
+int	Server::translate(std::string nick)
+{
+	std::map<int, User*>::iterator itr;
+
+	for(itr=this->users.begin(); itr!=this->users.end(); itr++)
+	{
+		if(itr->second->user_nick == nick)
+			return (itr->first);
+	}
+	return(-1);
 }

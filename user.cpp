@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:44:35 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 15:43:16 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/29 13:22:41 by fmalizia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ int	User::setInfo(t_svec tokens, int fd_user)
 			this->user_name = *itr;
 		if(itr == tokens.begin() + 2)
 			this->user_nick = *itr;
-		if(itr == tokens.begin() + 5)
-			this->user_name = *itr;
+		if(itr == tokens.begin() + 3)
+			this->hostname = *itr;
+		if(itr == tokens.begin() + 4)
+			this->full_name = *itr;
 	}
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:08 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/27 15:08:47 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/29 13:22:42 by fmalizia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class Server
 		int	FillUserInfo(t_svec tokens, int user_fd);
 		int	isNickUsed(std::string nick);
 		int	channelExists(std::string name);
+		int	translate(std::string nick);
 		~Server();
 
 		
