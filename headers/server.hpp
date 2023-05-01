@@ -19,7 +19,7 @@ class Server
 		Server();
 		Server(std::string host_name, std:: string portnumber, std:: string password);
 		void check_args(char **av);
-		void remove_from_poll(struct pollfd fds[], int i, int nfds);
+		void remove_from_poll(int i);
 		int  create_socket();
 		int  accept_connection(int listenfd);
 		int add_modes();

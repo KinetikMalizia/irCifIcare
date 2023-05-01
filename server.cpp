@@ -109,10 +109,16 @@ Server::~Server()
     
 }
 
-void remove_from_poll(struct pollfd fds[], int i, int nfds)
+void Server::remove_from_poll(int i)
 {
-	fds[i] = fds[nfds - 1];
-	nfds--;
+	for(this->fds)
+	{
+		if
+		{
+			this->fds[i] = this->fds[this->nfds - 1];
+			this->nfds--;
+		}
+	}
 }
 
 void Server::check_user_pings()
@@ -130,6 +136,7 @@ void Server::check_user_pings()
             close(fd);
             it = users.erase(it);
             this->users.erase(fd);
+			remove_from_poll(fd);
         }
         else
         {
