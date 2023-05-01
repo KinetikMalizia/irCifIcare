@@ -109,6 +109,7 @@ Server::~Server()
     
 }
 
+<<<<<<< HEAD
 void Server::remove_from_poll(int i)
 {
 	for(this->fds)
@@ -119,6 +120,12 @@ void Server::remove_from_poll(int i)
 			this->nfds--;
 		}
 	}
+=======
+void Server:: remove_from_poll(struct pollfd fds[], int i)
+{
+	fds[i] = fds[this->nfds - 1];
+	this->nfds--;
+>>>>>>> d3a965155df5ded39031245c78d934701d27322e
 }
 
 void Server::check_user_pings()
@@ -247,7 +254,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					}
 				}
 			}
-			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
+			if(firstString.compare("MODE") == 0)
 			{
 				std::cout << "recieved MODE\n";
 				std::string cont = current->user_nick + "!" + current->user_name + "@" + this->hostname + " MODE " + current->user_nick + ":+" + current->user_mode;
