@@ -6,7 +6,7 @@
 /*   By: fmalizia <fmalizia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 13:37:45 by nnemeth           #+#    #+#             */
-/*   Updated: 2023/04/28 17:09:01 by fmalizia         ###   ########.ch       */
+/*   Updated: 2023/04/28 17:12:43 by fmalizia         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,17 +85,16 @@
 // 	return (std::string (": " + this->user_nick + " " + error_code + this->user_nick + ": You may not reregister" + "\n");
 // }
 
- std::string Server:: first_message(int fd)
+std::string Server:: first_message(int fd)
 {
-		User *current = (this->users).find(fd)->second;
+	User *current = (this->users).find(fd)->second;
 
-  return (":"+ this->hostname + " 001 " + current->user_nick + " :" + "\x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
-  "!~" + current->user_nick + "@" + this->hostname + "\r\n");
+	return (":"+ this->hostname + " 001 " + current->user_nick + " :" + "\x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
+		"!~" + current->user_nick + "@" + this->hostname + "\r\n");
 }
 
 int Server:: welcome_msg()
 {
-  
 	std:: cout << "\x1b[31mLet's get started!" << std:: endl;
 	std::cout << "\x1b[38;5;255m----------------------------------------\nServer started, listening on port " << SERVER_PORT << "\n----------------------------------------" << std::endl;
 	return (0);
