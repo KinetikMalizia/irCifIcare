@@ -240,7 +240,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					}
 				}
 			}
-			if(firstString.compare("MODE " + current->user_nick + " +i") == 0)
+			if(firstString.compare("MODE") == 0)
 			{
 				std::cout << "recieved MODE\n";
 				std::string cont = current->user_nick + "!" + current->user_name + "@" + this->hostname + " MODE " + current->user_nick + ":+" + current->user_mode;
