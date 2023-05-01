@@ -13,6 +13,7 @@ class User
 			
 
 			int			fd_user;
+			int			last_ping;
 			std::string user_name;
 			std::string user_nick;
 			std::string user_mode;

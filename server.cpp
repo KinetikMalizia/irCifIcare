@@ -115,6 +115,29 @@ void Server:: remove_from_poll(struct pollfd fds[], int i)
 	this->nfds--;
 }
 
+void Server::check_user_pings()
+{
+    std::map<int, User*> users = this->users;
+    time_t current_time = time(NULL);
+    std::map<int, User*>::iterator it = users.begin();
+    while (it != users.end())
+    {
+        int fd = it->first;
+        User* user = it->second;
+        if (current_time - user->last_ping > 15)
+        {
+            std::cout << "User " << user->user_nick << " timed out" << std::endl;
+            close(fd);
+            it = users.erase(it);
+            this->users.erase(fd);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
 // int Server::Nick(t_svec token)
 // {
 // 	for (itr = this->tokens.begin(); itr != this->tokens.end(); itr++)
@@ -158,11 +181,14 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				write(fd, cont.c_str(), cont.length());
 			}
 			if(firstString.compare("PING") == 0)
-			{
-				std::string pong = "PONG " + recToken[1] + "\r\n";
-				// snprintf(buff, sizeof(buff), "%s", pong.c_str());
-				write(fd, pong.c_str(), pong.length());
-			}
+            {
+                std::string pong = "PONG " + recToken[1] + "\r\n";
+                // snprintf(buff, sizeof(buff), "%s", pong.c_str());
+                current->last_ping = time(nullptr);
+                this->print_users();
+                write(fd, pong.c_str(), pong.length());
+                check_user_pings();
+            }
 			if(firstString.compare("NICK") == 0)
 			{
 				std::cout << "recieved NICK\n";
