@@ -7,13 +7,13 @@ Channel::~Channel(void)
 {	}
 Channel::Channel(std::string name): channel_name(name), nmembers(0)
 {
-	this->c_time = std::time();
+	// this->c_time = std::time();
 }
 
 int	Channel::printMembers(void)
 {
 	std::map<int, User*>::iterator	itr;
-	
+
 	std::cout << "Channel: " << this->channel_name << " members\n";
 	for(itr=members.begin(); itr!=members.end();itr++)
 	{

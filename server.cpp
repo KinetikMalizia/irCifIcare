@@ -41,7 +41,7 @@ int Server:: create_socket()
 	}
 	// set socket to be nonblocking
 	fcntl(listenfd, F_SETFL, O_NONBLOCK);
-	
+
 	std::memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -87,7 +87,7 @@ int Server:: add_client(int client_fd) //accept connections when users connect (
 {
 	// continuation of connection with accept -- connfd
 	// add client address
-	// adding select ?? 
+	// adding select ??
 	this->users[client_fd] = new User();
 	return(0);
 }
@@ -104,9 +104,9 @@ void	Server::print_users(void)
 Server::~Server()
 {
     // shutdown(this->listenfd, SHUT_RDWR);
-	// close(this->listenfd); 
+	// close(this->listenfd);
     //disconnect all clients, close sockets
-    
+
 }
 
 void Server::remove_from_poll(struct pollfd fds[], int& nfds, int fd)
@@ -166,24 +166,24 @@ void Server::check_user_pings()
 
 // //getsockname - returns the current address to which the socket sockfd is bound
 // //getprotobyname - returns a pointer to a protoent structure for the network protocol specified on the call.
-// //gethostbyname - 
+// //gethostbyname -
 
 void	Server::find_cmd(t_svec recToken, int fd)
 {
 		//char buff[MAXLINE];
 		std::string test;
 		User *current = (this->users).find(fd)->second;
-		
+
 		std::string firstString = recToken.front();
 		while(recToken.empty() != 1)
 		{
-			//std::cout << "first token is: " << firstString << std::endl;
+			// std::cout << "first token is: " << firstString << std::endl;
 			if(firstString.compare("USER") == 0)
 			{
 				current->setInfo(recToken, fd);
 				std::string cont = first_message(fd);
-				// std::string cont = ":" + this->hostname + " 001 " + current->user_nick + " :" + 
-				// 				"Welcome to 2drunk2code server!!! " + current->user_nick + "!~" + current->user_nick + "@" + 
+				// std::string cont = ":" + this->hostname + " 001 " + current->user_nick + " :" +
+				// 				"Welcome to 2drunk2code server!!! " + current->user_nick + "!~" + current->user_nick + "@" +
 				// 				this->hostname + "\r\n";
 				//snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\r\n");
 				//							 ":server name	   001 nickname :  welcome message						   !~nickname@hostname\r\n";
@@ -226,7 +226,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				std::cout << "Join the CHANNEL\n";
 				this->channels[recToken[1]]->addMember(*current);
 				this->channels[recToken[1]]->printMembers();
-				
+
 			}
 			if(firstString.compare("PART") == 0)
 			{
@@ -272,6 +272,8 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				// snprintf(buff, sizeof(buff), "%s", cont.c_str());
 				write(fd, cont.c_str(), cont.length());
 			}
+			if (handle_cmds(firstString, fd) != -1)
+				break ;
 			recToken.erase(recToken.begin());
 			firstString = recToken.front();
 		}

@@ -1,6 +1,7 @@
 NAME = serv
 
-SRCS =	main.cpp parsing.cpp server.cpp user.cpp channel.cpp messages.cpp
+SRCS =	main.cpp parsing.cpp server.cpp user.cpp channel.cpp messages.cpp \
+		handle_cmd.cpp
 OBJS = ${SRCS:.cpp=.o}
 
 CXX  = g++

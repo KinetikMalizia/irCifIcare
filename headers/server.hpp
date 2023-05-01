@@ -20,7 +20,7 @@ class Server
 		Server(std::string host_name, std:: string portnumber, std:: string password);
 		void check_args(char **av);
 		void remove_from_poll(struct pollfd fds[], int& nfds, int fd);
-		int  create_socket(); 
+		int  create_socket();
 		int  accept_connection(int listenfd);
 		int add_modes();
 		int	add_client(int client_fd);
@@ -29,7 +29,7 @@ class Server
 		void print_users();
 		std:: string first_msg();
 		void send_msg(std:: string msg, int msg_code); // reply to client --> create a container with all the possible messages and codes
-		//:irc.example.com 001 borja :Welcome to the Internet Relay Network borja!borja@polaris.cs.uchicago.edu 
+		//:irc.example.com 001 borja :Welcome to the Internet Relay Network borja!borja@polaris.cs.uchicago.edu
 		int	FillUserInfo(t_svec tokens, int user_fd);
 		int	isNickUsed(std::string nick);
 		int	channelExists(std::string name);
@@ -37,13 +37,20 @@ class Server
 		int welcome_msg();
 		std::string msg_base(int fd);
 		void check_user_pings();
+		int handle_cmds(std:: string command, int fd);
+		void INVITE(int fd);
+		void KICK(int fd);
+		void TOPIC(int fd);
+		void (Server:: *action[10])(std:: string command);
+
+
 
 
 
 		int	translate(std::string nick);
 		~Server();
 
-		
+
 		int				listenfd;
 		int				pollfd;
 		int				on;
@@ -61,14 +68,14 @@ class Server
 		std::string						base_msg;
 };
 
-#endif 
+#endif
 
 
-		// The user modes available: 
+		// The user modes available:
         //    i - marks a users as invisible;
         //    s - marks a user for receipt of server notices;
         //    w - user receives wallops;
         //    o - operator flag.
 		// If a user attempts to make themselves an operator using the "+o"
-		// flag, the attempt should be ignored.  
+		// flag, the attempt should be ignored.
 
