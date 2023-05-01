@@ -19,12 +19,8 @@ class Server
 		Server();
 		Server(std::string host_name, std:: string portnumber, std:: string password);
 		void check_args(char **av);
-<<<<<<< HEAD
-		void remove_from_poll(int i);
-=======
-		void remove_from_poll(struct pollfd fds[], int i);
->>>>>>> d3a965155df5ded39031245c78d934701d27322e
-		int  create_socket();
+		void remove_from_poll(struct pollfd fds[], int& nfds, int fd);
+		int  create_socket(); 
 		int  accept_connection(int listenfd);
 		int add_modes();
 		int	add_client(int client_fd);
@@ -39,7 +35,9 @@ class Server
 		int	channelExists(std::string name);
 		std::string first_message(int fd);
 		int welcome_msg();
+		std::string msg_base(int fd);
 		void check_user_pings();
+
 
 
 		int	translate(std::string nick);
@@ -60,6 +58,7 @@ class Server
 		int								port;
 		std::string						default_mode; // set it at launch
 		std::string						hostname;
+		std::string						base_msg;
 };
 
 #endif 

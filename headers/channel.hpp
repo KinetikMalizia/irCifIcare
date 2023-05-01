@@ -14,6 +14,7 @@ class Channel
 
 			std::map<int, User*>	members;
 			std::string				channel_name;
+			std::time_t				c_time;
 			int						nmembers;
 
 			int	printMembers();

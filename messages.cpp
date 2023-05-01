@@ -1,6 +1,16 @@
 #include "headers/server.hpp"
 #include "headers/irc.h"
 
+//std::string server::modu_msg(std::string info_one, std::string info_two, std::string info_three, int error, std::string msg)
+// {
+//		User *current = (this->users).find(fd)->second;
+//		std::string client = current->
+//		std::string rep = current->user_nick + "<" + error + ">" +" " + info_one + " " + info_two + " " + info_three + msg + "\r\n";
+//		if()
+//		if()
+//		return(rep);
+// }
+
 //just to list the potential messages we will need
 
 // REPLIES
@@ -73,6 +83,7 @@
 // 	return (std::string (": " + this->user_nick + " " + error_code + this->user_nick + ": You may not reregister" + "\n");
 // }
 
+
 std::string Server:: first_message(int fd)
 {
 	User *current = (this->users).find(fd)->second;
@@ -87,3 +98,12 @@ int Server:: welcome_msg()
 	std::cout << "\x1b[38;5;255m----------------------------------------\nServer started, listening on port " << SERVER_PORT << "\n----------------------------------------" << std::endl;
 	return (0);
 }
+
+std::string Server:: msg_base(int fd)
+{
+	User *current = (this->users).find(fd)->second;
+
+	this->base_msg = ":" + current->user_nick + "!~" + current->user_nick + "@" + this->hostname + "\r\n";
+	return (base_msg);
+}
+
