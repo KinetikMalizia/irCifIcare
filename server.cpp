@@ -109,10 +109,10 @@ Server::~Server()
     
 }
 
-void remove_from_poll(struct pollfd fds[], int i, int nfds)
+void Server:: remove_from_poll(struct pollfd fds[], int i)
 {
-	fds[i] = fds[nfds - 1];
-	nfds--;
+	fds[i] = fds[this->nfds - 1];
+	this->nfds--;
 }
 
 // int Server::Nick(t_svec token)
