@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/24 13:48:56 by nnemeth           #+#    #+#             */
-/*   Updated: 2023/04/26 15:57:500 by jcarlen          ###   ########.ch       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "headers/server.hpp"
 
 Server::Server(void)
@@ -233,9 +221,9 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			{
 				this->channels[recToken[1]]->removeMember(*current);
 			}
-			if(firstString.compare("MODE") == 0)
 			if(firstString.compare("PRIVMSG") == 0)
 			{
+				std::cout << "recieved PRIVMSG\n";
 				if (recToken[1][0] == '#')
 					std::cout << "Do channel message\n";
 				else
@@ -244,9 +232,10 @@ void	Server::find_cmd(t_svec recToken, int fd)
 
 					if (target_fd < 0)
 						std::cout << "Nick: "<< recToken[1] << "doesn't exist\n";
+						//replace with numerical code error message
 					else
 					{
-						std::string message = ":" + current->user_nick + "!~" + current->user_name + "@" + current->hostname + " PRIVMSG " + recToken[1] + " :" + recToken[2] + "\r\n";
+						std::string message = ":" + current->user_nick + "!~" + current->user_name + "@" + this->hostname + " PRIVMSG " + recToken[1] + " " + recToken[2] + "\r\n";
 						write(target_fd, message.c_str(), message.length());
 					}
 				}
