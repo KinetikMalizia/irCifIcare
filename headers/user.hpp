@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:24 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/26 16:05:30 by jcarlen          ###   ########.ch       */
+/*   Updated: 2023/04/29 13:10:38 by fmalizia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class User
 			std::string user_name;
 			std::string user_nick;
 			std::string user_mode;
+			std::string full_name;
 			std::string	server;
 			std::string hostname;
 };
