@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmalizia <fmalizia@students.42lausanne.    +#+  +:+       +#+        */
+/*   By: jcarlen <jcarlen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 11:25:24 by fmalizia          #+#    #+#             */
-/*   Updated: 2023/04/29 13:10:38 by fmalizia         ###   ########.fr       */
+/*   Updated: 2023/05/01 11:54:55 by jcarlen          ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class User
 			
 
 			int			fd_user;
+			int			last_ping;
 			std::string user_name;
 			std::string user_nick;
 			std::string user_mode;

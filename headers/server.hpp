@@ -35,6 +35,7 @@ class Server
 		int	channelExists(std::string name);
 		std::string first_message(int fd);
 		int welcome_msg();
+		void check_user_pings();
 
 
 		int	translate(std::string nick);
