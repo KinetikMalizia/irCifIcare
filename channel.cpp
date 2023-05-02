@@ -65,12 +65,12 @@ int	Channel::isOper(std::string nick)
 	return(0);
 }
 
-int	Channel::isMember(std::string nick)
+User	*Channel::isMember(std::string nick)
 {
 	for (std::map<int, User*>::iterator iter = this->members.begin(); iter != this->members.end(); iter++)
 	{
 		if (iter->second->user_nick == nick)
-			return (1);
+			return (iter->second);
 	}
 	return (0);
 }

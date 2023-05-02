@@ -25,3 +25,8 @@ int	User::setInfo(t_svec tokens, int fd_user)
 	}
 	return (0);
 }
+
+// User *User::isMember(std::string nick)
+// {
+// 	for (t_svec)
+// }

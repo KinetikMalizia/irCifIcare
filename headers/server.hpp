@@ -41,12 +41,7 @@ class Server
 		void INVITE(t_svec recToken, int fd);
 		void KICK(t_svec recToken, int fd);
 		void TOPIC(t_svec recToken,int fd);
-		void (Server:: *action[10])(t_svec recToken);
-
-
-
-
-
+		void (*action[10])(t_svec recToken);
 		int	translate(std::string nick);
 		~Server();
 
