@@ -19,7 +19,11 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 void Server:: INVITE(t_svec recToken, int fd)
 {
 	User *current = (this->users).find(fd)->second;
+	Channel *chan = this->channels[recToken[2]];
+
+	std::cout << this->channels[recToken[1]] << std::endl;
 	std::cout << "invite:" << recToken[1] << std::endl;
+	if chan->isMember(recToken[1])
 	std::cout << "this is invite here with " << current->user_nick << std:: endl;
 }
 
