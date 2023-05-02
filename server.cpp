@@ -275,7 +275,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
 				write(fd, cont.c_str(), cont.length());
 			}
-			if (handle_cmds(firstString, fd) != -1)
+			if (handle_cmds(recToken, fd) != -1)
 				break ;
 			recToken.erase(recToken.begin());
 			firstString = recToken.front();
