@@ -1,15 +1,105 @@
 #include "headers/server.hpp"
 #include "headers/irc.h"
 
-//std::string server::modu_msg(std::string info_one, std::string info_two, std::string info_three, int error, std::string msg)
-// {
-//		User *current = (this->users).find(fd)->second;
-//		std::string client = current->
-//		std::string rep = current->user_nick + "<" + error + ">" +" " + info_one + " " + info_two + " " + info_three + msg + "\r\n";
-//		if()
-//		if()
-//		return(rep);
-// }
+std::string server::err_msg(int errorCode, std::string parameter1="", std::string parameter2="", std::string parameter3="", std::string info="")
+{
+	User *current = (this->users).find(user_fd)->second;
+	std::string errorMessage = "ERR_" + std::to_string(errorCode) + " " + current->user_nick;
+
+	switch(errorCode)
+	{
+		case 400:
+			errorMessage += " " + parameter1 + parameter2 + " :Unknown error";
+			break;
+		case 401:
+			errorMessage += " " + parameter1 + " :No such nick/channel";
+			break;
+		case 403:
+			errorMessage += " " + parameter1 + " :No such channel";
+			break;
+		case 404:
+			errorMessage += " " + parameter1 + " :Cannot send to channel";
+			break;
+		case 411:
+			errorMessage += " :No recipient given (" + parameter1 + ")";
+			break;
+		case 412:
+			errorMessage += " :No text to send";
+			break;
+		case 421:
+			errorMessage += " " + parameter1 + " :Unknown command";
+			break;
+		case 431:
+			errorMessage += " :No nickname given";
+			break;
+		case 432:
+			errorMessage += " " + parameter1 + " :Erroneous nickname";
+			break;
+		case 433:
+			errorMessage += " " + parameter1 + " :Nickname is already in use";
+			break;
+		case 436:
+			errorMessage += " " + parameter1 + " :Nickname collision KILL from " + parameter2 + "@" + parameter3;
+			break;
+		case 441:
+			errorMessage += " " + parameter1 + " " + parameter2 + " :They aren't on that channel";
+			break;
+		case 442:
+			errorMessage += " " + parameter1 + " :You're not on that channel";
+			break;
+		case 443:
+			errorMessage += " " + parameter1 + " " + parameter2 + " :is already on channel";
+			break;
+		case 461:
+			errorMessage += " " + parameter1 + " :Not enough parameters";
+			break;
+		case 462:
+			errorMessage += " :You may not reregister";
+			break;
+		case 464:
+			errorMessage += " :Password incorrect";
+			break;
+		case 501:
+			errorMessage += " :Unknown MODE flag";
+			break;
+		default:
+			errorMessage += " " + parameter1 + " :Unknown error";
+			break;
+	}
+	errorMessage = ":" + this->hostname + " " + errorMessage + "\r\n" );
+	return errorMessage;
+}
+
+std::string server::rpl_msg(int msg_code, std::string parameter1="", std::string parameter2="", std::string parameter3="", std::string info="")
+{
+	User *current = (this->users).find(user_fd)->second;
+	std::string rpl_message = "RPL_" + std::to_string(msg_code) + " " + current->user_nick;
+
+	switch(msg_code)
+	{
+		case 001:
+			rpl_message += " :" + "\x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
+		"!~" + current->user_nick + "@" + this->hostname;
+			break;
+		case 331:
+			rpl_message += " " + parameter1 + " : no such channel";
+			break;
+		case 332:
+			rpl_message += " " + parameter1 + " : " + parameter2;
+			break;
+		case 336:
+			rpl_message += " " + parameter1;
+			break;
+		case 341:
+			rpl_message += " " + parameter1 + " " + parameter2;
+			break;
+		case 346:
+			rpl_message += " " + parameter1 + " " + parameter2;
+			break;
+	}
+	rpl_message = ":" + this->hostname + " " + rpl_message + "\r\n" );
+	return rpl_message;
+}
 
 //just to list the potential messages we will need
 
