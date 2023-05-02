@@ -37,11 +37,11 @@ class Server
 		int welcome_msg();
 		std::string msg_base(int fd);
 		void check_user_pings();
-		int handle_cmds(std:: string command, int fd);
-		void INVITE(int fd);
-		void KICK(int fd);
-		void TOPIC(int fd);
-		void (Server:: *action[10])(std:: string command);
+		int handle_cmds(t_svec recToken, int fd);
+		void INVITE(t_svec recToken, int fd);
+		void KICK(t_svec recToken, int fd);
+		void TOPIC(t_svec recToken,int fd);
+		void (Server:: *action[10])(t_svec recToken);
 
 
 

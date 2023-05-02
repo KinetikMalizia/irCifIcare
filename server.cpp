@@ -272,7 +272,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				// snprintf(buff, sizeof(buff), "%s", cont.c_str());
 				write(fd, cont.c_str(), cont.length());
 			}
-			if (handle_cmds(firstString, fd) != -1)
+			if (handle_cmds(recToken, fd) != -1)
 				break ;
 			recToken.erase(recToken.begin());
 			firstString = recToken.front();
