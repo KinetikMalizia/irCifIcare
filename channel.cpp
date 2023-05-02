@@ -18,8 +18,8 @@ int	Channel::printMembers(void)
 	for(itr=members.begin(); itr!=members.end();itr++)
 	{
 		std::cout << itr->first << ": " << itr->second->user_nick;
-		// if(this->oper.find(itr->second->user_nick) != this->oper.end())
-		// 	std::cout ("***");
+		if(isOper(itr->second->user_nick))
+			std::cout << (" ***");
 		std::cout << std::endl;
 	}
 	return (0);
@@ -51,4 +51,26 @@ int	Channel::removeMember(User& member)
 		member.user_mode.erase(o_pos, 1);
 	this->nmembers--;
 	return (this->nmembers);
+}
+
+int	Channel::isOper(std::string nick)
+{
+	std::vector<std::string>::iterator	itr;
+
+	for (itr = this->oper.begin(); itr != this->oper.end(); itr++)
+	{
+		if (*itr == nick)
+			return (1);
+	}
+	return(0);
+}
+
+int	Channel::isMember(std::string nick)
+{
+	for (std::map<int, User*>::iterator iter = this->members.begin(); iter != this->members.end(); iter++)
+	{
+		if (iter->second->user_nick == nick)
+			return (1);
+	}
+	return (0);
 }

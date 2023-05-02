@@ -13,7 +13,7 @@ class Channel
 			~Channel();
 
 			std::map<int, User*>		members;
-			std::vector<std::string>	oper;
+			std::vector<std::string>	oper;//change it with pointer to real user, so if the nick changes it changes here too
 			std::string					channel_name;
 			std::time_t					c_time;
 			int							nmembers;
@@ -21,6 +21,8 @@ class Channel
 			int	printMembers();
 			int	addMember(User& member);
 			int	removeMember(User& member);
+			int	isOper(std::string nick);
+			int	isMember(std::string nick);
 };
 
 //  The commands which may only be used by channel operators are:
@@ -28,3 +30,5 @@ class Channel
 //         MODE    - Change the channel's mode
 //         INVITE  - Invite a client to an invite-only channel (mode +i)
 //         TOPIC   - Change the channel topic in a mode +t channel
+
+// add a list

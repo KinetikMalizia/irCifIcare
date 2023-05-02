@@ -50,10 +50,8 @@ int main(int ac, char **av)
 			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 			{
 				std::cout << "Error revents =" << ourServer.fds[i].fd << std::endl;
-				std::cout << "Pollin =" << ourServer.fds[i].revents << std::endl;
-				std::cout << "Poll =" << ourServer.fds[i].revents << std::endl;
-				//running = false;
-				//break;
+				running = false;
+				break;
 			}
 			if (ourServer.fds[i].fd == listenfd)
 				ourServer.accept_connection(listenfd);
