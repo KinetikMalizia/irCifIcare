@@ -224,6 +224,10 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					std::cout << "New channel created: " << recToken[1] << std::endl;
 				}
 				std::cout << "Join the CHANNEL\n";
+				std::stringstream ss;
+				ss << this->channels[recToken[1]]->c_time;
+				std::string	date = ":" + this->hostname + " 329 " + current->user_nick + " " + recToken[1] + " :" + ss.str() + "\r\n";
+				write(current->fd_user, date.c_str(), date.length());
 				this->channels[recToken[1]]->addMember(*current);
 				this->channels[recToken[1]]->printMembers();
 
@@ -238,11 +242,11 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				if (recToken[1][0] == '#')
 				{
 					std::cout << "Do channel message\n";
-					Channel	rec = *(this->channels.find(recToken[1])->second);
-					// if (rec == this->channels.end())
-					// 	std::cout << "channel [" << recToken[1] << "] doesn't exitst\n";
-					// else
+					if (!this->channelExists(recToken[1]))
+						std::cout << "channel [" << recToken[1] << "] doesn't exitst\n";
+					else
 					{
+						Channel	rec = *(this->channels.find(recToken[1])->second);
 						std::string message = ":" + current->user_nick + "!~" + current->user_name + "@" + this->hostname + " PRIVMSG " + recToken[1] + " " + recToken[2] + "\r\n";
 						for (std::map<int, User*>::iterator	itr = rec.members.begin(); itr!=rec.members.end(); itr++)
 						{
@@ -268,8 +272,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			if(firstString.compare("MODE") == 0)
 			{
 				std::cout << "recieved MODE\n";
-				std::string cont = current->user_nick + "!" + current->user_name + "@" + this->hostname + " MODE " + current->user_nick + ":+" + current->user_mode;
-				// snprintf(buff, sizeof(buff), "%s", cont.c_str());
+				std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
 				write(fd, cont.c_str(), cont.length());
 			}
 			if (handle_cmds(recToken, fd) != -1)
