@@ -42,7 +42,8 @@ class Server
 		void KICK(t_svec recToken, int fd);
 		void TOPIC(t_svec recToken,int fd);
 		// void (Server:: *action[10])(t_svec recToken);
-		std::string err_msg(int errorCode, std::string parameter1="", std::string parameter2="", std::string parameter3="", std::string info="")
+		std::string err_msg(int errorCode, int fd, std::string parameter1, std::string parameter2, std::string parameter3, std::string info);
+		std::string rpl_msg(int msg_code, int fd, std::string parameter1, std::string parameter2, std::string parameter3, std::string info);
 
 
 
