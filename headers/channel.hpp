@@ -12,10 +12,11 @@ class Channel
 			Channel(std::string name);
 			~Channel();
 
-			std::map<int, User*>	members;
-			std::string				channel_name;
-			std::time_t				c_time;
-			int						nmembers;
+			std::map<int, User*>		members;
+			std::vector<std::string>	oper;
+			std::string					channel_name;
+			std::time_t					c_time;
+			int							nmembers;
 
 			int	printMembers();
 			int	addMember(User& member);

@@ -17,7 +17,10 @@ int	Channel::printMembers(void)
 	std::cout << "Channel: " << this->channel_name << " members\n";
 	for(itr=members.begin(); itr!=members.end();itr++)
 	{
-		std::cout << itr->first << ": " << itr->second->user_nick << std::endl;
+		std::cout << itr->first << ": " << itr->second->user_nick;
+		// if(this->oper.find(itr->second->user_nick) != this->oper.end())
+		// 	std::cout ("***");
+		std::cout << std::endl;
 	}
 	return (0);
 }
@@ -28,7 +31,10 @@ int	Channel::addMember(User& member)
 	this->members[member.fd_user] = &member;
 	std::cout << member.user_nick << " joined " << this->channel_name << std::endl;
 	if(this->nmembers == 0)
+	{
 		member.user_mode += 'o';
+		this->oper.push_back(member.user_nick);
+	}
 	this->nmembers++;
 	return (0);
 }

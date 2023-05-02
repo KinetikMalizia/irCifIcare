@@ -31,7 +31,7 @@ int main(int ac, char **av)
 	//initialize the timeout to 3 minutes 
 	timeout = (3 * 60 * 1000);
 	bool running = true;
-	// bool start = true;
+	//bool start = true;
 	while (running)
 	{
 		ourServer.pollfd = poll(ourServer.fds, ourServer.nfds, timeout);
@@ -50,8 +50,10 @@ int main(int ac, char **av)
 			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 			{
 				std::cout << "Error revents =" << ourServer.fds[i].fd << std::endl;
-				running = false;
-				break;
+				std::cout << "Pollin =" << ourServer.fds[i].revents << std::endl;
+				std::cout << "Poll =" << ourServer.fds[i].revents << std::endl;
+				//running = false;
+				//break;
 			}
 			if (ourServer.fds[i].fd == listenfd)
 				ourServer.accept_connection(listenfd);
@@ -75,7 +77,7 @@ int main(int ac, char **av)
 				std::cout << "Received: " << recvline << std::endl;
 				tokenize(std::string(recvline), ' ' ,recToken);
 				ourServer.find_cmd(recToken, ourServer.fds[i].fd);
-				if (std::strncmp((char*)recvline, "QUIT :leaving", 5) == 0)
+				if (std::strncmp((char*)recvline, "QSERV\r\n", 5) == 0)
 				{
 					std::cout << "Shutting down server" << std::endl;
 					running = false;
