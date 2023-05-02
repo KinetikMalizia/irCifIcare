@@ -22,7 +22,7 @@ class Channel
 			int	addMember(User& member);
 			int	removeMember(User& member);
 			int	isOper(std::string nick);
-			int	isMember(std::string nick);
+			User *isMember(std::string nick);
 };
 
 //  The commands which may only be used by channel operators are:

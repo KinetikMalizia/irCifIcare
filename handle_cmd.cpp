@@ -18,13 +18,38 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 
 void Server:: INVITE(t_svec recToken, int fd)
 {
-	User *current = (this->users).find(fd)->second;
+	std::string invitee = recToken[1];
+	std::string channel = recToken[2];
+	(void)fd;
+	// User *current = (this->users).find(fd)->second;
 	Channel *chan = this->channels[recToken[2]];
+	if (channelExists(channel) == 0)
+	{
+		std:: cout << "Channel does not exist" << std::endl;
+		return ;
+	}
+	User *inv_member = chan->isMember(recToken[1]);
 
-	std::cout << this->channels[recToken[1]] << std::endl;
-	std::cout << "invite:" << recToken[1] << std::endl;
-	if chan->isMember(recToken[1])
-	std::cout << "this is invite here with " << current->user_nick << std:: endl;
+	for (std::map<int, User*>::iterator	itr = this->users.begin(); itr!=this->users.end(); itr++)
+	{
+		std:: cout << itr->second->user_nick << std::endl;
+		std:: cout << "invited person: " << invitee << std::endl;
+		if (invitee.compare(itr->second->user_nick) == 0) //invited user is on the server
+		{
+			std::cout << "member exists" << std::endl;
+			if (inv_member != 0) // reverse the result if testing with others
+			{
+				chan->addMember(*inv_member);
+				chan->printMembers();
+			}
+			else
+			{
+				std::cout << "member is already part of the channel" << std:: endl;
+			}
+		}
+		else
+			std::cout << "member is not the server" << std::endl;
+	}
 }
 
 void Server:: KICK(t_svec recToken,int fd)
