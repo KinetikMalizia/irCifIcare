@@ -32,24 +32,22 @@ void Server:: INVITE(t_svec recToken, int fd)
 
 	for (std::map<int, User*>::iterator	itr = this->users.begin(); itr!=this->users.end(); itr++)
 	{
-		std:: cout << itr->second->user_nick << std::endl;
-		std:: cout << "invited person: " << invitee << std::endl;
 		if (invitee.compare(itr->second->user_nick) == 0) //invited user is on the server
 		{
 			std::cout << "member exists" << std::endl;
 			if (inv_member != 0) // reverse the result if testing with others
 			{
-				chan->addMember(*inv_member);
-				chan->printMembers();
+				std::cout << "member is already part of the channel" << std:: endl;
 			}
 			else
 			{
-				std::cout << "member is already part of the channel" << std:: endl;
+				chan->addMember(*(itr->second));
+				chan->printMembers();
 			}
 		}
-		else
-			std::cout << "member is not the server" << std::endl;
+		std::cout << "searching...\n";
 	}
+	std::cout << "member is not the server" << std::endl;
 }
 
 void Server:: KICK(t_svec recToken,int fd)
