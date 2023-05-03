@@ -20,13 +20,14 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 
 void Server:: INVITE(t_svec recToken, int fd)
 {
-	std::string invitee = recToken[1];
+	std::string invited = recToken[1];
 	std::string channel = recToken[2];
 	(void)fd;
-	// User *current = (this->users).find(fd)->second;
+	User *current = (this->users).find(fd)->second;
 	Channel *chan = this->channels[recToken[2]];
 	if (channelExists(channel) == 0)
 	{
+		err_msg(403, fd, channel, ":No such channel", "", "");
 		std:: cout << "Channel does not exist" << std::endl;
 		return ;
 	}
@@ -34,22 +35,31 @@ void Server:: INVITE(t_svec recToken, int fd)
 
 	for (std::map<int, User*>::iterator	itr = this->users.begin(); itr!=this->users.end(); itr++)
 	{
-		if (invitee.compare(itr->second->user_nick) == 0) //invited user is on the server
+		if (invited.compare(itr->second->user_nick) == 0) //invited user is on the server
 		{
 			std::cout << "member exists" << std::endl;
 			if (inv_member != 0) // reverse the result if testing with others
 			{
-				std::cout << "member is already part of the channel" << std:: endl;
+				std::string	date = ":" + this->hostname + " 443 " + current->user_nick + channel + recToken[1] + " :is already on channel" + "\r\n";
+				write(current->fd_user, date.c_str(), date.length());
+				std:: cout << err_msg(443,fd, channel, "", "", "") << std::endl;
+				// std::cout << "member is already part of the channel" << std:: endl;
+				//  [ server : 6667 ] :*.freenode.net 443 nikki nikki #wow :is already on channel
 			}
 			else
 			{
-				chan->addMember(*(itr->second));
-				chan->printMembers();
+				std::string	date = ":" + this->hostname + " 341 " + current->user_nick + invited + "has been invited to " +channel  + "\r\n";
+				write(current->fd_user, date.c_str(), date.length());
+				rpl_msg(341, fd, current->user_nick, recToken[1], " :", "channel");
+				std:: cout << "send message to invited user" << std::endl;
 			}
 		}
-		std::cout << "searching...\n";
+		else
+			{
+				err_msg(401, fd, current->user_nick, invited, " :", "No such nick");
+				// std::cout << "member is not the server" << std::endl;
+			}
 	}
-	std::cout << "member is not the server" << std::endl;
 }
 
 void Server:: KICK(t_svec recToken,int fd)
@@ -74,7 +84,7 @@ void Server:: KICK(t_svec recToken,int fd)
 	}
 	else
 		std::cout << "Tu t'es pris pour qui? " + kicker.user_nick + "\n";
-	
+
 }
 
 void Server:: TOPIC(t_svec recToken,int fd)
