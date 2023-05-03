@@ -2,18 +2,20 @@
 
 int Server:: handle_cmds(t_svec recToken, int fd)
 {
-	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC"};
+	std::cout << "Handling " << recToken.front() << std::endl;
+	std:: string all_commands[10] = {"INVITE", "KICK"};
 
 	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK};
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		if (all_commands[i].compare(recToken.front()) == 0)
+		{
 			(this->*action[i])(recToken, fd);
-		else
-			return (-1);
+			return (0);
+		}
 	}
-	return (0);
+	return (-1);
 }
 
 void Server:: INVITE(t_svec recToken, int fd)
@@ -52,8 +54,27 @@ void Server:: INVITE(t_svec recToken, int fd)
 
 void Server:: KICK(t_svec recToken,int fd)
 {
-	(void)recToken;
-	std::cout << "Calling kick" << fd << std:: endl;
+	if (!this->channelExists(recToken[1]))
+	{
+		std::cout << "channel doesnt exist\n";
+		return ;
+	}
+	Channel*	channel = this->channels[recToken[1]];
+	if (!this->isNickUsed(recToken[2]))
+	{
+		std::cout << "nick doesn't exist [401]\n";
+		return ;
+	}
+	std::string	kicked = recToken[2];
+	User		kicker = *(this->users[fd]);
+	if (channel->isOper(kicker.user_nick))
+	{
+		std::string	message = this->base_msg + " KICK " + channel->channel_name + " " + kicked + " :\r\n";
+		write(this->translate(recToken[2]), message.c_str(), message.length());
+	}
+	else
+		std::cout << "Tu t'es pris pour qui? " + kicker.user_nick + "\n";
+	
 }
 
 void Server:: TOPIC(t_svec recToken,int fd)

@@ -196,7 +196,7 @@ std::string Server:: msg_base(int fd)
 {
 	User *current = (this->users).find(fd)->second;
 
-	this->base_msg = ":" + current->user_nick + "!~" + current->user_nick + "@" + this->hostname + "\r\n";
-	return (base_msg);
+	this->base_msg = ":" + current->user_nick + "!~" + current->user_nick + "@" + this->hostname + " ";
+	return (this->base_msg);
 }
 

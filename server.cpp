@@ -175,6 +175,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 		User *current = (this->users).find(fd)->second;
 
 		std::string firstString = recToken.front();
+		msg_base(fd);
 		while(recToken.empty() != 1)
 		{
 			// std::cout << "first token is: " << firstString << std::endl;
@@ -217,7 +218,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			}
 			if(firstString.compare("JOIN") == 0)
 			{
-				test = msg_base(fd);
+				// test = msg_base(fd);
 				if (!channelExists(recToken[1]))
 				{
 					this->channels[recToken[1]] = new Channel(recToken[1]);
@@ -275,8 +276,9 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
 				write(fd, cont.c_str(), cont.length());
 			}
-			if (handle_cmds(recToken, fd) != -1)
-				break ;
+			handle_cmds(recToken, fd);
+			// if (handle_cmds(recToken, fd) == -1)
+				// break ;
 			recToken.erase(recToken.begin());
 			firstString = recToken.front();
 		}
