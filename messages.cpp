@@ -3,65 +3,68 @@
 
 std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", std::string parameter2="", std::string parameter3="", std::string info="")
 {
-	User *current = (this->users).find(fd)->second;
+	//User *current = (this->users).find(fd)->second;
+	(void)fd;
+	std::stringstream ss;
+	ss << errorCode;
 	(void)info;
-	std::string errorMessage = "ERR_" + std::to_string(errorCode) + " " + current->user_nick;
+	std::string errorMessage = ss.str() + " ERR_";
 
 	switch(errorCode)
 	{
 		case 400:
-			errorMessage += " " + parameter1 + parameter2 + " :Unknown error";
+			errorMessage += "UNKNOWNERROR " + parameter1 + parameter2 + " :Unknown error";
 			break;
 		case 401:
-			errorMessage += " " + parameter1 + " :No such nick/channel";
+			errorMessage += "NOSUCHNICK " + parameter1 + " :No such nick/channel";
 			break;
 		case 403:
-			errorMessage += " " + parameter1 + " :No such channel";
+			errorMessage += "NOSUCHCHANNE " + parameter1 + " :No such channel";
 			break;
 		case 404:
-			errorMessage += " " + parameter1 + " :Cannot send to channel";
+			errorMessage += "CANNOTSENDTOCHAN " + parameter1 + " :Cannot send to channel";
 			break;
 		case 411:
-			errorMessage += " :No recipient given (" + parameter1 + ")";
+			errorMessage += "NORECIPIENT :No recipient given (" + parameter1 + ")";
 			break;
 		case 412:
-			errorMessage += " :No text to send";
+			errorMessage += "NOTEXTTOSEND :No text to send";
 			break;
 		case 421:
-			errorMessage += " " + parameter1 + " :Unknown command";
+			errorMessage += "UNKNOWNCOMMAND " + parameter1 + " :Unknown command";
 			break;
 		case 431:
-			errorMessage += " :No nickname given";
+			errorMessage += "NONICKNAMEGIVE :No nickname given";
 			break;
 		case 432:
-			errorMessage += " " + parameter1 + " :Erroneous nickname";
+			errorMessage += "ERRONEUSNICKNAME " + parameter1 + " :Erroneous nickname";
 			break;
 		case 433:
-			errorMessage += " " + parameter1 + " :Nickname is already in use";
+			errorMessage += "NICKNAMEINUSE " + parameter1 + " :Nickname is already in use";
 			break;
 		case 436:
-			errorMessage += " " + parameter1 + " :Nickname collision KILL from " + parameter2 + "@" + parameter3;
+			errorMessage += "NICKCOLLISION " + parameter1 + " :Nickname collision KILL from " + parameter2 + "@" + parameter3;
 			break;
 		case 441:
-			errorMessage += " " + parameter1 + " " + parameter2 + " :They aren't on that channel";
+			errorMessage += "USERNOTINCHANNEL " + parameter1 + " " + parameter2 + " :They aren't on that channel";
 			break;
 		case 442:
-			errorMessage += " " + parameter1 + " :You're not on that channel";
+			errorMessage += "NOTONCHANNEL " + parameter1 + " :You're not on that channel";
 			break;
 		case 443:
-			errorMessage += " " + parameter1 + " " + parameter2 + " :is already on channel";
+			errorMessage += "USERONCHANNEL " + parameter1 + " " + parameter2 + " :is already on channel";
 			break;
 		case 461:
-			errorMessage += " " + parameter1 + " :Not enough parameters";
+			errorMessage += "NEEDMOREPARAMS " + parameter1 + " :Not enough parameters";
 			break;
 		case 462:
-			errorMessage += " :You may not reregister";
+			errorMessage += "ALREADYREGISTRED :You may not reregister";
 			break;
 		case 464:
-			errorMessage += " :Password incorrect";
+			errorMessage += "PASSWDMISMATCH :Password incorrect";
 			break;
 		case 501:
-			errorMessage += " :Unknown MODE flag";
+			errorMessage += "UMODEUNKNOWNFLAG :Unknown MODE flag";
 			break;
 		default:
 			errorMessage += " " + parameter1 + " :Unknown error";
@@ -71,34 +74,37 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 	return errorMessage;
 }
 
+
 std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std::string parameter2="", std::string parameter3="", std::string info="")
 {
 	User *current = (this->users).find(fd)->second;
 	(void)info;
 	(void)parameter3;
-	std::string rpl_message = "RPL_" + std::to_string(msg_code) + " " + current->user_nick;
+	std::string rpl_message = "RPL_" + current->user_nick;
 
 	switch(msg_code)
 	{
 		case 001:
-			rpl_message += " : \x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
+			rpl_message += "WELCOME : \x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
 		"!~" + current->user_nick + "@" + this->hostname;
 			break;
 		case 331:
-			rpl_message += " " + parameter1 + " : no such channel";
+			rpl_message += "WELCOME " + parameter1 + " : no such channel";
 			break;
 		case 332:
-			rpl_message += " " + parameter1 + " : " + parameter2;
+			rpl_message += "NOTOPIC " + parameter1 + " : " + parameter2;
 			break;
 		case 336:
-			rpl_message += " " + parameter1;
+			rpl_message += "TOPIC " + parameter1;
 			break;
 		case 341:
-			rpl_message += " " + parameter1 + " " + parameter2;
+			rpl_message += "INVITELIST " + parameter1 + " " + parameter2;
 			break;
 		case 346:
-			rpl_message += " " + parameter1 + " " + parameter2;
+			rpl_message += "INVEXLIST " + parameter1 + " " + parameter2;
 			break;
+		default:
+			rpl_message += " this but a default msg ";
 	}
 	rpl_message = ":" + this->hostname + " " + rpl_message + "\r\n" ;
 	return rpl_message;

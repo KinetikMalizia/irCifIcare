@@ -211,7 +211,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				}
 				else
 				{
-					reponse = "Message d'erreur NICK pas dispo\r\n";
+					reponse = err_msg(401, fd, recToken[1], "", "", "");
 				}
 				// snprintf(buff, sizeof(buff), "changing nick\n");
 				write(fd, reponse.c_str(), reponse.length());
