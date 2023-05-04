@@ -1,7 +1,9 @@
 #include "headers/user.hpp"
 
 User::User(void)
-{	}
+{	
+	this->last_ping = 0;
+}
 
 User::~User(void)
 {	}

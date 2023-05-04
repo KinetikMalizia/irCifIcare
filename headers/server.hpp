@@ -29,13 +29,12 @@ class Server
 		void print_users();
 		std:: string first_msg();
 		void send_msg(std:: string msg, int msg_code); // reply to client --> create a container with all the possible messages and codes
-		//:irc.example.com 001 borja :Welcome to the Internet Relay Network borja!borja@polaris.cs.uchicago.edu
 		int	FillUserInfo(t_svec tokens, int user_fd);
 		int	isNickUsed(std::string nick);
 		int	channelExists(std::string name);
 		std::string first_message(int fd);
 		int welcome_msg();
-		std::string msg_base(int fd);
+		std::string gen_base_msg(int fd);
 		void check_user_pings();
 		int handle_cmds(t_svec recToken, int fd);
 		void INVITE(t_svec recToken, int fd);

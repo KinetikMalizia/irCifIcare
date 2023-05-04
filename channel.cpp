@@ -33,7 +33,7 @@ int	Channel::addMember(User& member)
 	if(this->nmembers == 0)
 	{
 		member.user_mode += 'o';
-		this->oper[member.fd_user] = &member;
+		this->oper.push_back(&member);
 	}
 	this->nmembers++;
 	return (0);
@@ -41,25 +41,45 @@ int	Channel::addMember(User& member)
 
 int	Channel::removeMember(User& member)
 {
-	std::size_t	o_pos = 0;
-
+	// std::size_t	o_pos = 0;
+	std::string confirm = ":" + member.user_nick + "!~" + member.user_name + "@" + member.hostname + " ";
 	//send confirmation message
+	confirm += "PART :" + this->channel_name + "\r\n";
+	this->channelMessage(NULL, confirm);
+	if (this->isOper(member.user_nick))
+	{
+		std::vector<User*>::iterator op;
+		for (op=this->oper.begin(); *op != &member; op++)
+			std::cout << ".";
+		std::cout << "\n";
+		this->oper.erase(op);
+	}
+	// o_pos = member.user_mode.find('o');
+	// if (o_pos)
+	// 	member.user_mode.erase(o_pos, 1);
 	this->members.erase(member.fd_user);
 	std::cout << member.user_nick << " left " << this->channel_name << std::endl;
-	o_pos = member.user_mode.find('o');
-	if (o_pos)
-		member.user_mode.erase(o_pos, 1);
 	this->nmembers--;
 	return (this->nmembers);
 }
 
+int	Channel::channelMessage(User* current, std::string message)
+{
+	for (std::map<int, User*>::iterator	itr = this->members.begin(); itr!=this->members.end(); itr++)
+	{
+		if (current != itr->second)
+			write(itr->second->fd_user, message.c_str(), message.length());
+	}
+	return (0);
+}
+
 int	Channel::isOper(std::string nick)
 {
-	std::map<int, User*>::iterator	itr;
+	std::vector<User*>::iterator	itr;
 
 	for (itr = this->oper.begin(); itr != this->oper.end(); itr++)
 	{
-		if (itr->second->user_nick == nick)
+		if ((*itr)->user_nick == nick)
 			return (1);
 	}
 	return(0);
