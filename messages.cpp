@@ -92,7 +92,7 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 			rpl_message += parameter1 + " : no topic is set";
 			break;
 		case 332:
-			rpl_message += parameter1 + " : " + parameter2;
+			rpl_message += parameter1 + " : " + parameter3;
 			break;
 		case 336:
 			rpl_message += parameter1;

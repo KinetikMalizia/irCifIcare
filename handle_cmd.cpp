@@ -22,7 +22,6 @@ void Server:: INVITE(t_svec recToken, int fd)
 {
 	std::string invited = recToken[1];
 	std::string channel = recToken[2];
-	(void)fd;
 	User *current = (this->users).find(fd)->second;
 	if (channelExists(channel) == 0)
 	{
@@ -45,18 +44,11 @@ void Server:: INVITE(t_svec recToken, int fd)
 			}
 			else
 			{
-<<<<<<< HEAD
-				std::string	date = ":" + this->hostname + " 341 " + current->user_nick + " " + invited + ":" +channel  + "\r\n";
-				write(current->fd_user, date.c_str(), date.length());
-				// rpl_msg(341, fd, current->user_nick, recToken[1], " :", "channel");
-				std:: cout << "send message to invited user" << std::endl;
-=======
 				// std::string	toSender = ":" + this->hostname + " 341 " + current->user_nick + " " + invited + " :" +channel + "\r\n";
 				// write(current->fd_user, toSender.c_str(), toSender.length());
 				std::string	toInvited = this->base_msg + " INVITE " + invited + " :" + channel + "\r\n";
 				write(this->translate(invited), toInvited.c_str(), toInvited.length());
 				rpl_msg(341, fd, current->user_nick, recToken[1], channel, "");
->>>>>>> e675d447fe1bad094a6d254812e5798afab5b33b
 			}
 		}
 	}
@@ -92,17 +84,31 @@ void Server:: KICK(t_svec recToken,int fd)
 
 void Server:: TOPIC(t_svec recToken,int fd)
 {
-	std::cout << recToken[2].at(0) << std::endl;
-	if (recToken[2].at(0) == '#')
-	{
-		this->topic = recToken[3];
-		std::cout << this->topic << std::endl;
-	}
-	else
-		this->topic = recToken[2];
-	std::cout << this->topic << std::endl;
+	User *current = (this->users).find(fd)->second;
+	// (void)fd;
+	// check the mode of the user
+	// if (this->topic.empty())
+	// {
+		if (!recToken[2].empty())
+		{
+			// Channel *chan = this->channels[recToken[2]];
+			this->topic = recToken[2];
+			std::cout << "topic now is "<< this->topic << std::endl;
+			//get the current channel name
+			rpl_msg(332, fd, current->user_nick, "changed the topic of the channel to ", this->topic, "");
+		}
+		else
+		{
+			this->topic = recToken[1];
+			std::cout << "Topic is now " << this->topic << std:: endl;
+		}
+	// }
+	// else
+	// 	std::cout << "print something" << std::endl;
+
+
+	// std::cout << this->topic << std::endl;
 	// topic no args :No topic set for #wow
 	// nikki changed the topic of #wow to: test
-	std::cout << "Calling topic" << fd << std:: endl;
 }
 
