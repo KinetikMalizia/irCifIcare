@@ -3,11 +3,11 @@
 int Server:: handle_cmds(t_svec recToken, int fd)
 {
 	std::cout << "Handling " << recToken.front() << std::endl;
-	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC"};
+	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC", "PART"};
 
-	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC};
+	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC, &Server::PART};
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if (all_commands[i].compare(recToken.front()) == 0)
 		{
@@ -76,6 +76,7 @@ void Server:: KICK(t_svec recToken,int fd)
 	{
 		std::string	message = this->base_msg + "KICK " + channel->channel_name + " " + kicked + " :\r\n";
 		channel->channelMessage(NULL, message);
+		channel->removeMember(*(this->users[this->translate(kicked)]));
 	}
 	else
 		std::cout << "Tu t'es pris pour qui? " + kicker.user_nick + "\n";
@@ -112,3 +113,22 @@ void Server:: TOPIC(t_svec recToken,int fd)
 	// nikki changed the topic of #wow to: test
 }
 
+void Server::PART(t_svec recToken, int fd)
+{
+	if (!this->channelExists(recToken[1]))
+	{
+		std::cout << "channel doesnt exist\n";
+		err_msg(403,fd,recToken[1],"","","");
+		return ;
+	}
+	Channel*	channel = this->channels[recToken[1]];
+	//add exception if leaver is not in channel
+	User		leaver = *(this->users[fd]);
+	std::string	confirm = this->base_msg + "PART :" + channel->channel_name + "\r\n";
+	channel->channelMessage(NULL, confirm);
+	channel->removeMember(leaver);
+}
+
+
+//[ client : 8000 ] PART #mytest
+//[ server : 6667 ] :KinKangs!~fmalizia@freenode-o6d.g28.dc9e5h.IP PART :#mytest
