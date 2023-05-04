@@ -109,6 +109,7 @@ void Server::PART(t_svec recToken, int fd)
 		return ;
 	}
 	Channel*	channel = this->channels[recToken[1]];
+	//add exception if leaver is not in channel
 	User		leaver = *(this->users[fd]);
 	std::string	confirm = this->base_msg + "PART :" + channel->channel_name + "\r\n";
 	channel->channelMessage(NULL, confirm);

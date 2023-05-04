@@ -225,12 +225,15 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					this->channels[recToken[1]] = new Channel(recToken[1]);
 					std::cout << "New channel created: " << recToken[1] << std::endl;
 				}
+				//base_msg JOIN :channel
 				std::cout << "Join the CHANNEL\n";
+				this->channels[recToken[1]]->addMember(*current);
+				std::string confirm = this->base_msg + "JOIN :" + recToken[1] + "\r\n";
+				this->channels[recToken[1]]->channelMessage(NULL, confirm);
 				std::stringstream ss;
 				ss << this->channels[recToken[1]]->c_time;
 				std::string	date = ":" + this->hostname + " 329 " + current->user_nick + " " + recToken[1] + " :" + ss.str() + "\r\n";
 				write(current->fd_user, date.c_str(), date.length());
-				this->channels[recToken[1]]->addMember(*current);
 				this->channels[recToken[1]]->printMembers();
 
 			}
