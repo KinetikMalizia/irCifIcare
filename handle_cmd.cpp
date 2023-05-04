@@ -3,11 +3,11 @@
 int Server:: handle_cmds(t_svec recToken, int fd)
 {
 	std::cout << "Handling " << recToken.front() << std::endl;
-	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC"};
+	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC", "PART"};
 
-	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC};
+	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC, &Server::PART};
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if (all_commands[i].compare(recToken.front()) == 0)
 		{
@@ -45,18 +45,11 @@ void Server:: INVITE(t_svec recToken, int fd)
 			}
 			else
 			{
-<<<<<<< HEAD
-				std::string	date = ":" + this->hostname + " 341 " + current->user_nick + " " + invited + ":" +channel  + "\r\n";
-				write(current->fd_user, date.c_str(), date.length());
-				// rpl_msg(341, fd, current->user_nick, recToken[1], " :", "channel");
-				std:: cout << "send message to invited user" << std::endl;
-=======
 				// std::string	toSender = ":" + this->hostname + " 341 " + current->user_nick + " " + invited + " :" +channel + "\r\n";
 				// write(current->fd_user, toSender.c_str(), toSender.length());
 				std::string	toInvited = this->base_msg + " INVITE " + invited + " :" + channel + "\r\n";
 				write(this->translate(invited), toInvited.c_str(), toInvited.length());
 				rpl_msg(341, fd, current->user_nick, recToken[1], channel, "");
->>>>>>> e675d447fe1bad094a6d254812e5798afab5b33b
 			}
 		}
 	}
@@ -84,6 +77,7 @@ void Server:: KICK(t_svec recToken,int fd)
 	{
 		std::string	message = this->base_msg + "KICK " + channel->channel_name + " " + kicked + " :\r\n";
 		channel->channelMessage(NULL, message);
+		channel->removeMember(*(this->users[this->translate(kicked)]));
 	}
 	else
 		std::cout << "Tu t'es pris pour qui? " + kicker.user_nick + "\n";
@@ -106,3 +100,21 @@ void Server:: TOPIC(t_svec recToken,int fd)
 	std::cout << "Calling topic" << fd << std:: endl;
 }
 
+void Server::PART(t_svec recToken, int fd)
+{
+	if (!this->channelExists(recToken[1]))
+	{
+		std::cout << "channel doesnt exist\n";
+		err_msg(403,fd,recToken[1],"","","");
+		return ;
+	}
+	Channel*	channel = this->channels[recToken[1]];
+	User		leaver = *(this->users[fd]);
+	std::string	confirm = this->base_msg + "PART :" + channel->channel_name + "\r\n";
+	channel->channelMessage(NULL, confirm);
+	channel->removeMember(leaver);
+}
+
+
+//[ client : 8000 ] PART #mytest
+//[ server : 6667 ] :KinKangs!~fmalizia@freenode-o6d.g28.dc9e5h.IP PART :#mytest

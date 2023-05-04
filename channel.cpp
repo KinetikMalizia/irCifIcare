@@ -41,22 +41,19 @@ int	Channel::addMember(User& member)
 
 int	Channel::removeMember(User& member)
 {
-	// std::size_t	o_pos = 0;
-	std::string confirm = ":" + member.user_nick + "!~" + member.user_name + "@" + member.hostname + " ";
-	//send confirmation message
-	confirm += "PART :" + this->channel_name + "\r\n";
-	this->channelMessage(NULL, confirm);
 	if (this->isOper(member.user_nick))
 	{
 		std::vector<User*>::iterator op;
-		for (op=this->oper.begin(); *op != &member; op++)
+		for (op=this->oper.begin(); op != this->oper.end(); op++)
+		{
 			std::cout << ".";
+			if (*op == &member)
+				break;
+		}
 		std::cout << "\n";
-		this->oper.erase(op);
+		if (op != this->oper.end())
+			this->oper.erase(op);
 	}
-	// o_pos = member.user_mode.find('o');
-	// if (o_pos)
-	// 	member.user_mode.erase(o_pos, 1);
 	this->members.erase(member.fd_user);
 	std::cout << member.user_nick << " left " << this->channel_name << std::endl;
 	this->nmembers--;

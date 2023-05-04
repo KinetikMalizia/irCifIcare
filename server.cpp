@@ -234,10 +234,6 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				this->channels[recToken[1]]->printMembers();
 
 			}
-			if(firstString.compare("PART") == 0)
-			{
-				this->channels[recToken[1]]->removeMember(*current);
-			}
 			if(firstString.compare("PRIVMSG") == 0)
 			{
 				std::cout << "recieved PRIVMSG\n";
