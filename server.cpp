@@ -111,39 +111,39 @@ Server::~Server()
 
 void Server::remove_from_poll(struct pollfd fds[], int& nfds, int fd)
 {
-    for (int i = 0; i < nfds; i++)
-    {
-        if (fds[i].fd == fd)
-        {
-            fds[i] = fds[nfds - 1];
-            nfds--;
-            break;
-        }
-    }
+	for (int i = 0; i < nfds; i++)
+	{
+		if (fds[i].fd == fd)
+		{
+			fds[i] = fds[nfds - 1];
+			nfds--;
+			break;
+		}
+	}
 }
 
 void Server::check_user_pings()
 {
-    std::map<int, User*> users = this->users;
-    time_t current_time = time(NULL);
-    std::map<int, User*>::iterator it = users.begin();
-    while (it != users.end())
-    {
-        int fd = it->first;
-        User* user = it->second;
-        if (current_time - user->last_ping > 120)
-        {
-            std::cout << "User " << user->user_nick << " timed out" << std::endl;
-            close(fd);
-            it = users.erase(it);
-            this->users.erase(fd);
+	std::map<int, User*> users = this->users;
+	time_t current_time = time(NULL);
+	std::map<int, User*>::iterator it = users.begin();
+	while (it != users.end())
+	{
+		int fd = it->first;
+		User* user = it->second;
+		if (current_time - user->last_ping > 120 && user->last_ping)
+		{
+			std::cout << "User " << user->user_nick << " timed out" << std::endl;
+			close(fd);
+			it = users.erase(it);
+			this->users.erase(fd);
 			remove_from_poll(this->fds, this->nfds, fd);
-        }
-        else
-        {
-            ++it;
-        }
-    }
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 // int Server::Nick(t_svec token)
@@ -175,7 +175,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 		User *current = (this->users).find(fd)->second;
 
 		std::string firstString = recToken.front();
-		msg_base(fd);
+		this->gen_base_msg(fd);
 		while(recToken.empty() != 1)
 		{
 			// std::cout << "first token is: " << firstString << std::endl;
@@ -196,6 +196,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				// snprintf(buff, sizeof(buff), "%s", pong.c_str());
 				current->last_ping = std::time(nullptr);
 				this->print_users();
+				std::cout << "lastping = " << current->last_ping << " " << current->user_nick << std::endl;
 				write(fd, pong.c_str(), pong.length());
 				check_user_pings();
 			}
@@ -205,7 +206,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				std::string	reponse;
 				if (!isNickUsed(recToken[1]))
 				{
-					reponse = ":" + current->user_nick + "!~" + current->user_name + "@" + this->hostname + " NICK :" + recToken[1] + "\r\n";
+					reponse = this->base_msg + " NICK :" + recToken[1] + "\r\n";
 					current->user_nick = recToken[1];
 					//:second!~fmalizia@freenode-o6d.g28.dc9e5h.IP NICK :weewoo
 				}
@@ -249,11 +250,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					{
 						Channel	rec = *(this->channels.find(recToken[1])->second);
 						std::string message = ":" + current->user_nick + "!~" + current->user_name + "@" + this->hostname + " PRIVMSG " + recToken[1] + " " + recToken[2] + "\r\n";
-						for (std::map<int, User*>::iterator	itr = rec.members.begin(); itr!=rec.members.end(); itr++)
-						{
-							if (current != itr->second)
-								write(itr->second->fd_user, message.c_str(), message.length());
-						}
+						rec.channelMessage(current, message);
 					}
 				}
 				else

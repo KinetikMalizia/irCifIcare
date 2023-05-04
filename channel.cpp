@@ -53,6 +53,16 @@ int	Channel::removeMember(User& member)
 	return (this->nmembers);
 }
 
+int	Channel::channelMessage(User* current, std::string message)
+{
+	for (std::map<int, User*>::iterator	itr = this->members.begin(); itr!=this->members.end(); itr++)
+	{
+		if (current != itr->second)
+			write(itr->second->fd_user, message.c_str(), message.length());
+	}
+	return (0);
+}
+
 int	Channel::isOper(std::string nick)
 {
 	std::map<int, User*>::iterator	itr;

@@ -21,6 +21,7 @@ class Channel
 			int	printMembers();
 			int	addMember(User& member);
 			int	removeMember(User& member);
+			int	channelMessage(User* current, std::string message);
 			int	isOper(std::string nick);
 			User *isMember(std::string nick);
 };

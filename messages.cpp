@@ -4,7 +4,7 @@
 std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", std::string parameter2="", std::string parameter3="", std::string info="")
 {
 	//User *current = (this->users).find(fd)->second;
-	(void)fd;
+	// (void)fd;
 	std::stringstream ss;
 	ss << errorCode;
 	(void)info;
@@ -71,6 +71,7 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			break;
 	}
 	errorMessage = ":" + this->hostname + " " + errorMessage + "\r\n" ;
+	write(fd, errorMessage.c_str(), errorMessage.length());
 	return errorMessage;
 }
 
@@ -79,34 +80,34 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 {
 	User *current = (this->users).find(fd)->second;
 	(void)info;
-	(void)parameter3;
-	std::string rpl_message = "RPL_" + current->user_nick;
+	std::string rpl_message = current->user_nick;
 
 	switch(msg_code)
 	{
 		case 001:
-			rpl_message += "WELCOME : \x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
+			rpl_message += "\x1b[31mWelcome to 2drunk2code server!!!" + current->user_nick +
 		"!~" + current->user_nick + "@" + this->hostname;
 			break;
 		case 331:
-			rpl_message += "WELCOME " + parameter1 + " : no such channel";
+			rpl_message += parameter1 + " : no topic is set";
 			break;
 		case 332:
-			rpl_message += "NOTOPIC " + parameter1 + " : " + parameter2;
+			rpl_message += parameter1 + " : " + parameter2;
 			break;
 		case 336:
-			rpl_message += "TOPIC " + parameter1;
+			rpl_message += parameter1;
 			break;
 		case 341:
-			rpl_message += "INVITELIST " + parameter1 + " " + parameter2;
+			rpl_message += parameter1 + " " + parameter2 + " :" + parameter3;
 			break;
 		case 346:
-			rpl_message += "INVEXLIST " + parameter1 + " " + parameter2;
+			rpl_message += parameter1 + " " + parameter2;
 			break;
 		default:
 			rpl_message += " this but a default msg ";
 	}
 	rpl_message = ":" + this->hostname + " " + rpl_message + "\r\n" ;
+	write(fd, rpl_message.c_str(), rpl_message.length());
 	return rpl_message;
 }
 
@@ -198,11 +199,10 @@ int Server:: welcome_msg()
 	return (0);
 }
 
-std::string Server:: msg_base(int fd)
+std::string Server:: gen_base_msg(int fd)
 {
 	User *current = (this->users).find(fd)->second;
 
-	this->base_msg = ":" + current->user_nick + "!~" + current->user_nick + "@" + this->hostname + " ";
+	this->base_msg = ":" + current->user_nick + "!~" + current->user_name + "@" + this->hostname + " ";
 	return (this->base_msg);
 }
-

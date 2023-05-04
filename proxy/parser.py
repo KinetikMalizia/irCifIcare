@@ -15,6 +15,6 @@ def parse(data, port, origin):
 		line_str = line.decode()
 		if line_str.strip():
 			if origin == "server":
-				print (BLUE, "[", origin, ":", str(port), "]", line_str, RESET)
+				print (MAGENTA, "[", origin, ":", str(port), "]", line_str, RESET)
 			else:
 				print (GREEN, "[", origin, ":", str(port), "]", line_str, RESET)
