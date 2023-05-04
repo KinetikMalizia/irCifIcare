@@ -17,18 +17,18 @@ int main(int ac, char **av)
 	// }
 	// char buff[MAXLINE];
 	char recvline[MAXLINE];
-	
+
 	int timeout;
-	ourServer.nfds = 1; 
-	int current_size = 0; 
+	ourServer.nfds = 1;
+	int current_size = 0;
 	int i;
 	t_svec	recToken;
 
 	memset(ourServer.fds, 0, sizeof(ourServer.fds));
-	// Set up the initial listening socket  
+	// Set up the initial listening socket
 	ourServer.fds[0].fd = listenfd;
 	ourServer.fds[0].events = POLLIN;
-	//initialize the timeout to 3 minutes 
+	//initialize the timeout to 3 minutes
 	timeout = (3 * 60 * 1000);
 	bool running = true;
 	//bool start = true;
@@ -102,6 +102,6 @@ int main(int ac, char **av)
 	// add poll in the infinite loop ?
 	// loop through current size to close all the fds
 	shutdown(listenfd, SHUT_RDWR);
-	close(listenfd); 
+	close(listenfd);
 	return 0;
 }

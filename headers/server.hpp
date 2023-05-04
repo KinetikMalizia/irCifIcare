@@ -69,6 +69,7 @@ class Server
 		std::string						default_mode; // set it at launch
 		std::string						hostname;
 		std::string						base_msg;
+		std::string						topic;
 };
 
 #endif

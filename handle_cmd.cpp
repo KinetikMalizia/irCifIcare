@@ -3,11 +3,11 @@
 int Server:: handle_cmds(t_svec recToken, int fd)
 {
 	std::cout << "Handling " << recToken.front() << std::endl;
-	std:: string all_commands[10] = {"INVITE", "KICK"};
+	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC"};
 
-	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK};
+	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC};
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		if (all_commands[i].compare(recToken.front()) == 0)
 		{
@@ -48,9 +48,9 @@ void Server:: INVITE(t_svec recToken, int fd)
 			}
 			else
 			{
-				std::string	date = ":" + this->hostname + " 341 " + current->user_nick + invited + "has been invited to " +channel  + "\r\n";
+				std::string	date = ":" + this->hostname + " 341 " + current->user_nick + " " + invited + ":" +channel  + "\r\n";
 				write(current->fd_user, date.c_str(), date.length());
-				rpl_msg(341, fd, current->user_nick, recToken[1], " :", "channel");
+				// rpl_msg(341, fd, current->user_nick, recToken[1], " :", "channel");
 				std:: cout << "send message to invited user" << std::endl;
 			}
 		}
@@ -89,7 +89,15 @@ void Server:: KICK(t_svec recToken,int fd)
 
 void Server:: TOPIC(t_svec recToken,int fd)
 {
-	(void)recToken;
+	std::cout << recToken[2].at(0) << std::endl;
+	if (recToken[2].at(0) == '#')
+	{
+		this->topic = recToken[3];
+		std::cout << this->topic << std::endl;
+	}
+	else
+		this->topic = recToken[2];
+	std::cout << this->topic << std::endl;
 	std::cout << "Calling topic" << fd << std:: endl;
 }
 
