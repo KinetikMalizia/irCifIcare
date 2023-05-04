@@ -12,11 +12,11 @@ class Channel
 			Channel(std::string name);
 			~Channel();
 
-			std::map<int, User*>		members;
-			std::map<int, User*>		oper;//change it with pointer to real user, so if the nick changes it changes here too
-			std::string					channel_name;
-			std::time_t					c_time;
-			int							nmembers;
+			std::map<int, User*>	members;
+			std::vector<User*>		oper;
+			std::string				channel_name;
+			std::time_t				c_time;
+			int						nmembers;
 
 			int	printMembers();
 			int	addMember(User& member);

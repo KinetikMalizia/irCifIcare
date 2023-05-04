@@ -77,7 +77,6 @@ void Server:: KICK(t_svec recToken,int fd)
 	{
 		std::string	message = this->base_msg + "KICK " + channel->channel_name + " " + kicked + " :\r\n";
 		channel->channelMessage(NULL, message);
-		// write(this->translate(recToken[2]), message.c_str(), message.length());
 	}
 	else
 		std::cout << "Tu t'es pris pour qui? " + kicker.user_nick + "\n";
