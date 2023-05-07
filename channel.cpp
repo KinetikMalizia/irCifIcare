@@ -7,7 +7,7 @@ Channel::~Channel(void)
 {	}
 Channel::Channel(std::string name): channel_name(name), nmembers(0)
 {
-	this->c_time = std::time(NULL);
+	this->c_time = time(NULL);
 }
 
 int	Channel::printMembers(void)

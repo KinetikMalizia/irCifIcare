@@ -3,11 +3,12 @@
 int Server:: handle_cmds(t_svec recToken, int fd)
 {
 	std::cout << "Handling " << recToken.front() << std::endl;
-	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC", "PART"};
+	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC", "PART", "WHO"};
 
-	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC, &Server::PART};
+	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC,
+														&Server::PART, &Server::WHO};
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		if (all_commands[i].compare(recToken.front()) == 0)
 		{
@@ -129,6 +130,55 @@ void Server::PART(t_svec recToken, int fd)
 	channel->removeMember(leaver);
 }
 
+//WHO is a little it broken
+void Server::WHO(t_svec recToken, int fd)
+{
+	if (!this->channelExists(recToken[1]))
+	{
+		std::cout << "channel doesnt exist\n";
+		err_msg(403,fd,recToken[1],"","","");
+		return ;
+	}
+	Channel*	channel = this->channels[recToken[1]];
+	std::map<int, User*>::iterator	itr;
+	User		asker = *(this->users[fd]);
+	std::string	first = this->hostname + " 352 " + asker.user_nick + " " + channel->channel_name + " ~";
+	std::string	message;
 
-//[ client : 8000 ] PART #mytest
-//[ server : 6667 ] :KinKangs!~fmalizia@freenode-o6d.g28.dc9e5h.IP PART :#mytest
+	for (itr=channel->members.begin(); itr!=channel->members.end(); itr++)
+	{
+		User curr = *(itr->second);
+		message = first + curr.user_name + " " + curr.hostname + " " + this->hostname + " H :0 " + curr.full_name + "\r\n";
+		write(fd, message.c_str(), message.length());
+	}
+}
+
+void Server::NAMES(t_svec recToken, int fd)
+{
+	if (!this->channelExists(recToken[1]))
+	{
+		std::cout << "channel doesnt exist\n";
+		err_msg(403,fd,recToken[1],"","","");
+		return ;
+	}
+	Channel*	channel = this->channels[recToken[1]];
+	User		asker = *(this->users[fd]);
+	std::map<int, User*>::iterator	itr;
+	std::string	start;
+	std::string	end;
+	start = ":" + this->hostname + " 353 " + asker.user_nick + " = " + channel->channel_name + " :";
+	for (itr=channel->members.begin(); itr!=channel->members.end(); itr++)
+	{
+		User curr = *(itr->second);
+		if (channel->isOper(curr.user_nick))
+			start += "@" + curr.user_nick + " ";
+		else
+			start += curr.user_nick + " ";
+	}
+	start += "\r\n";
+	write(fd, start.c_str(), start.length());
+	end = ":" + this->hostname + " 366 " + asker.user_nick + " " + channel->channel_name + " :End of /NAMES list \r\n";
+	write(fd, end.c_str(), end.length());
+}
+//.freenode.net 352 KinKangs #Wow ~fmalizia freenode-o6d.g28.dc9e5h.IP .freenode.net KinKangs H :0 Fabio Malizia
+//:.freenode.net 366 KinKangs #Wow :End of /NAMES list.

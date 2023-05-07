@@ -135,7 +135,7 @@ void Server::check_user_pings()
 		{
 			std::cout << "User " << user->user_nick << " timed out" << std::endl;
 			close(fd);
-			it = users.erase(it);
+			users.erase(it);
 			this->users.erase(fd);
 			remove_from_poll(this->fds, this->nfds, fd);
 		}
@@ -194,7 +194,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			{
 				std::string pong = "PONG " + recToken[1] + "\r\n";
 				// snprintf(buff, sizeof(buff), "%s", pong.c_str());
-				current->last_ping = std::time(nullptr);
+				current->last_ping = time(NULL);
 				this->print_users();
 				std::cout << "lastping = " << current->last_ping << " " << current->user_nick << std::endl;
 				write(fd, pong.c_str(), pong.length());
@@ -230,6 +230,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 				this->channels[recToken[1]]->addMember(*current);
 				std::string confirm = this->base_msg + "JOIN :" + recToken[1] + "\r\n";
 				this->channels[recToken[1]]->channelMessage(NULL, confirm);
+				this->NAMES(recToken, fd);
 				std::stringstream ss;
 				ss << this->channels[recToken[1]]->c_time;
 				std::string	date = ":" + this->hostname + " 329 " + current->user_nick + " " + recToken[1] + " :" + ss.str() + "\r\n";
