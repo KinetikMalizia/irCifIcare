@@ -13,6 +13,7 @@ Channel::Channel(std::string name): channel_name(name), nmembers(0)
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
 	channel_mode();
+	this->c_time = time(NULL);
 }
 
 int	Channel::printMembers(void)
