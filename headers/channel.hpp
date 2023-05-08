@@ -17,8 +17,11 @@ class Channel
 			std::string				channel_name;
 			std::time_t				c_time;
 			int						nmembers;
+			std::map<char,int>		mode_map;
 
 			int	printMembers();
+			std::string channel_mode() const;
+			void update_mode(char key, int value);
 			int	addMember(User& member);
 			int	removeMember(User& member);
 			int	channelMessage(User* current, std::string message);

@@ -8,6 +8,11 @@ Channel::~Channel(void)
 Channel::Channel(std::string name): channel_name(name), nmembers(0)
 {
 	this->c_time = std::time(NULL);
+	this->mode_map.insert(std::pair<char,int>('i',1));
+	this->mode_map.insert(std::pair<char, int>('t', 1));
+	this->mode_map.insert(std::pair<char, int>('k', 0));
+	this->mode_map.insert(std::pair<char, int>('l', 0));
+	channel_mode();
 }
 
 int	Channel::printMembers(void)
@@ -90,4 +95,26 @@ User	*Channel::isMember(std::string nick)
 			return (iter->second);
 	}
 	return (0);
+}
+
+std::string Channel::channel_mode() const
+{
+	std::string result;
+
+	for (std::map<char, int>::const_iterator it = this->mode_map.begin(); it != this->mode_map.end(); ++it)
+	{
+		if (it->second == 1)
+			result += it->first;
+	}
+	std::cout << "server mode are : " << result << std::endl;
+	return (result);
+}
+
+void Channel::update_mode(char key, int value)
+{
+	if (this->mode_map.find(key) != this->mode_map.end())
+		this->mode_map[key] = value;
+	else
+		this->mode_map.insert(std::pair<char,int>(key,value));
+	channel_mode();
 }
