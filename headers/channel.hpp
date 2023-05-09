@@ -18,6 +18,7 @@ class Channel
 			long long				c_time;
 			int						nmembers;
 			std::map<char,int>		mode_map;
+			std::string				topic_name;
 
 			int	printMembers();
 			std::string channel_mode();
@@ -28,6 +29,8 @@ class Channel
 			int	isOper(std::string nick);
 			User *isMember(std::string nick);
 			int change_mode(User &member, std::string str);
+			void setTopic(std::string topic);
+			std::string getTopic();
 };
 
 //  The commands which may only be used by channel operators are:

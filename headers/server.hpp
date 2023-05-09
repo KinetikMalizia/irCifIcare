@@ -37,12 +37,14 @@ class Server
 		std::string gen_base_msg(int fd);
 		void check_user_pings();
 		int handle_cmds(t_svec recToken, int fd);
+		void count_args(t_svec recToken);
 		void INVITE(t_svec recToken, int fd);
 		void KICK(t_svec recToken, int fd);
 		void TOPIC(t_svec recToken,int fd);
 		void PART(t_svec recToken, int fd);
 		void WHO(t_svec recToken, int fd);
 		void NAMES(t_svec recToken, int fd);
+
 		// void (Server:: *action[10])(t_svec recToken);
 		std::string err_msg(int errorCode, int fd, std::string parameter1, std::string parameter2, std::string parameter3, std::string info);
 		std::string rpl_msg(int msg_code, int fd, std::string parameter1, std::string parameter2, std::string parameter3, std::string info);
@@ -61,6 +63,7 @@ class Server
 		int				on;
 		struct pollfd	fds[POLL_SIZE];
 		int				nfds;
+		int				args;
 
 
 		//in most cases, std::string is just a placeholder
@@ -71,7 +74,6 @@ class Server
 		std::string						default_mode; // set it at launch
 		std::string						hostname;
 		std::string						base_msg;
-		std::string						topic;
 };
 
 #endif
