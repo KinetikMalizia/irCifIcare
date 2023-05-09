@@ -17,6 +17,7 @@ class Channel
 			std::string				channel_name;
 			std::time_t				c_time;
 			int						nmembers;
+			std::string				topic_name;
 
 			int	printMembers();
 			int	addMember(User& member);
@@ -24,6 +25,8 @@ class Channel
 			int	channelMessage(User* current, std::string message);
 			int	isOper(std::string nick);
 			User *isMember(std::string nick);
+			void setTopic(std::string topic);
+			std::string getTopic();
 };
 
 //  The commands which may only be used by channel operators are:

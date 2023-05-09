@@ -194,7 +194,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			{
 				std::string pong = "PONG " + recToken[1] + "\r\n";
 				// snprintf(buff, sizeof(buff), "%s", pong.c_str());
-				current->last_ping = std::time(nullptr);
+				current->last_ping = std::time(NULL);
 				this->print_users();
 				std::cout << "lastping = " << current->last_ping << " " << current->user_nick << std::endl;
 				write(fd, pong.c_str(), pong.length());
@@ -268,7 +268,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			}
 			if(firstString.compare("MODE") == 0)
 			{
-				std::cout << "recieved MODE\n";
+				std::cout << "received MODE\n";
 				std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
 				write(fd, cont.c_str(), cont.length());
 			}

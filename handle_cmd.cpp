@@ -4,7 +4,7 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 {
 	std::cout << "Handling " << recToken.front() << std::endl;
 	std:: string all_commands[10] = {"INVITE", "KICK", "TOPIC", "PART"};
-
+	// count_args(recToken);
 	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC, &Server::PART};
 
 	for (int i = 0; i < 4; i++)
@@ -17,6 +17,18 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 	}
 	return (-1);
 }
+
+// void Server:: count_args(t_svec recToken)
+// {
+// 	std::vector<std::string>::iterator	itr;
+
+// 	for (itr = recToken.begin(); itr != this->oper.end(); itr++)
+// 	{
+// 		this->args++;
+// 			return (1);
+// 	}
+// 	std::cout << "number of args: " << args << std::endl;
+// }
 
 void Server:: INVITE(t_svec recToken, int fd)
 {
@@ -86,31 +98,89 @@ void Server:: KICK(t_svec recToken,int fd)
 void Server:: TOPIC(t_svec recToken,int fd)
 {
 	User *current = (this->users).find(fd)->second;
-	// (void)fd;
+	std::cout << "number of args: " << recToken.size() << std::endl;
+	Channel chan("test");
+		(void)fd;
 	// check the mode of the user
-	// if (this->topic.empty())
-	// {
-		if (!recToken[2].empty())
+	// if (this->"topic.empty())
+	if (!recToken[2].empty() && (recToken[2].at(0) == '#')) //there is a channel and topic name
+	{
+		std::cout << "am i here" << std::endl;
+		if (!this->channelExists(recToken[1]))
 		{
-			// Channel *chan = this->channels[recToken[2]];
-			this->topic = recToken[2];
-			std::cout << "topic now is "<< this->topic << std::endl;
-			//get the current channel name
-			rpl_msg(332, fd, current->user_nick, "changed the topic of the channel to ", this->topic, "");
+			std::cout << "channel doesnt exist\n";
+			err_msg(403,fd,recToken[1],"","","");
+			return ;
 		}
 		else
 		{
-			this->topic = recToken[1];
-			std::cout << "Topic is now " << this->topic << std:: endl;
+			Channel	chan = *(this->channels.find(recToken[1])->second);
+			chan.setTopic(recToken[2]);
+			//get the current channel name
+			// 12:26 -!- nikki changed the topic of #wow to: tester
+			std::cout << "channel name: " << chan.channel_name << std::endl;
+			std::cout << "topic name: " << chan.topic_name << std::endl;
+			rpl_msg(332, fd, " changed the topic of ", chan.channel_name, chan.getTopic(), "");
 		}
+	}
+	// else if (recToken[2].empty() ) //only one argument and topic is not set
+	// {
+	// 	&& chan.topic_name.empty()
+	// 	//check what freenode does
+	// 	chan.setTopic(recToken[1]);
+	// 	//how to get the current channel name, that we are in
+	// 	//the topic has to be under channel / each channel will have its own topic name
+	// 	rpl_msg(332, fd, " changed the topic of " ,chan.channel_name, chan.topic_name, "");
 	// }
+	else if (recToken[2].empty() && (recToken[1].empty()))// only 1 argument to set the topic
+	{
+		// std:: cout << "current topic is: " << chan.topic_name <<std::endl;
+		if (chan.topic_name.empty())
+		{
+			std::cout << "am i here" << std::endl;
+			chan.setTopic(recToken[1]);
+			std::string topic = chan.getTopic();
+			std::string chan_message = this->base_msg + "TOPIC :" + chan.channel_name + " " + topic + " :\r\n";
+			chan.channelMessage(NULL, chan_message);
+			std::stringstream ss;
+			ss << this->channels[recToken[1]]->c_time;
+			std::string	date = ":" + this->hostname + " 329 " + current->user_nick + " " + recToken[1] + " :" + ss.str() + "\r\n";
+			write(current->fd_user, date.c_str(), date.length());
+			this->channels[recToken[1]]->printMembers();
+			rpl_msg(332, fd, "current topic of ", chan.channel_name, topic, "");
+		}
+		else
+		{
+			std::string topic = chan.getTopic();
+			std::cout << "current topic: " << topic << std::endl;
+			std::string chan_message = this->base_msg + "TOPIC :" + chan.channel_name + " " + topic + " :\r\n";
+			chan.channelMessage(NULL, chan_message);
+			std::stringstream ss;
+			ss << this->channels[recToken[1]]->c_time;
+			rpl_msg(332, fd, "channel name: " ,chan.channel_name, topic, "");
+		}
+	}
+		// else if ((recToken[2].empty()) && (!chan.topic_name.empty())) // only one argument and the topic is set
+		// {
+		// 	// Topic for #wow: tester
+		// 	// 12:27 -!- Topic set by nikki [~nikki@freenode-orb.kjv.68iqjs.IP]
+        //   	// [Mon May  8 12:26:36 2023]
+		// 	std::string topic = chan.getTopic();
+		// 	std::cout << "current topic: " << topic << std::endl;
+		// 	std::string chan_message = this->base_msg + "TOPIC :" + chan.channel_name + " " + topic + " :\r\n";
+		// 	chan.channelMessage(NULL, chan_message);
+		// 	std::stringstream ss;
+		// 	ss << this->channels[recToken[1]]->c_time;
+		// 	rpl_msg(332, fd, "channel name: " ,chan.channel_name, topic, "");
+		// }
 	// else
 	// 	std::cout << "print something" << std::endl;
-
-
 	// std::cout << this->topic << std::endl;
 	// topic no args :No topic set for #wow
 	// nikki changed the topic of #wow to: test
+
+
+
 }
 
 void Server::PART(t_svec recToken, int fd)

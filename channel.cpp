@@ -91,3 +91,13 @@ User	*Channel::isMember(std::string nick)
 	}
 	return (0);
 }
+
+void Channel:: setTopic(std::string topic)
+{
+	this->topic_name = topic;
+}
+
+std::string Channel:: getTopic()
+{
+	return (this->topic_name);
+}
