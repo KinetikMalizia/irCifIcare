@@ -1,7 +1,7 @@
 #include "headers/channel.hpp"
 
 Channel::Channel(void)
-{	
+{
 	this->c_time = std::time(NULL);
 	this->mode_map.insert(std::pair<char,int>('i',1));
 	this->mode_map.insert(std::pair<char, int>('t', 1));
@@ -151,4 +151,13 @@ int Channel::change_mode(User &member, std::string str)
 	else
 		std::cout << "imagine doing this and not beeing opper" << std::endl;
 	return(0);
+}
+void Channel:: setTopic(std::string topic)
+{
+	this->topic_name = topic;
+}
+
+std::string Channel:: getTopic()
+{
+	return (this->topic_name);
 }

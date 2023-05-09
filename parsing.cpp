@@ -1,4 +1,5 @@
 #include "headers/irc.h"
+#include "headers/server.hpp"
 
 void	tokenize(std::string str, char delim, t_svec &out)
 {
