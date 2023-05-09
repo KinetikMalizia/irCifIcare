@@ -3,7 +3,7 @@
 Channel::Channel(void)
 {	
 	this->c_time = std::time(NULL);
-	this->mode_map.insert(std::pair<char,int>('i',1));
+	this->mode_map.insert(std::pair<char,int>('i',0));
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
@@ -58,18 +58,12 @@ int	Channel::removeMember(User& member)
 {
 	if (this->isOper(member.user_nick))
 	{
-		std::vector<User*>::iterator op;
-		for (op=this->oper.begin(); op != this->oper.end(); op++)
-		{
-			std::cout << ".";
-			if (*op == &member)
-				break;
-		}
-		std::cout << "\n";
-		if (op != this->oper.end())
-			this->oper.erase(op);
+		std::vector<User*>::iterator found = std::find(oper.begin(), oper.end(), &member);
+		if (found != oper.end())
+			oper.erase(found);
+		else
+			std::cout << "not oper" << std::endl;
 	}
-	this->members.erase(member.fd_user);
 	std::cout << member.user_nick << " left " << this->channel_name << std::endl;
 	this->nmembers--;
 	return (this->nmembers);
