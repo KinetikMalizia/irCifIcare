@@ -1,10 +1,19 @@
 #include "headers/channel.hpp"
 
 Channel::Channel(void)
-{	}
+{	
+	this->c_time = std::time(NULL);
+	this->mode_map.insert(std::pair<char,int>('i',1));
+	this->mode_map.insert(std::pair<char, int>('t', 1));
+	this->mode_map.insert(std::pair<char, int>('k', 0));
+	this->mode_map.insert(std::pair<char, int>('l', 0));
+	channel_mode();
+	this->c_time = time(NULL);
+}
 
 Channel::~Channel(void)
 {	}
+
 Channel::Channel(std::string name): channel_name(name), nmembers(0)
 {
 	this->c_time = std::time(NULL);
@@ -98,24 +107,48 @@ User	*Channel::isMember(std::string nick)
 	return (0);
 }
 
-std::string Channel::channel_mode() const
+std::string Channel::channel_mode()
 {
 	std::string result;
 
-	for (std::map<char, int>::const_iterator it = this->mode_map.begin(); it != this->mode_map.end(); ++it)
+	for (std::map<char, int>::iterator it = this->mode_map.begin(); it != this->mode_map.end(); ++it)
 	{
 		if (it->second == 1)
 			result += it->first;
 	}
-	std::cout << "server mode are : " << result << std::endl;
+	std::cout << "channel mode are : [" << result << "]" << std::endl;
 	return (result);
 }
 
-void Channel::update_mode(char key, int value)
+int Channel::update_mode(char key, int value)
 {
 	if (this->mode_map.find(key) != this->mode_map.end())
 		this->mode_map[key] = value;
 	else
-		this->mode_map.insert(std::pair<char,int>(key,value));
-	channel_mode();
+		std::cout << "didn't find the mode in channel" << std::endl;
+	return(1);
+}
+
+int Channel::change_mode(User &member, std::string str)
+{
+	if (this->isOper(member.user_nick))
+	{
+		if (str.empty())
+			return(0);
+		if (str[0] == '+')
+		{
+			for (int i = 1; i < static_cast<int>(str.length()); i++)
+				update_mode(str[i], 1);
+		}
+		if (str[0] == '-')
+		{
+			for (int i = 1; i < static_cast<int>(str.length()); i++)
+				update_mode(str[i], 0);
+		}
+		channel_mode();
+		return(1);
+	}
+	else
+		std::cout << "imagine doing this and not beeing opper" << std::endl;
+	return(0);
 }

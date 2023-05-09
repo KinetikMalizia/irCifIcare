@@ -20,13 +20,14 @@ class Channel
 			std::map<char,int>		mode_map;
 
 			int	printMembers();
-			std::string channel_mode() const;
-			void update_mode(char key, int value);
+			std::string channel_mode();
+			int update_mode(char key, int value);
 			int	addMember(User& member);
 			int	removeMember(User& member);
 			int	channelMessage(User* current, std::string message);
 			int	isOper(std::string nick);
 			User *isMember(std::string nick);
+			int change_mode(User &member, std::string str);
 };
 
 //  The commands which may only be used by channel operators are:

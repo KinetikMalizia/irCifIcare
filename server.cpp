@@ -269,9 +269,15 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			}
 			if(firstString.compare("MODE") == 0)
 			{
-				std::cout << "recieved MODE\n";
-				std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
-				write(fd, cont.c_str(), cont.length());
+				std::string cmp = recToken[1];
+				if(cmp.compare(current->user_nick) == 0)
+				{
+					std::cout << "recieved MODE\n";
+					std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
+					write(fd, cont.c_str(), cont.length());
+				}
+				if (channelExists(recToken[1]))
+					this->channels[recToken[1]]->change_mode(*current, recToken[2]);
 			}
 			handle_cmds(recToken, fd);
 			// if (handle_cmds(recToken, fd) == -1)
