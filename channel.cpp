@@ -7,6 +7,7 @@ Channel::Channel(void)
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
+	this->mode_map.insert(std::pair<char, int>('o', 0));
 	channel_mode();
 	this->c_time = time(NULL);
 }
@@ -21,6 +22,7 @@ Channel::Channel(std::string name): channel_name(name), nmembers(0)
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
+	this->mode_map.insert(std::pair<char, int>('o', 0));
 	channel_mode();
 	this->c_time = time(NULL);
 }
@@ -59,10 +61,18 @@ int	Channel::removeMember(User& member)
 	if (this->isOper(member.user_nick))
 	{
 		std::vector<User*>::iterator found = std::find(oper.begin(), oper.end(), &member);
-		if (found != oper.end())
-			oper.erase(found);
-		else
-			std::cout << "not oper" << std::endl;
+
+		for (found = oper.begin(); found != oper.end(); found++)
+		{
+			// std::cout << "to find: " << member.user_nick << std::endl;
+			// std::cout << (*found)->user_nick << std::endl;
+			if ((*found)->user_nick == member.user_nick)
+			{
+				oper.erase(found);
+				std::cout << "found!\n";
+				break;
+			}
+		}
 	}
 	std::cout << member.user_nick << " left " << this->channel_name << std::endl;
 	this->members.erase(member.fd_user);
@@ -139,6 +149,7 @@ int Channel::add_mode(int target_fd, char o,  User &member)
 		if(o == '+')
 		{
 			this->members.find(target_fd)->second->user_mode += 'o';
+			this->oper.push_back(this->members.find(target_fd)->second);
 			return 1;
 		}
 		if(o == '-')
