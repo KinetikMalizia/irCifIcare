@@ -123,8 +123,8 @@ void Server::TOPIC(t_svec recToken, int fd)
 			std::cout << "channel name: " << chan.channel_name << std::endl;
 			std::cout << "current topic: " << topic << std::endl;
 			std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + " \r\n";
-			// chan.channelMessage(NULL, chan_message);
-			write(current->fd_user, chan_message.c_str(), chan_message.length());
+			chan.channelMessage(NULL, chan_message);
+			// write(current->fd_user, chan_message.c_str(), chan_message.length());
 			// std::string rep = this->base_msg + "TOPIC " + chan.channel_name + ": " + topic;
 		}
 		else
