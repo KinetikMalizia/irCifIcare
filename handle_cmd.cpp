@@ -147,29 +147,29 @@ void Server:: TOPIC(t_svec recToken,int fd)
 	}
 }
 
- [ client : 8000 ] TOPIC //outside of the channel
- [ server : 6667 ] :*.freenode.net 461 nikki TOPIC :Not enough parameters.
- [ server : 6667 ] :*.freenode.net 650 nikki TOPIC :<channel> [:<topic>]
+//  [ client : 8000 ] TOPIC //outside of the channel
+//  [ server : 6667 ] :*.freenode.net 461 nikki TOPIC :Not enough parameters.
+//  [ server : 6667 ] :*.freenode.net 650 nikki TOPIC :<channel> [:<topic>]
 
- [ client : 8000 ] TOPIC #chat // outside of the channel
- [ server : 6667 ] :*.freenode.net 332 nikki #chat :[https://wiki.fnchat.org] Welcome to #Chat. No Hate speech, keep political chat limited as to not cause arguments. Please stay longer than a minute to get a response. Other rules are on the website.
- [ server : 6667 ] :*.freenode.net 333 nikki #chat f :1682516342
+//  [ client : 8000 ] TOPIC #chat // outside of the channel
+//  [ server : 6667 ] :*.freenode.net 332 nikki #chat :[https://wiki.fnchat.org] Welcome to #Chat. No Hate speech, keep political chat limited as to not cause arguments. Please stay longer than a minute to get a response. Other rules are on the website.
+//  [ server : 6667 ] :*.freenode.net 333 nikki #chat f :1682516342
 
- [ client : 8000 ] TOPIC #nikki //outside of the channel, no topic
- [ server : 6667 ] :*.freenode.net 331 nikki #nikki :No topic is set.
+//  [ client : 8000 ] TOPIC #nikki //outside of the channel, no topic
+//  [ server : 6667 ] :*.freenode.net 331 nikki #nikki :No topic is set.
 
- [ client : 8000 ] TOPIC nikki //no hashtag
- [ server : 6667 ] :*.freenode.net 403 nikki nikki :No such channel
+//  [ client : 8000 ] TOPIC nikki //no hashtag
+//  [ server : 6667 ] :*.freenode.net 403 nikki nikki :No such channel
 
- [ client : 8000 ] TOPIC #nikki // outside of the channel, topic set
- [ server : 6667 ] :*.freenode.net 332 nikki #nikki :HellO this is My TopIc
- [ server : 6667 ] :*.freenode.net 333 nikki #nikki Me!~fmalizia@freenode-o6d.g28.dc9e5h.IP :1683709779
+//  [ client : 8000 ] TOPIC #nikki // outside of the channel, topic set
+//  [ server : 6667 ] :*.freenode.net 332 nikki #nikki :HellO this is My TopIc
+//  [ server : 6667 ] :*.freenode.net 333 nikki #nikki Me!~fmalizia@freenode-o6d.g28.dc9e5h.IP :1683709779
 
- [ client : 8000 ] TOPIC #nikki :whatever //no access to change the topic
- [ server : 6667 ] :*.freenode.net 482 nikki #nikki :You do not have access to change the topic on this channel
+//  [ client : 8000 ] TOPIC #nikki :whatever //no access to change the topic
+//  [ server : 6667 ] :*.freenode.net 482 nikki #nikki :You do not have access to change the topic on this channel
 
- [ client : 8000 ] TOPIC #nikki :newtopic //trying to set the topic when not in the channel, but access given
- [ server : 6667 ] :*.freenode.net 442 nikki #nikki :You're not on that channel!
+//  [ client : 8000 ] TOPIC #nikki :newtopic //trying to set the topic when not in the channel, but access given
+//  [ server : 6667 ] :*.freenode.net 442 nikki #nikki :You're not on that channel!
 
 
 void Server::PART(t_svec recToken, int fd)

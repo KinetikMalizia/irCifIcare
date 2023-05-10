@@ -22,13 +22,12 @@ class Channel
 
 			int	printMembers();
 			std::string channel_mode();
-			int update_mode(char key, int value);
+			int update_mode(char key, int value, User &member);
 			int	addMember(User& member);
 			int	removeMember(User& member);
 			int	channelMessage(User* current, std::string message);
 			int	isOper(std::string nick);
 			User *isMember(std::string nick);
-			int change_mode(User &member, std::string str);
 			void setTopic(std::string topic);
 			std::string getTopic();
 };

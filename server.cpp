@@ -277,7 +277,25 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					write(fd, cont.c_str(), cont.length());
 				}
 				if (channelExists(recToken[1]))
-					this->channels[recToken[1]]->change_mode(*current, recToken[2]);
+				{
+					std::string pars = recToken[2];
+					if (pars[0] == '+')
+					{
+						for (int i = 1; i < static_cast<int>(pars.length()); i++)
+						{
+							if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
+								err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
+						}
+					}
+					if (pars[0] == '-')
+					{
+						for (int i = 1; i < static_cast<int>(pars.length()); i++)
+						{
+							if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
+								err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
+						}
+					}
+				}
 			}
 			handle_cmds(recToken, fd);
 			// if (handle_cmds(recToken, fd) == -1)
@@ -325,3 +343,4 @@ int	Server::translate(std::string nick)
 	}
 	return(-1);
 }
+

@@ -114,38 +114,23 @@ std::string Channel::channel_mode()
 	return (result);
 }
 
-int Channel::update_mode(char key, int value)
-{
-	if (this->mode_map.find(key) != this->mode_map.end())
-		this->mode_map[key] = value;
-	else
-		std::cout << "didn't find the mode in channel" << std::endl;
-	return(1);
-}
-
-int Channel::change_mode(User &member, std::string str)
+int Channel::update_mode(char key, int value, User &member)
 {
 	if (this->isOper(member.user_nick))
 	{
-		if (str.empty())
-			return(0);
-		if (str[0] == '+')
-		{
-			for (int i = 1; i < static_cast<int>(str.length()); i++)
-				update_mode(str[i], 1);
-		}
-		if (str[0] == '-')
-		{
-			for (int i = 1; i < static_cast<int>(str.length()); i++)
-				update_mode(str[i], 0);
-		}
-		channel_mode();
-		return(1);
+		if (this->mode_map.find(key) != this->mode_map.end())
+			this->mode_map[key] = value;
+		else
+			return(-1);
 	}
 	else
-		std::cout << "imagine doing this and not beeing opper" << std::endl;
-	return(0);
+	{
+		std::cout << "ur not opper kekw" << std::endl;
+	}
+	channel_mode();
+	return(1);
 }
+
 void Channel:: setTopic(std::string topic)
 {
 	this->topic_name = topic;

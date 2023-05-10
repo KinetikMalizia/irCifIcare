@@ -8,7 +8,7 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 	std::stringstream ss;
 	ss << errorCode;
 	(void)info;
-	std::string errorMessage = ss.str() + " ERR_";
+	std::string errorMessage = ss.str();
 
 	switch(errorCode)
 	{
@@ -62,6 +62,9 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			break;
 		case 464:
 			errorMessage += "PASSWDMISMATCH :Password incorrect";
+			break;
+		case 472:
+			errorMessage += " " + parameter1 + " " + parameter2 + " :is not a recognised channel mode.";
 			break;
 		case 501:
 			errorMessage += "UMODEUNKNOWNFLAG :Unknown MODE flag";
