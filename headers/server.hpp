@@ -44,11 +44,6 @@ class Server
 		void PART(t_svec recToken, int fd);
 		void WHO(t_svec recToken, int fd);
 		void NAMES(t_svec recToken, int fd);
-		void USER(t_svec recToken, int fd);
-		void NICK(t_svec recToken, int fd);
-		void JOIN(t_svec recToken, int fd);
-		void PING(t_svec recToken, int fd);
-		void PRIVMSG(t_svec recToken, int fd);
 
 		// void (Server:: *action[10])(t_svec recToken);
 		std::string err_msg(int errorCode, int fd, std::string parameter1, std::string parameter2, std::string parameter3, std::string info);

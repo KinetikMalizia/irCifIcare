@@ -30,6 +30,7 @@ class Channel
 			User *isMember(std::string nick);
 			void setTopic(std::string topic);
 			std::string getTopic();
+			int add_mode(int target_fd, char o,  User &member);
 };
 
 //  The commands which may only be used by channel operators are:

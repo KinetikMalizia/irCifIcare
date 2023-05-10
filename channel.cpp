@@ -131,6 +131,24 @@ int Channel::update_mode(char key, int value, User &member)
 	return(1);
 }
 
+int Channel::add_mode(int target_fd, char o,  User &member)
+{
+	if (this->isOper(member.user_nick))
+	{
+		if(o == '+')
+		{
+			this->members.find(target_fd)->second->user_mode += 'o';
+			return 1;
+		}
+		if(o == '-')
+		{
+			this->members.find(target_fd)->second->user_mode += ' ';
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void Channel:: setTopic(std::string topic)
 {
 	this->topic_name = topic;
