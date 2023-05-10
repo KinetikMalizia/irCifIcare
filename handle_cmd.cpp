@@ -98,7 +98,6 @@ void Server:: KICK(t_svec recToken,int fd)
 void Server::TOPIC(t_svec recToken, int fd)
 {
 	User *current = (this->users).find(fd)->second;
-	std::cout << "number of args: " << recToken.size() << std::endl;
 	if (!this->channelExists(recToken[1]))
 	{
 		std::cout << "channel doesnt exist\n";
@@ -114,10 +113,13 @@ void Server::TOPIC(t_svec recToken, int fd)
 		// call a function outside of the channel
 	}
 	//check the mode of the channel --> if t in the channel cannot change topic
-	else if (chan.mode_map['t'] == 1)
+	if (chan.mode_map['t'] == 1)
 	{
-		err_msg(482, fd, chan.channel_name, "", "", "");
-		return ;
+		if (chan.isOper(current->user_nick) == 0)
+		{
+			err_msg(482, fd, chan.channel_name, "", "", "");
+			return ;
+		}
 		//cannot change the topic
 	}
 	if (recToken.size() == 2)// only 1 argument to set the topic
