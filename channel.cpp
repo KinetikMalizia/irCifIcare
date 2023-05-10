@@ -7,6 +7,7 @@ Channel::Channel(void)
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
+	this->mode_map.insert(std::pair<char, int>('o', 0));
 	channel_mode();
 	this->c_time = time(NULL);
 }
@@ -21,6 +22,7 @@ Channel::Channel(std::string name): channel_name(name), nmembers(0)
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
+	this->mode_map.insert(std::pair<char, int>('o', 0));
 	channel_mode();
 	this->c_time = time(NULL);
 }
@@ -139,6 +141,7 @@ int Channel::add_mode(int target_fd, char o,  User &member)
 		if(o == '+')
 		{
 			this->members.find(target_fd)->second->user_mode += 'o';
+			this->oper.push_back(this->members.find(target_fd)->second);
 			return 1;
 		}
 		if(o == '-')

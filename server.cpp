@@ -284,10 +284,10 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					{
 						for (int i = 1; i < static_cast<int>(pars.length()); i++)
 						{
-							if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
-								err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 							if(pars[i] == 'o')
 								this->channels[recToken[1]]->add_mode(target_fd, '+', *current);
+							if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
+								err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 
 						}
 					}
@@ -295,10 +295,10 @@ void	Server::find_cmd(t_svec recToken, int fd)
 					{
 						for (int i = 1; i < static_cast<int>(pars.length()); i++)
 						{
-							if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
-								err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 							if(pars[i] == 'o')
 								this->channels[recToken[1]]->add_mode(target_fd, '-', *current);
+							if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
+								err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 						}
 					}
 				}
