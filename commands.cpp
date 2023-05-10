@@ -97,6 +97,34 @@ void Server:: PRIVMSG(t_svec recToken, int fd)
 	}
 }
 
+void Server::NAMES(t_svec recToken, int fd)
+{
+	if (!this->channelExists(recToken[1]))
+	{
+		std::cout << "channel doesnt exist\n";
+		err_msg(403,fd,recToken[1],"","","");
+		return ;
+	}
+	Channel*	channel = this->channels[recToken[1]];
+	User		asker = *(this->users[fd]);
+	std::map<int, User*>::iterator	itr;
+	std::string	start;
+	std::string	end;
+	start = ":" + this->hostname + " 353 " + asker.user_nick + " = " + channel->channel_name + " :";
+	for (itr=channel->members.begin(); itr!=channel->members.end(); itr++)
+	{
+		User curr = *(itr->second);
+		if (channel->isOper(curr.user_nick))
+			start += "@" + curr.user_nick + " ";
+		else
+			start += curr.user_nick + " ";
+	}
+	start += "\r\n";
+	write(fd, start.c_str(), start.length());
+	end = ":" + this->hostname + " 366 " + asker.user_nick + " " + channel->channel_name + " :End of /NAMES list \r\n";
+	write(fd, end.c_str(), end.length());
+}
+
 // void Server:: NOTICE(t_svec recToken, int fd)
 // {
 
