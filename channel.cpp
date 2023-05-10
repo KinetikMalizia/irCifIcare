@@ -59,10 +59,18 @@ int	Channel::removeMember(User& member)
 	if (this->isOper(member.user_nick))
 	{
 		std::vector<User*>::iterator found = std::find(oper.begin(), oper.end(), &member);
-		if (found != oper.end())
-			oper.erase(found);
-		else
-			std::cout << "not oper" << std::endl;
+
+		for (found = oper.begin(); found != oper.end(); found++)
+		{
+			// std::cout << "to find: " << member.user_nick << std::endl;
+			// std::cout << (*found)->user_nick << std::endl;
+			if ((*found)->user_nick == member.user_nick)
+			{
+				oper.erase(found);
+				std::cout << "found!\n";
+				break;
+			}
+		}
 	}
 	std::cout << member.user_nick << " left " << this->channel_name << std::endl;
 	this->members.erase(member.fd_user);
