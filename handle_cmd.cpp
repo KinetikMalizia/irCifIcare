@@ -95,7 +95,7 @@ void Server:: KICK(t_svec recToken,int fd)
 
 }
 
-void Server:: TOPIC(t_svec recToken,int fd)
+void Server::TOPIC(t_svec recToken, int fd)
 {
 	User *current = (this->users).find(fd)->second;
 	std::cout << "number of args: " << recToken.size() << std::endl;
@@ -108,28 +108,19 @@ void Server:: TOPIC(t_svec recToken,int fd)
 	Channel	chan = *(this->channels.find(recToken[1])->second);
 	if (!(chan.isMember(current->user_nick))) //if im not in the channel
 	{
-
+		err_msg(442, fd, chan.channel_name, "", "", "");
+		return ;
 		// call a function outside of the channel
-
 	}
-	if (recToken.size() == 5) //there is a channel and topic name
+	//check the mode odf the channel --> if t in the channel cannot change topic
+	if (recToken.size() == 2)// only 1 argument to set the topic
 	{
-		std::cout << "am i here 5" << std::endl;
-		chan.setTopic(recToken[2]);
-		std::cout << "channel name: " << chan.channel_name << std::endl;
 		std::string topic = chan.getTopic();
-		std::cout << "topic name: " << chan.topic_name << std::endl;
-		std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + "\r\n";
-		write(current->fd_user, chan_message.c_str(), chan_message.length());
-	}
-	else if (recToken.size() == 4)// only 1 argument to set the topic
-	{
-		if (chan.topic_name.empty())
+		if (topic.empty())
 		{
-			std::cout << "am i here 4" << std::endl;
-			chan.setTopic(recToken[2]);
+			std::cout << "am i here topic only" << std::endl;
+			// chan.setTopic(recToken[2]);
 			std::cout << "channel name: " << chan.channel_name << std::endl;
-			std::string topic = chan.getTopic();
 			std::cout << "current topic: " << topic << std::endl;
 			std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + " \r\n";
 			// chan.channelMessage(NULL, chan_message);
@@ -137,14 +128,21 @@ void Server:: TOPIC(t_svec recToken,int fd)
 			// std::string rep = this->base_msg + "TOPIC " + chan.channel_name + ": " + topic;
 		}
 		else
-		{
+			rpl_msg(332, fd, chan.channel_name,"","","");
+	}
+	if (recToken.size() == 3) //there is a channel and topic name
+	{
+		std::cout << "am i here topic with topic name" << std::endl;
+		if (recToken[2].empty())
+			chan.setTopic("");
+		else
 			chan.setTopic(recToken[2]);
-			std::string topic = chan.getTopic();
-			std::cout << "current topic: " << topic << std::endl;
-			std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + " \r\n";
-			// chan.channelMessage(NULL, chan_message);
-			write(current->fd_user, chan_message.c_str(), chan_message.length());
-		}
+		std::cout << "channel name: " << chan.channel_name << std::endl;
+		std::string topic = chan.getTopic();
+		std::cout << "topic name: " << chan.topic_name << std::endl;
+		std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + "\r\n";
+		chan.channelMessage(NULL, chan_message);
+		// write(current->fd_user, chan_message.c_str(), chan_message.length());
 	}
 }
 
@@ -171,7 +169,6 @@ void Server:: TOPIC(t_svec recToken,int fd)
 
 //  [ client : 8000 ] TOPIC #nikki :newtopic //trying to set the topic when not in the channel, but access given
 //  [ server : 6667 ] :*.freenode.net 442 nikki #nikki :You're not on that channel!
-
 
 void Server::PART(t_svec recToken, int fd)
 {
