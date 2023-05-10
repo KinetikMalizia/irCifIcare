@@ -19,7 +19,7 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			errorMessage += "NOSUCHNICK " + parameter1 + " :No such nick/channel";
 			break;
 		case 403:
-			errorMessage += "NOSUCHCHANNE " + parameter1 + " :No such channel";
+			errorMessage += " NOSUCHCHANNE " + parameter1 + " :No such channel";
 			break;
 		case 404:
 			errorMessage += "CANNOTSENDTOCHAN " + parameter1 + " :Cannot send to channel";
@@ -65,6 +65,9 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			break;
 		case 472:
 			errorMessage += " " + parameter1 + " " + parameter2 + " :is not a recognised channel mode.";
+			break;
+		case 482:
+			errorMessage += " CHANOPRIVSNEEDED " + parameter1 + " :You're not a channel operator";
 			break;
 		case 501:
 			errorMessage += "UMODEUNKNOWNFLAG :Unknown MODE flag";
