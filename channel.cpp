@@ -65,6 +65,7 @@ int	Channel::removeMember(User& member)
 			std::cout << "not oper" << std::endl;
 	}
 	std::cout << member.user_nick << " left " << this->channel_name << std::endl;
+	this->members.erase(member.fd_user);
 	this->nmembers--;
 	return (this->nmembers);
 }

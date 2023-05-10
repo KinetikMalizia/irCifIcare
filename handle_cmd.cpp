@@ -141,7 +141,8 @@ void Server::TOPIC(t_svec recToken, int fd)
 		std::string topic = chan.getTopic();
 		std::cout << "topic name: " << chan.topic_name << std::endl;
 		std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + "\r\n";
-		write(current->fd_user, chan_message.c_str(), chan_message.length());
+		chan.channelMessage(NULL, chan_message);
+		// write(current->fd_user, chan_message.c_str(), chan_message.length());
 	}
 }
 

@@ -97,3 +97,7 @@ void Server:: PRIVMSG(t_svec recToken, int fd)
 	}
 }
 
+// void Server:: NOTICE(t_svec recToken, int fd)
+// {
+
+// }
