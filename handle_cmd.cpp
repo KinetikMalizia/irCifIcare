@@ -106,13 +106,20 @@ void Server::TOPIC(t_svec recToken, int fd)
 		return ;
 	}
 	Channel	chan = *(this->channels.find(recToken[1])->second);
-	if (!(chan.isMember(current->user_nick))) //if im not in the channel
+	if (!(chan.isMember(current->user_nick)))
 	{
+		//if im not in the channel
 		err_msg(442, fd, chan.channel_name, "", "", "");
 		return ;
 		// call a function outside of the channel
 	}
-	//check the mode odf the channel --> if t in the channel cannot change topic
+	//check the mode of the channel --> if t in the channel cannot change topic
+	else if (chan.mode_map['t'] == 1)
+	{
+		err_msg(482, fd, chan.channel_name, "", "", "");
+		return ;
+		//cannot change the topic
+	}
 	if (recToken.size() == 2)// only 1 argument to set the topic
 	{
 		std::string topic = chan.getTopic();
@@ -130,7 +137,7 @@ void Server::TOPIC(t_svec recToken, int fd)
 		else
 			rpl_msg(332, fd, chan.channel_name,"","","");
 	}
-	if (recToken.size() == 3) //there is a channel and topic name
+	else if (recToken.size() == 3) //there is a channel and topic name
 	{
 		std::cout << "am i here topic with topic name" << std::endl;
 		if (recToken[2].empty())
