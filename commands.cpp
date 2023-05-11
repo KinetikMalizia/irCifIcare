@@ -38,8 +38,16 @@ void Server:: JOIN(t_svec recToken, int fd)
 	User *current = (this->users).find(fd)->second;
 	if (!channelExists(recToken[1]))
 	{
-		this->channels[recToken[1]] = new Channel(recToken[1]);
-		std::cout << "New channel created: " << recToken[1] << std::endl;
+		try
+		{
+			this->channels[recToken[1]] = new Channel(recToken[1]);
+			std::cout << "New channel created: " << recToken[1] << std::endl;
+		}
+		catch (const std::exception& e) 
+		{
+			std::cout << e.what(); // information from length_error printed
+			return ;
+		}
 	}
 	//base_msg JOIN :channel
 	std::cout << "Join the CHANNEL\n";

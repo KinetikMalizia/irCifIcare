@@ -19,6 +19,8 @@ class Channel
 			int						nmembers;
 			std::map<char,int>		mode_map;
 			std::string				topic_name;
+			std::string				password;
+			int						limit;
 
 			int	printMembers();
 			std::string channel_mode();

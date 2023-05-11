@@ -12,17 +12,35 @@ void Server:: MODE(t_svec recToken, int fd)
 	}
 	if (channelExists(recToken[1]))
 	{
-		int	target_fd = translate(recToken[3]);
+		int	target_fd = 0;
+		if(recToken.size() > 2)
+			target_fd = translate(recToken[3]);
 		std::string pars = recToken[2];
 		if (pars[0] == '+')
 		{
 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
 			{
 				if(pars[i] == 'o')
+				{
 					this->channels[recToken[1]]->add_mode(target_fd, '+', *current);
+					recToken.erase(recToken.begin() + 2);
+				}
+				if(pars[i] == 'k')
+				{
+					std::cout << "rec3 : " << recToken[3] << std::endl;
+					std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
+					this->channels[recToken[1]]->password = recToken[3];
+					recToken.erase(recToken.begin() + 2);
+				}
+				if(pars[i] == 'l')
+				{
+					std::cout << "rec3 : " << recToken[3] << std::endl;
+					std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
+					this->channels[recToken[1]]->limit = std::stoi(recToken[3]);
+					recToken.erase(recToken.begin() + 2);
+				}
 				if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
-
 			}
 		}
 		if (pars[0] == '-')
@@ -30,8 +48,10 @@ void Server:: MODE(t_svec recToken, int fd)
 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
 			{
 				if(pars[i] == 'o')
+				{
 					this->channels[recToken[1]]->add_mode(target_fd, '-', *current);
-				if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
+				}
+				else if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 			}
 		}

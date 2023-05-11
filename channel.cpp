@@ -7,9 +7,10 @@ Channel::Channel(void)
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
-	this->mode_map.insert(std::pair<char, int>('o', 0));
+	this->mode_map.insert(std::pair<char, int>('o', 3));
 	channel_mode();
 	this->c_time = time(NULL);
+	this->limit = 0;
 }
 
 Channel::~Channel(void)
@@ -22,7 +23,8 @@ Channel::Channel(std::string name): channel_name(name), nmembers(0)
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
 	this->mode_map.insert(std::pair<char, int>('l', 0));
-	this->mode_map.insert(std::pair<char, int>('o', 0));
+	this->mode_map.insert(std::pair<char, int>('o', 3));
+	this->limit = 0;
 	channel_mode();
 	this->c_time = time(NULL);
 }
@@ -60,7 +62,7 @@ int	Channel::removeMember(User& member)
 {
 	if (this->isOper(member.user_nick))
 	{
-		std::vector<User*>::iterator found = std::find(oper.begin(), oper.end(), &member);
+		std::vector<User*>::iterator found;
 
 		for (found = oper.begin(); found != oper.end(); found++)
 		{
@@ -116,12 +118,14 @@ std::string Channel::channel_mode()
 {
 	std::string result;
 
-	for (std::map<char, int>::iterator it = this->mode_map.begin(); it != this->mode_map.end(); ++it)
+	for (std::map<char, int>::iterator it = this->mode_map.begin(); it != this->mode_map.end(); it++)
 	{
 		if (it->second == 1)
 			result += it->first;
 	}
 	std::cout << "channel mode are : [" << result << "]" << std::endl;
+	std::cout << "pass is : " << this->password << std::endl;
+	std::cout << "limit is: " << this->limit << std::endl;
 	return (result);
 }
 
@@ -148,13 +152,24 @@ int Channel::add_mode(int target_fd, char o,  User &member)
 	{
 		if(o == '+')
 		{
+			std::cout << "to find: " << this->members.find(target_fd)->second->user_nick << std::endl;
 			this->members.find(target_fd)->second->user_mode += 'o';
 			this->oper.push_back(this->members.find(target_fd)->second);
 			return 1;
 		}
 		if(o == '-')
 		{
-			this->members.find(target_fd)->second->user_mode += ' ';
+			std::vector<User*>::iterator found;
+			for (found = oper.begin(); found != oper.end(); found++)
+			{
+				std::cout << "to find: " << this->members.find(target_fd)->second->user_nick << std::endl;
+				std::cout << (*found)->user_nick << std::endl;
+				if ((*found)->user_nick == this->members.find(target_fd)->second->user_nick)
+				{
+					oper.erase(found);
+					break;
+				}
+			}
 			return 1;
 		}
 	}
