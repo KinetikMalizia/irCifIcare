@@ -47,11 +47,6 @@ int	Channel::addMember(User& member)
 	//send confirmation message
 	this->members[member.fd_user] = &member;
 	std::cout << member.user_nick << " joined " << this->channel_name << std::endl;
-	if(this->nmembers == 0)
-	{
-		member.user_mode += 'o';
-		this->oper.push_back(&member);
-	}
 	this->nmembers++;
 	return (0);
 }
@@ -60,7 +55,7 @@ int	Channel::removeMember(User& member)
 {
 	if (this->isOper(member.user_nick))
 	{
-		std::vector<User*>::iterator found = std::find(oper.begin(), oper.end(), &member);
+		std::vector<User*>::iterator found;
 
 		for (found = oper.begin(); found != oper.end(); found++)
 		{
