@@ -38,6 +38,7 @@ void Server:: JOIN(t_svec recToken, int fd)
 	User *current = (this->users).find(fd)->second;
 	if (!channelExists(recToken[1]))
 	{
+<<<<<<< HEAD
 		try
 		{
 			this->channels[recToken[1]] = new Channel(recToken[1]);
@@ -48,6 +49,11 @@ void Server:: JOIN(t_svec recToken, int fd)
 			std::cout << e.what(); // information from length_error printed
 			return ;
 		}
+=======
+		this->channels[recToken[1]] = new Channel(recToken[1]);
+		this->channels[recToken[1]]->oper.push_back(current);
+		std::cout << "New channel created: " << recToken[1] << std::endl;
+>>>>>>> 969d93c113fa8fb7f64a55865ab10826cb4f2481
 	}
 	//base_msg JOIN :channel
 	std::cout << "Join the CHANNEL\n";
@@ -131,7 +137,19 @@ void Server::NAMES(t_svec recToken, int fd)
 	write(fd, end.c_str(), end.length());
 }
 
-// void Server:: NOTICE(t_svec recToken, int fd)
-// {
-
-// }
+void Server:: NOTICE(t_svec recToken, int fd)
+{
+	// NOTICE jcarlen :hello
+	//:KinKangs!~fmalizia@freenode/user/KinKangs NOTICE KinKangs :hello
+	std::cout << "doing NOTICE\n";
+	if (!this->isNickUsed(recToken[1]))
+	{
+		this->err_msg(401, fd, recToken[1], "", "", "");
+		return ;
+	}
+	User	*target = this->users.find(translate(recToken[1]))->second;
+	std::cout << "inviting " << target->user_nick << std::endl;
+	std::string	message = this->base_msg;
+	message += "NOTICE " + target->user_nick + " :" + recToken[2] + "\r\n";
+	write(target->fd_user, message.c_str(), message.length());
+}
