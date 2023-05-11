@@ -128,15 +128,24 @@ void Server:: NOTICE(t_svec recToken, int fd)
 {
 	// NOTICE jcarlen :hello
 	//:KinKangs!~fmalizia@freenode/user/KinKangs NOTICE KinKangs :hello
-	std::cout << "doing NOTICE\n";
-	if (!this->isNickUsed(recToken[1]))
-	{
-		this->err_msg(401, fd, recToken[1], "", "", "");
-		return ;
-	}
-	User	*target = this->users.find(translate(recToken[1]))->second;
-	std::cout << "inviting " << target->user_nick << std::endl;
 	std::string	message = this->base_msg;
-	message += "NOTICE " + target->user_nick + " :" + recToken[2] + "\r\n";
-	write(target->fd_user, message.c_str(), message.length());
+
+	if (!this->channelExists(recToken[1]))
+	{
+		if (!this->isNickUsed(recToken[1]))
+		{
+			this->err_msg(401, fd, recToken[1], "", "", "");
+			return ;
+		}
+		User	*target = this->users.find(translate(recToken[1]))->second;
+		std::cout << "inviting " << target->user_nick << std::endl;
+		message += "NOTICE " + target->user_nick + " :" + recToken[2] + "\r\n";
+		write(target->fd_user, message.c_str(), message.length());
+	}
+	else
+	{
+		Channel	chan = *(this->channels[recToken[1]]);
+		message +=  "NOTICE " + recToken[1] + " :" + recToken[2] + "\r\n";
+		chan.channelMessage(NULL, message);
+	}
 }

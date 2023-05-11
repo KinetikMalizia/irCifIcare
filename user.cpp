@@ -3,6 +3,7 @@
 User::User(void)
 {	
 	this->last_ping = 0;
+	this->registered = 0;
 }
 
 User::~User(void)

@@ -20,4 +20,5 @@ class User
 			std::string full_name;
 			std::string	server;
 			std::string hostname;
+			int			registered;
 };

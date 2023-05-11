@@ -225,6 +225,20 @@ void Server::WHO(t_svec recToken, int fd)
 	}
 }
 
+void Server::PASS(t_svec recToken, int fd)
+{
+	User *check = this->users.find(fd)->second;
+	std::string	pass = recToken[1];
 
+	if(check->registered == 1)
+		err_msg(462, fd,"","","","");
+	else if (pass != this->password)
+		err_msg(464, fd,"","","","");
+	else
+	{
+		check->registered = 1;
+		std::cout << "REGISTERED!\n";
+	}
+}
 //.freenode.net 352 KinKangs #Wow ~fmalizia freenode-o6d.g28.dc9e5h.IP .freenode.net KinKangs H :0 Fabio Malizia
 //:.freenode.net 366 KinKangs #Wow :End of /NAMES list.

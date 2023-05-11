@@ -4,6 +4,8 @@
 int main(int ac, char **av)
 {
 	Server ourServer("2drunk2code", "TEST", "TEST");
+	if (av[1])
+		ourServer.password = av[1];
 	int listenfd;
 	//int connfd;
 	(void)ac;

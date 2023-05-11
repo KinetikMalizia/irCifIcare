@@ -177,42 +177,7 @@ void	Server::find_cmd(t_svec recToken, int fd)
 		this->gen_base_msg(fd);
 		while(recToken.empty() != 1)
 		{
-			// if(firstString.compare("MODE") == 0)
-			// {
-			// 	std::string cmp = recToken[1];
-			// 	if(cmp.compare(current->user_nick) == 0)
-			// 	{
-			// 		std::cout << "recieved MODE\n";
-			// 		std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
-			// 		write(fd, cont.c_str(), cont.length());
-			// 	}
-			// 	if (channelExists(recToken[1]))
-			// 	{
-			// 		int	target_fd = translate(recToken[3]);
-			// 		std::string pars = recToken[2];
-			// 		if (pars[0] == '+')
-			// 		{
-			// 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
-			// 			{
-			// 				if(pars[i] == 'o')
-			// 					this->channels[recToken[1]]->add_mode(target_fd, '+', *current);
-			// 				if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
-			// 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
-
-			// 			}
-			// 		}
-			// 		if (pars[0] == '-')
-			// 		{
-			// 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
-			// 			{
-			// 				if(pars[i] == 'o')
-			// 					this->channels[recToken[1]]->add_mode(target_fd, '-', *current);
-			// 				if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
-			// 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
-			// 			}
-			// 		}
-			// 	}
-			// }
+			std::cout << "Token: " << recToken.front() << std::endl;
 			handle_cmds(recToken, fd);
 			recToken.erase(recToken.begin());
 			firstString = recToken.front();
