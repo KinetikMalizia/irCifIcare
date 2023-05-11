@@ -12,17 +12,35 @@ void Server:: MODE(t_svec recToken, int fd)
 	}
 	if (channelExists(recToken[1]))
 	{
-		int	target_fd = translate(recToken[3]);
+		int	target_fd = 0;
+		if(recToken.size() > 2)
+			target_fd = translate(recToken[3]);
 		std::string pars = recToken[2];
 		if (pars[0] == '+')
 		{
 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
 			{
 				if(pars[i] == 'o')
+				{
 					this->channels[recToken[1]]->add_mode(target_fd, '+', *current);
+					recToken.erase(recToken.begin() + 2);
+				}
+				if(pars[i] == 'k')
+				{
+					std::cout << "rec3 : " << recToken[3] << std::endl;
+					std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
+					this->channels[recToken[1]]->password = recToken[3];
+					recToken.erase(recToken.begin() + 2);
+				}
+				if(pars[i] == 'l')
+				{
+					std::cout << "rec3 : " << recToken[3] << std::endl;
+					std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
+					this->channels[recToken[1]]->limit = std::stoi(recToken[3]);
+					recToken.erase(recToken.begin() + 2);
+				}
 				if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
-
 			}
 		}
 		if (pars[0] == '-')
@@ -30,8 +48,10 @@ void Server:: MODE(t_svec recToken, int fd)
 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
 			{
 				if(pars[i] == 'o')
+				{
 					this->channels[recToken[1]]->add_mode(target_fd, '-', *current);
-				if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
+				}
+				else if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 			}
 		}
@@ -42,6 +62,8 @@ void Server:: INVITE(t_svec recToken, int fd)
 {
 	std::string invited = recToken[1];
 	std::string channel = recToken[2];
+	std::cout << "invited " << invited << std::endl;
+	std::cout << "channel " << channel << std::endl;
 	User *current = (this->users).find(fd)->second;
 	if (channelExists(channel) == 0)
 	{
@@ -49,30 +71,59 @@ void Server:: INVITE(t_svec recToken, int fd)
 		std:: cout << "Channel does not exist" << std::endl;
 		return ;
 	}
+	if (isNickUsed(invited) == 0)
+	{
+		err_msg(401, fd, invited, "", "", "");
+		return ;
+	}
 	Channel *chan = this->channels[channel];
-	User *inv_member = chan->isMember(invited);
+	User *invitee = chan->isMember(current->user_nick);
+	//  [ client : 8000 ] INVITE Nikki #wow
+	//  [ server : 6667 ] :*.freenode.net 401 niks Nikki :No such nick
 
+	//  [ client : 8000 ] INVITE nikki_ #wow
+ 	// [ server : 6667 ] :niks!~nikki@freenode-k9a.g28.dc9e5h.IP INVITE nikki_ :#wow
+ 	// [ server : 6667 ] :*.freenode.net 341 niks nikki_ :#wow
 	for (std::map<int, User*>::iterator	itr = this->users.begin(); itr!=this->users.end(); itr++)
 	{
 		if (invited.compare(itr->second->user_nick) == 0) //invited user is on the server
 		{
+			User *inv = (this->users).find(fd)->second;
 			std::cout << "member exists" << std::endl;
-			if (inv_member != 0) // reverse the result if testing with others
+			if (invitee == 0)
 			{
-				err_msg(443, fd, channel, recToken[2], "", "");
+				// invitee is not on the channel
+				err_msg(442, fd, channel, recToken[2], "", "");
+				return ;
+			}
+			else if (chan->isMember(invited) != 0)
+			{
+				std::cout << "invited person is already on the channel" << std::endl;
+				err_msg(443, fd, channel, invited, "", "");
 				return ;
 			}
 			else
 			{
+
+				if (chan->mode_map['i'] == 1)
+				{
+					if (chan->isOper(current->user_nick) == 0)
+					{
+						err_msg(482, fd, channel, "", "", "");
+						return ;
+					}
+					//cannot change the topic
+				}
 				// std::string	toSender = ":" + this->hostname + " 341 " + current->user_nick + " " + invited + " :" +channel + "\r\n";
 				// write(current->fd_user, toSender.c_str(), toSender.length());
-				std::string	toInvited = this->base_msg + " INVITE " + invited + " :" + channel + "\r\n";
+				std::string	toInvited = this->base_msg + "INVITE " + invited + " :" + channel + "\r\n";
 				write(this->translate(invited), toInvited.c_str(), toInvited.length());
-				rpl_msg(341, fd, current->user_nick, recToken[1], channel, "");
+				rpl_msg(341, fd, " INVITE", invited, channel, "");
+				chan->addInviteList(*inv);
+				//on the join, we need to check if the channel is mode i --> if yes and youre not on the invited list you cant join
 			}
 		}
 	}
-	err_msg(401, fd, current->user_nick, invited, "", "");
 }
 
 void Server:: KICK(t_svec recToken,int fd)

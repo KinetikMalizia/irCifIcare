@@ -14,11 +14,15 @@ class Channel
 
 			std::map<int, User*>	members;
 			std::vector<User*>		oper;
+			std::vector<User*>		invite;
+			int						invited;
 			std::string				channel_name;
 			long long				c_time;
 			int						nmembers;
 			std::map<char,int>		mode_map;
 			std::string				topic_name;
+			std::string				password;
+			int						limit;
 
 			int	printMembers();
 			std::string channel_mode();
@@ -31,6 +35,10 @@ class Channel
 			void setTopic(std::string topic);
 			std::string getTopic();
 			int add_mode(int target_fd, char o,  User &member);
+			int	addInviteList(User& invited);
+			int	isInviteList(std::string nick);
+
+
 };
 
 //  The commands which may only be used by channel operators are:
