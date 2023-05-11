@@ -56,6 +56,29 @@ int	Channel::addMember(User& member)
 	return (0);
 }
 
+int	Channel::addInviteList(User& invited)
+{
+	this->members[invited.fd_user] = &invited;
+	this->invite.push_back(&invited);
+	this->invited++;
+	// for (size_t i = 0; i < invite.size(); i++)
+	// {
+	// 	std:: cout << invite[i]->user_nick << std::endl;
+	// }
+	return (0);
+}
+
+int	Channel::isInviteList(std::string nick)
+{
+	for (size_t i = 0; i < invite.size(); i++)
+	{
+		std:: cout << invite[i]->user_nick << std::endl;
+		if (invite[i]->user_nick == nick)
+			return (1);
+	}
+	return (0);
+}
+
 int	Channel::removeMember(User& member)
 {
 	if (this->isOper(member.user_nick))

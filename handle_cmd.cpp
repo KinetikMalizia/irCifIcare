@@ -15,6 +15,8 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 			(this->*action[i])(recToken, fd);
 			return (0);
 		}
+		// else
+		// 	err_msg(0, fd, "", "", "", "");
 	}
 	return (-1);
 }
