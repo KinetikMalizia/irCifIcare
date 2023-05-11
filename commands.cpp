@@ -72,7 +72,6 @@ void Server:: PRIVMSG(t_svec recToken, int fd)
 	std::cout << "recieved PRIVMSG\n";
 	if (recToken[1][0] == '#')
 	{
-		std::cout << "Do channel message\n";
 		if (!this->channelExists(recToken[1]))
 			std::cout << "channel [" << recToken[1] << "] doesn't exitst\n";
 		else
@@ -84,11 +83,10 @@ void Server:: PRIVMSG(t_svec recToken, int fd)
 	}
 	else
 	{
-		int	target_fd = translate(recToken[1]);
-
+		int		target_fd = translate(recToken[1]);
+		
 		if (target_fd < 0)
-			std::cout << "Nick: "<< recToken[1] << "doesn't exist\n";
-			//replace with numerical code error message
+			this->err_msg(401, fd, recToken[1], "", "", "");
 		else
 		{
 			std::string message = ":" + current->user_nick + "!~" + current->user_name + "@" + this->hostname + " PRIVMSG " + recToken[1] + " " + recToken[2] + "\r\n";
