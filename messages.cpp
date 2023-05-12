@@ -111,6 +111,10 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 		case 346:
 			rpl_message += parameter1 + " " + parameter2;
 			break;
+		case 500:
+			rpl_message += parameter1 + " " + parameter2 + " :" + parameter3; 
+			// [ server : 6667 ] :dede!~jcarlen@freenode-o6d.g28.dc9e5h.IP MODE #adc :-it
+			break;
 		default:
 			rpl_message += " this but a default msg ";
 	}
