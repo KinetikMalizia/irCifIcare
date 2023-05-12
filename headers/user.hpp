@@ -14,11 +14,12 @@ class User
 
 			int			fd_user;
 			int			last_ping;
-			std::string user_name;
-			std::string user_nick;
-			std::string user_mode;
-			std::string full_name;
+			std::string	user_name;
+			std::string	user_nick;
+			std::string	user_mode;
+			std::string	full_name;
 			std::string	server;
-			std::string hostname;
+			std::string	hostname;
+			std::string	buffer;
 			int			registered;
 };

@@ -24,6 +24,8 @@ int main(int ac, char **av)
 	ourServer.nfds = 1;
 	int current_size = 0;
 	int i;
+	std::string ending;
+	User *curr;
 	t_svec	recToken;
 
 	memset(ourServer.fds, 0, sizeof(ourServer.fds));
@@ -60,7 +62,6 @@ int main(int ac, char **av)
 			else
 			{
 				std::memset(recvline, 0, MAXLINE);
-
 				int n = read(ourServer.fds[i].fd, recvline, MAXLINE - 1);
 				if (n < 0)
 				{
@@ -75,22 +76,24 @@ int main(int ac, char **av)
 				}
 				recvline[n] = '\0';
 				std::cout << "Received: " << recvline << std::endl;
-				tokenize(std::string(recvline), ' ' ,recToken);
-				ourServer.find_cmd(recToken, ourServer.fds[i].fd);
-				if (std::strncmp((char*)recvline, "QSERV\r\n", 5) == 0)
+				curr = ourServer.users.find(ourServer.fds[i].fd)->second;
+				curr->buffer += std::string(recvline);
+				ending = lastN(curr->buffer, 1);
+				if (ending == "\n")
 				{
-					std::cout << "Shutting down server" << std::endl;
-					running = false;
-					break;
+					tokenize(curr->buffer, ' ' ,recToken);
+					ourServer.find_cmd(recToken, ourServer.fds[i].fd);
+					curr->buffer = "";
+					if (std::strncmp((char*)recvline, "QSERV\r\n", 5) == 0)
+					{
+						std::cout << "Shutting down server" << std::endl;
+						running = false;
+						break;
+					}
+					recToken.clear();
 				}
-				// if (start == true)
-				// {
-				// 	std::cout << "Sending welcome message" << std::endl;
-				// 	snprintf(buff, sizeof(buff), ":local.host1.com 001 jcarlen :Welcome to the freenode IRC Network jcarlen!~jcarlen@127.0.0.1\n");
-				// 	write(connfd, buff, std::strlen(buff));
-				// 	start = false;
-				// }
-				recToken.clear();
+				// else
+				// 	std::cout << "last 2 chars: " << (int)ending[0] << " " << (int)ending[1] << std::endl;
 			}
 		}
 	}
