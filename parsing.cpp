@@ -34,3 +34,11 @@ void	tokenize(std::string str, char delim, t_svec &out)
 		if (out.back().empty())
 			out.pop_back();
 }
+
+std::string lastN(std::string input, int n)
+{
+	int inputSize = input.size();
+	if (inputSize > n)
+		return (input.substr(inputSize - n));
+	return ("");
+}

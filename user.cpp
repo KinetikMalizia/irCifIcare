@@ -4,6 +4,7 @@ User::User(void)
 {	
 	this->last_ping = 0;
 	this->registered = 0;
+	this->buffer = "";
 }
 
 User::~User(void)
@@ -28,8 +29,3 @@ int	User::setInfo(t_svec tokens, int fd_user)
 	}
 	return (0);
 }
-
-// User *User::isMember(std::string nick)
-// {
-// 	for (t_svec)
-// }
