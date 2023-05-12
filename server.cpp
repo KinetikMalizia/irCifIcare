@@ -12,6 +12,7 @@ Server:: Server(std::string hostname, std:: string portnumber, std:: string pass
 	(void)portnumber;
 	(void)password;
 	this->default_mode = "i";
+	this->password = "NOPASSWD";
 	// 	check_args(av);
 }
 

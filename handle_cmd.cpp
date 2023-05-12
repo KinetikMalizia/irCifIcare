@@ -10,7 +10,7 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 														&Server::JOIN, &Server::PING, &Server::PRIVMSG, &Server::MODE,
 														&Server::NOTICE, &Server::PASS};
 	User commander = *this->users.find(fd)->second;
-	if (commander.registered == 0 && recToken.front() != "PASS")
+	if (commander.registered == 0 && recToken.front() != "PASS" && this->password != "NOPASSWD")
 	{
 		std::cout << "ignored: " << recToken.front() << std::endl;
 		return (-1);

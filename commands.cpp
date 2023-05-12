@@ -38,7 +38,6 @@ void Server:: JOIN(t_svec recToken, int fd)
 	User *current = (this->users).find(fd)->second;
 	if (!channelExists(recToken[1]))
 	{
-<<<<<<< HEAD
 		try
 		{
 			this->channels[recToken[1]] = new Channel(recToken[1]);
@@ -49,17 +48,16 @@ void Server:: JOIN(t_svec recToken, int fd)
 			std::cout << e.what(); // information from length_error printed
 			return ;
 		}
-=======
-		this->channels[recToken[1]] = new Channel(recToken[1]);
 		this->channels[recToken[1]]->oper.push_back(current);
-		std::cout << "New channel created: " << recToken[1] << std::endl;
->>>>>>> 969d93c113fa8fb7f64a55865ab10826cb4f2481
 	}
-	//base_msg JOIN :channel
+	Channel chan = *(this->channels.find(recToken[1])->second);
+	// :*.freenode.net 332 aabbccdd #h3llo :this is the start topic
 	std::cout << "Join the CHANNEL\n";
 	this->channels[recToken[1]]->addMember(*current);
 	std::string confirm = this->base_msg + "JOIN :" + recToken[1] + "\r\n";
 	this->channels[recToken[1]]->channelMessage(NULL, confirm);
+	std::cout << chan.getTopic() << ":is the current topic of " << chan.channel_name << "\n";
+	rpl_msg(332, fd, chan.channel_name, chan.getTopic() ,"","");
 	this->NAMES(recToken, fd);
 	std::stringstream ss;
 	ss << this->channels[recToken[1]]->c_time;

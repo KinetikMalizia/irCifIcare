@@ -86,7 +86,9 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 {
 	User *current = (this->users).find(fd)->second;
 	(void)info;
-	std::string rpl_message = current->user_nick;
+	std::string rpl_message = current->user_nick + " ";
+	std::stringstream ss;
+	ss << msg_code;
 
 	switch(msg_code)
 	{
@@ -98,7 +100,7 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 			rpl_message += parameter1 + " : no topic is set";
 			break;
 		case 332:
-			rpl_message += parameter1 + "to: " + parameter2 + parameter3;
+			rpl_message += parameter1 + " :" + parameter2;
 			break;
 		case 336:
 			rpl_message += parameter1;
@@ -112,7 +114,7 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 		default:
 			rpl_message += " this but a default msg ";
 	}
-	rpl_message = ":" + this->hostname + " " + rpl_message + "\r\n" ;
+	rpl_message = ":" + this->hostname + " " + ss.str() + " " + rpl_message + "\r\n" ;
 	write(fd, rpl_message.c_str(), rpl_message.length());
 	return rpl_message;
 }

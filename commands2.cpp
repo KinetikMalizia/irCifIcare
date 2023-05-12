@@ -15,6 +15,7 @@ void Server:: MODE(t_svec recToken, int fd)
 		int	target_fd = 0;
 		if(recToken.size() > 2)
 			target_fd = translate(recToken[3]);
+		std::cout << "TOPIC IS: " << this->channels[recToken[1]]->topic_name << "\n";
 		std::string pars = recToken[2];
 		if (pars[0] == '+')
 		{
@@ -163,53 +164,53 @@ void Server::TOPIC(t_svec recToken, int fd)
 		err_msg(403,fd,recToken[1],"","","");
 		return ;
 	}
-	Channel	chan = *(this->channels.find(recToken[1])->second);
-	if (!(chan.isMember(current->user_nick)))
-	{
-		//if im not in the channel
-		err_msg(442, fd, chan.channel_name, "", "", "");
-		return ;
-		// call a function outside of the channel
-	}
-	//check the mode of the channel --> if t in the channel cannot change topic
-	if (chan.mode_map['t'] == 1)
-	{
-		if (chan.isOper(current->user_nick) == 0)
-		{
-			err_msg(482, fd, chan.channel_name, "", "", "");
-			return ;
-		}
-		//cannot change the topic
-	}
+	Channel	*chan = this->channels.find(recToken[1])->second;
 	if (recToken.size() == 2)// only 1 argument to set the topic
 	{
-		std::string topic = chan.getTopic();
+		std::string topic = chan->getTopic();
 		if (topic.empty())
 		{
 			std::cout << "am i here topic only" << std::endl;
-			// chan.setTopic(recToken[2]);
-			std::cout << "channel name: " << chan.channel_name << std::endl;
+			// chan->setTopic(recToken[2]);
+			std::cout << "channel name: " << chan->channel_name << std::endl;
 			std::cout << "current topic: " << topic << std::endl;
-			std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + " \r\n";
-			chan.channelMessage(NULL, chan_message);
+			std::string chan_message = this->base_msg + "TOPIC " + chan->channel_name + " :" + topic + " \r\n";
+			chan->channelMessage(NULL, chan_message);
 			// write(current->fd_user, chan_message.c_str(), chan_message.length());
-			// std::string rep = this->base_msg + "TOPIC " + chan.channel_name + ": " + topic;
+			// std::string rep = this->base_msg + "TOPIC " + chan->channel_name + ": " + topic;
 		}
 		else
-			rpl_msg(332, fd, chan.channel_name,"","","");
+			rpl_msg(332, fd, current->user_nick,chan->channel_name,"","");
 	}
 	else if (recToken.size() == 3) //there is a channel and topic name
 	{
+		if (!(chan->isMember(current->user_nick)))
+		{
+			//if im not in the channel
+			err_msg(442, fd, chan->channel_name, "", "", "");
+			return ;
+			// call a function outside of the channel
+		}
+		//check the mode of the channel --> if t in the channel cannot change topic
+		if (chan->mode_map['t'] == 1)
+		{
+			if (chan->isOper(current->user_nick) == 0)
+			{
+				err_msg(482, fd, chan->channel_name, "", "", "");
+				return ;
+			}
+			//cannot change the topic
+		}
 		std::cout << "am i here topic with topic name" << std::endl;
-		if (recToken[2].empty())
-			chan.setTopic("");
-		else
-			chan.setTopic(recToken[2]);
-		std::cout << "channel name: " << chan.channel_name << std::endl;
-		std::string topic = chan.getTopic();
-		std::cout << "topic name: " << chan.topic_name << std::endl;
-		std::string chan_message = this->base_msg + "TOPIC " + chan.channel_name + " :" + topic + "\r\n";
-		chan.channelMessage(NULL, chan_message);
+		// if (recToken[2].empty())
+		// 	chan->setTopic("");
+		// else
+			chan->setTopic(recToken[2]);
+		std::cout << "channel name: " << chan->channel_name << std::endl;
+		std::string topic = chan->getTopic();
+		std::cout << "topic name: " << chan->getTopic() << std::endl;
+		std::string chan_message = this->base_msg + "TOPIC " + chan->channel_name + " :" + topic + "\r\n";
+		chan->channelMessage(NULL, chan_message);
 		// write(current->fd_user, chan_message.c_str(), chan_message.length());
 	}
 }
