@@ -139,7 +139,7 @@ std::string Channel::channel_mode()
 
 	for (std::map<char, int>::iterator it = this->mode_map.begin(); it != this->mode_map.end(); it++)
 	{
-		if (it->second == 1)
+		if (it->second == 1 && it->first != 'o')
 			result += it->first;
 	}
 	std::cout << "channel mode are : [" << result << "]" << std::endl;
@@ -172,7 +172,7 @@ int Channel::add_mode(int target_fd, char o,  User &member)
 	{
 		if(o == '+')
 		{
-			std::cout << "to find: " << this->members.find(target_fd)->second->user_nick << std::endl;
+//			std::cout << "to find: " << this->members.find(target_fd)->second->user_nick << std::endl;
 			this->members.find(target_fd)->second->user_mode += 'o';
 			this->oper.push_back(this->members.find(target_fd)->second);
 			return 1;

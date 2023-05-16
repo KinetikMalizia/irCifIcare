@@ -181,7 +181,8 @@ void	Server::find_cmd(t_svec recToken, int fd)
 			std::cout << "Token: " << recToken.front() << std::endl;
 			handle_cmds(recToken, fd);
 			recToken.erase(recToken.begin());
-			firstString = recToken.front();
+			if(!recToken.empty())
+				firstString = recToken.front();
 		}
 }
 

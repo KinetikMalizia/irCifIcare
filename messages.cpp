@@ -79,6 +79,9 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 		case 650:
 			errorMessage += parameter1 + ":<channel> [:<topic>]";
 			break;
+		case 696:
+			errorMessage += + " " + parameter1 + " " + parameter2 + " " + parameter3 + " *" + " :You must specify a parameter for the " + parameter3 + " mode";
+			break;
 		default:
 			errorMessage += " " + parameter1 + " :Unknown error";
 			break;
