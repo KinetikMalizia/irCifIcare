@@ -28,24 +28,48 @@ void Server:: MODE(t_svec recToken, int fd)
 					// [ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You must have channel halfop access or above to unset channel mode i
 					// [ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You must have channel op access or above to unset channel mode o
 					// [ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You do not have access to change the topic on this channel[ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You do not have access to change the topic on this channel
-					this->channels[recToken[1]]->add_mode(target_fd, '+', *current);
-					recToken.erase(recToken.begin() + 2);
+					if(recToken.size() > 3)
+					{
+						this->channels[recToken[1]]->add_mode(target_fd, '+', *current);
+						recToken.erase(recToken.begin() + 2);
+					}
+					else
+					{
+						err_msg(696, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "o", "");
+						break;
+					}
 				}
 				if(pars[i] == 'k')
 				{
 					//  [ server : 6667 ] :*.freenode.net 696 jcarlen #adc k * :You must specify a parameter for the key mode. Syntax: <key>.
 					// std::cout << "rec3 : " << recToken[3] << std::endl;
 					// std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
-					this->channels[recToken[1]]->password = recToken[3];
-					recToken.erase(recToken.begin() + 2);
+					if(recToken.size() > 3)
+					{
+						this->channels[recToken[1]]->password = recToken[3];
+						recToken.erase(recToken.begin() + 2);
+					}
+					else
+					{
+						err_msg(696, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "k", "");
+						break;
+					}
 				}
 				if(pars[i] == 'l')
 				{
 					// [ server : 6667 ] :*.freenode.net 696 jcarlen #adc l * :You must specify a parameter for the limit mode. Syntax: <limit>.
 					// std::cout << "rec3 : " << recToken[3] << std::endl;
 					// std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
-					this->channels[recToken[1]]->limit = std::stoi(recToken[3]);
-					recToken.erase(recToken.begin() + 2);
+					if(recToken.size() > 3)
+					{
+						this->channels[recToken[1]]->limit = std::stoi(recToken[3]);
+						recToken.erase(recToken.begin() + 2);
+					}
+					else
+					{
+						err_msg(696, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "l", "");
+						break;
+					}
 				}
 				if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
@@ -67,11 +91,11 @@ void Server:: MODE(t_svec recToken, int fd)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 			}
 		}
-		if(this->channels[recToken[1]]->isOper(current->user_nick))
+		if(this->channels[recToken[1]]->isOper(current->user_nick) && pars[0] != 'o')
 		{
-		std::string chan_name = this->channels[recToken[1]]->channel_name;
-		std::string rply = (this->base_msg + "MODE " + chan_name + " :" + pars[0] + this->channels[recToken[1]]->channel_mode());
-		this->channels[recToken[1]]->channelMessage(NULL, rply);
+			std::string chan_name = this->channels[recToken[1]]->channel_name;
+			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + this->channels[recToken[1]]->channel_mode() + "\r\n");
+			this->channels[recToken[1]]->channelMessage(NULL, rply);
 		}
 	}
 }
