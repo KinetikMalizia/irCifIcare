@@ -1,2 +1,3 @@
 *.o
 proxy*
+proxy/__pycache__/parser.cpython-311.pyc

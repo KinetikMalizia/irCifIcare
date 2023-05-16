@@ -13,40 +13,40 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 	switch(errorCode)
 	{
 		case 400:
-			errorMessage += "UNKNOWNERROR " + parameter1 + parameter2 + " :Unknown error";
+			errorMessage += " UNKNOWNERROR " + parameter1 + parameter2 + " :Unknown error";
 			break;
 		case 401:
-			errorMessage += "NOSUCHNICK " + parameter1 + " :No such nick/channel";
+			errorMessage += " NOSUCHNICK " + parameter1 + " :No such nick/channel";
 			break;
 		case 403:
-			errorMessage += " NOSUCHCHANNE " + parameter1 + " :No such channel";
+			errorMessage += " NOSUCHCHANNEL " + parameter1 + " :No such channel";
 			break;
 		case 404:
-			errorMessage += "CANNOTSENDTOCHAN " + parameter1 + " :Cannot send to channel";
+			errorMessage += " CANNOTSENDTOCHAN " + parameter1 + " :Cannot send to channel";
 			break;
 		case 411:
-			errorMessage += "NORECIPIENT :No recipient given (" + parameter1 + ")";
+			errorMessage += " NORECIPIENT :No recipient given (" + parameter1 + ")";
 			break;
 		case 412:
-			errorMessage += "NOTEXTTOSEND :No text to send";
+			errorMessage += " NOTEXTTOSEND :No text to send";
 			break;
 		case 421:
-			errorMessage += "UNKNOWNCOMMAND " + parameter1 + " :Unknown command";
+			errorMessage += " UNKNOWNCOMMAND " + parameter1 + " :Unknown command";
 			break;
 		case 431:
-			errorMessage += "NONICKNAMEGIVE :No nickname given";
+			errorMessage += " NONICKNAMEGIVE :No nickname given";
 			break;
 		case 432:
-			errorMessage += "ERRONEUSNICKNAME " + parameter1 + " :Erroneous nickname";
+			errorMessage += " ERRONEUSNICKNAME " + parameter1 + " :Erroneous nickname";
 			break;
 		case 433:
-			errorMessage += "NICKNAMEINUSE " + parameter1 + " :Nickname is already in use";
+			errorMessage += " NICKNAMEINUSE " + parameter1 + " :Nickname is already in use";
 			break;
 		case 436:
-			errorMessage += "NICKCOLLISION " + parameter1 + " :Nickname collision KILL from " + parameter2 + "@" + parameter3;
+			errorMessage += " NICKCOLLISION " + parameter1 + " :Nickname collision KILL from " + parameter2 + "@" + parameter3;
 			break;
 		case 441:
-			errorMessage += "USERNOTINCHANNEL " + parameter1 + " " + parameter2 + " :They aren't on that channel";
+			errorMessage += " USERNOTINCHANNEL " + parameter1 + " " + parameter2 + " :They aren't on that channel";
 			break;
 		case 442:
 			errorMessage += " NOTONCHANNEL " + parameter1 + " :You're not on that channel";
@@ -58,10 +58,10 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			errorMessage += " NEEDMOREPARAMS " + parameter1 + " :Not enough parameters";
 			break;
 		case 462:
-			errorMessage += "ALREADYREGISTRED :You may not reregister";
+			errorMessage += " ALREADYREGISTRED :You may not reregister";
 			break;
 		case 464:
-			errorMessage += "PASSWDMISMATCH :Password incorrect";
+			errorMessage += " PASSWDMISMATCH :Password incorrect";
 			break;
 		case 472:
 			errorMessage += " " + parameter1 + " " + parameter2 + " :is not a recognised channel mode.";
@@ -74,7 +74,7 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			errorMessage += + " " + parameter1 + " " + parameter2 + " :You're not a channel operator";
 			break;
 		case 501:
-			errorMessage += "UMODEUNKNOWNFLAG :Unknown MODE flag";
+			errorMessage += " UMODEUNKNOWNFLAG :Unknown MODE flag";
 			break;
 		case 650:
 			errorMessage += parameter1 + ":<channel> [:<topic>]";
@@ -108,7 +108,7 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 		"!~" + current->user_nick + "@" + this->hostname;
 			break;
 		case 331:
-			rpl_message += parameter1 + " : no topic is set";
+			rpl_message += parameter1 + " :no topic is set";
 			break;
 		case 332:
 			rpl_message += parameter1 + " :" + parameter2;

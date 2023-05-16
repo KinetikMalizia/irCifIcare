@@ -16,21 +16,20 @@ void Server:: USER(t_svec recToken, int fd)
 void Server:: NICK(t_svec recToken, int fd)
 {
 	User *current = (this->users).find(fd)->second;
-	this->gen_base_msg(fd);
 	std::cout << "recieved NICK\n";
 	std::string	reponse;
 	if (!isNickUsed(recToken[1]))
 	{
 		reponse = this->base_msg + " NICK :" + recToken[1] + "\r\n";
 		current->user_nick = recToken[1];
+		write(fd, reponse.c_str(), reponse.length());
 		//:second!~fmalizia@freenode-o6d.g28.dc9e5h.IP NICK :weewoo
 	}
 	else
 	{
-		reponse = err_msg(401, fd, recToken[1], "", "", "");
+		err_msg(433, fd, recToken[1], "", "", "");
 	}
 	// snprintf(buff, sizeof(buff), "changing nick\n");
-	write(fd, reponse.c_str(), reponse.length());
 }
 
 void Server:: JOIN(t_svec recToken, int fd)

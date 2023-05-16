@@ -53,6 +53,7 @@ int main(int ac, char **av)
 				continue ;
 			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 			{
+				//remove user now
 				std::cout << "Error revents =" << ourServer.fds[i].fd << std::endl;
 				running = false;
 				break;
