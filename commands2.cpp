@@ -89,7 +89,7 @@ void Server:: INVITE(t_svec recToken, int fd)
 	{
 		if (invited.compare(itr->second->user_nick) == 0) //invited user is on the server
 		{
-			User *inv = (this->users).find(fd)->second;
+			User *inv = itr->second;
 			std::cout << "member exists" << std::endl;
 			if (invitee == 0)
 			{
@@ -156,22 +156,28 @@ void Server:: KICK(t_svec recToken,int fd)
 }
 
 void Server::TOPIC(t_svec recToken, int fd)
-{
+{ //outside of the channel asking for topic with channel name does not work
 	User *current = (this->users).find(fd)->second;
-	if (!this->channelExists(recToken[1]))
-	{
-		std::cout << "channel doesnt exist\n";
-		err_msg(403,fd,recToken[1],"","","");
-		return ;
-	}
-	Channel	*chan = this->channels.find(recToken[1])->second;
 	if (recToken.size() == 2)// only 1 argument to set the topic
 	{
+		if (recToken[1].empty())
+		{
+			err_msg(461, fd, "TOPIC","","","");
+			err_msg(650, fd, "TOPIC","","","");
+			return ;
+		}
+		// we need to check if the user is the channel
+		std::cout << "am i here topic only outside of the channel" << std::endl;
+		Channel	*chan = this->channels.find(recToken[1])->second;
+		if (chan == NULL)
+		{
+			std::cout << "Channel doesnt exist" << std::endl;
+			err_msg(403,fd,recToken[1],"","","");
+			return ;
+		}
 		std::string topic = chan->getTopic();
 		if (topic.empty())
 		{
-			std::cout << "am i here topic only" << std::endl;
-			// chan->setTopic(recToken[2]);
 			std::cout << "channel name: " << chan->channel_name << std::endl;
 			std::cout << "current topic: " << topic << std::endl;
 			std::string chan_message = this->base_msg + "TOPIC " + chan->channel_name + " :" + topic + " \r\n";
@@ -180,10 +186,11 @@ void Server::TOPIC(t_svec recToken, int fd)
 			// std::string rep = this->base_msg + "TOPIC " + chan->channel_name + ": " + topic;
 		}
 		else
-			rpl_msg(332, fd, current->user_nick,chan->channel_name,"","");
+			rpl_msg(332, fd, chan->channel_name, chan->getTopic() ,"","");
 	}
 	else if (recToken.size() == 3) //there is a channel and topic name
 	{
+		Channel	*chan = this->channels.find(recToken[1])->second;
 		if (!(chan->isMember(current->user_nick)))
 		{
 			//if im not in the channel
@@ -202,16 +209,15 @@ void Server::TOPIC(t_svec recToken, int fd)
 			//cannot change the topic
 		}
 		std::cout << "am i here topic with topic name" << std::endl;
-		// if (recToken[2].empty())
-		// 	chan->setTopic("");
-		// else
+		if (recToken[2].empty())
+			chan->setTopic("");
+		else
 			chan->setTopic(recToken[2]);
 		std::cout << "channel name: " << chan->channel_name << std::endl;
 		std::string topic = chan->getTopic();
 		std::cout << "topic name: " << chan->getTopic() << std::endl;
 		std::string chan_message = this->base_msg + "TOPIC " + chan->channel_name + " :" + topic + "\r\n";
 		chan->channelMessage(NULL, chan_message);
-		// write(current->fd_user, chan_message.c_str(), chan_message.length());
 	}
 }
 //  [ client : 8000 ] TOPIC //outside of the channel
@@ -294,3 +300,28 @@ void Server::PASS(t_svec recToken, int fd)
 }
 //.freenode.net 352 KinKangs #Wow ~fmalizia freenode-o6d.g28.dc9e5h.IP .freenode.net KinKangs H :0 Fabio Malizia
 //:.freenode.net 366 KinKangs #Wow :End of /NAMES list.
+
+void Server:: QUIT(t_svec recToken, int fd)
+{
+	// Server ourServer;
+
+	User *current = (this->users).find(fd)->second;
+	std:: cout << recToken[0] << std::endl;
+	std::cout << "Shutting down the server" << std::endl;
+	std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: leaving]" + "\r\n";
+	write(current->fd_user, quit.c_str(), quit.length());
+	for (int i = 0; i < this->nfds; i++)
+	{
+		shutdown(this->fds[i].fd, SHUT_RDWR);
+		close(this->fds[i].fd);
+		std::cout << "Connection closed " <<  this->fds[i].fd << std::endl;
+	}
+	recToken.clear();
+	shutdown(this->listenfd, SHUT_RDWR);
+	close(this->listenfd);
+}
+//  [ client : 8000 ] QUIT :leaving
+//  [ client : 8000 ] QUIT :leaving
+//  [ server : 6667 ] ERROR :Closing link: (~nikki@185.25.195.185) [Quit: leaving]
+//  [ server : 6667 ] ERROR :Closing link: (~nikki@185.25.195.185) [Quit: leaving]
+//  [ server : 6667 ] ERROR : Closing link: :nikki!~nikki@2drunk2code [Quit: leaving]

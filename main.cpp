@@ -6,7 +6,7 @@ int main(int ac, char **av)
 	Server ourServer("2drunk2code", "TEST", "TEST");
 	if (av[1])
 		ourServer.password = av[1];
-	int listenfd;
+	// int listenfd;
 	//int connfd;
 	(void)ac;
 	(void)av;
@@ -15,7 +15,7 @@ int main(int ac, char **av)
 	// 	std::cout << "Please enter a valid port number and password for connection" << std:: endl;
 	// else
 	// {
-	listenfd = ourServer.create_socket();
+	ourServer.listenfd = ourServer.create_socket();
 	// }
 	// char buff[MAXLINE];
 	char recvline[MAXLINE];
@@ -28,7 +28,7 @@ int main(int ac, char **av)
 
 	memset(ourServer.fds, 0, sizeof(ourServer.fds));
 	// Set up the initial listening socket
-	ourServer.fds[0].fd = listenfd;
+	ourServer.fds[0].fd = ourServer.listenfd;
 	ourServer.fds[0].events = POLLIN;
 	//initialize the timeout to 3 minutes
 	timeout = (3 * 60 * 1000);
@@ -55,8 +55,8 @@ int main(int ac, char **av)
 				running = false;
 				break;
 			}
-			if (ourServer.fds[i].fd == listenfd)
-				ourServer.accept_connection(listenfd);
+			if (ourServer.fds[i].fd == ourServer.listenfd)
+				ourServer.accept_connection(ourServer.listenfd);
 			else
 			{
 				std::memset(recvline, 0, MAXLINE);
@@ -103,7 +103,7 @@ int main(int ac, char **av)
 	//loop waiting for incoming connects or data on connected sockets
 	// add poll in the infinite loop ?
 	// loop through current size to close all the fds
-	shutdown(listenfd, SHUT_RDWR);
-	close(listenfd);
+	shutdown(ourServer.listenfd, SHUT_RDWR);
+	close(ourServer.listenfd);
 	return 0;
 }
