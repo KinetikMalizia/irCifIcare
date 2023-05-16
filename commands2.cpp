@@ -320,22 +320,27 @@ void Server::PASS(t_svec recToken, int fd)
 
 void Server:: QUIT(t_svec recToken, int fd)
 {
-	// Server ourServer;
-
 	User *current = (this->users).find(fd)->second;
 	std:: cout << recToken[0] << std::endl;
-	std::cout << "Shutting down the server" << std::endl;
-	std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: leaving]" + "\r\n";
-	write(current->fd_user, quit.c_str(), quit.length());
-	// for (int i = 0; i < this->nfds; i++)
-	// {
-		shutdown(this->fds[i].fd, SHUT_RDWR);
-		close(this->fds[i].fd);
-		std::cout << "Connection closed " <<  this->fds[i].fd << std::endl;
-	// }
-	recToken.clear();
-	shutdown(this->listenfd, SHUT_RDWR);
-	close(this->listenfd);
+	if (recToken[1] == ":leaving")
+	{
+		std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: leaving]" + "\r\n";
+		write(current->fd_user, quit.c_str(), quit.length());
+	}
+	else
+	{
+		std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: leaving]" + recToken[2] + "\r\n";
+		write(current->fd_user, quit.c_str(), quit.length());
+	}
+	// shutdown(fd, SHUT_RDWR);
+	remove_from_poll(&this->fds[fd], this->nfds, fd);
+	close(fd);
+	std::cout << "Connection closed " <<  fd << std::endl;
+	//remove from all channels and from poll, close fd
+	// recToken.clear();
+	// shutdown(this->listenfd, SHUT_RDWR);
+	// close current client's fd
+	// close(this->listenfd);
 }
 //only close the client that quit not shut down the whole server  / only if it was the last client
 //clients can leave with an argument that has to be printed in the message
