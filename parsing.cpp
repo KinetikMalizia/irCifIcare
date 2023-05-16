@@ -42,3 +42,17 @@ std::string lastN(std::string input, int n)
 		return (input.substr(inputSize - n));
 	return ("");
 }
+
+std::string	toUpper(std::string str)
+{
+	std::string answer = "";
+
+	for (std::size_t i = 0; i <str.size(); i++)
+	{
+		if (str[i] >= 'a' && str[i] <= 'z')
+			answer += str[i] - 32;
+		else
+			answer += str[i];
+	}
+	return (answer);
+}

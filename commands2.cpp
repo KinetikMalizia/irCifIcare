@@ -197,10 +197,7 @@ void Server::TOPIC(t_svec recToken, int fd)
 		{
 			std::cout << "channel name: " << chan->channel_name << std::endl;
 			std::cout << "current topic: " << topic << std::endl;
-			std::string chan_message = this->base_msg + "TOPIC " + chan->channel_name + " :" + topic + " \r\n";
-			chan->channelMessage(NULL, chan_message);
-			// write(current->fd_user, chan_message.c_str(), chan_message.length());
-			// std::string rep = this->base_msg + "TOPIC " + chan->channel_name + ": " + topic;
+			rpl_msg(331, fd, chan->channel_name, "", "", "");
 		}
 		else
 			rpl_msg(332, fd, chan->channel_name, chan->getTopic() ,"","");
@@ -237,29 +234,6 @@ void Server::TOPIC(t_svec recToken, int fd)
 		chan->channelMessage(NULL, chan_message);
 	}
 }
-//  [ client : 8000 ] TOPIC //outside of the channel
-//  [ server : 6667 ] :*.freenode.net 461 nikki TOPIC :Not enough parameters.
-//  [ server : 6667 ] :*.freenode.net 650 nikki TOPIC :<channel> [:<topic>]
-
-//  [ client : 8000 ] TOPIC #chat // outside of the channel
-//  [ server : 6667 ] :*.freenode.net 332 nikki #chat :[https://wiki.fnchat.org] Welcome to #Chat. No Hate speech, keep political chat limited as to not cause arguments. Please stay longer than a minute to get a response. Other rules are on the website.
-//  [ server : 6667 ] :*.freenode.net 333 nikki #chat f :1682516342
-
-//  [ client : 8000 ] TOPIC #nikki //outside of the channel, no topic
-//  [ server : 6667 ] :*.freenode.net 331 nikki #nikki :No topic is set.
-
-//  [ client : 8000 ] TOPIC nikki //no hashtag
-//  [ server : 6667 ] :*.freenode.net 403 nikki nikki :No such channel
-
-//  [ client : 8000 ] TOPIC #nikki // outside of the channel, topic set
-//  [ server : 6667 ] :*.freenode.net 332 nikki #nikki :HellO this is My TopIc
-//  [ server : 6667 ] :*.freenode.net 333 nikki #nikki Me!~fmalizia@freenode-o6d.g28.dc9e5h.IP :1683709779
-
-//  [ client : 8000 ] TOPIC #nikki :whatever //no access to change the topic
-//  [ server : 6667 ] :*.freenode.net 482 nikki #nikki :You do not have access to change the topic on this channel
-
-//  [ client : 8000 ] TOPIC #nikki :newtopic //trying to set the topic when not in the channel, but access given
-//  [ server : 6667 ] :*.freenode.net 442 nikki #nikki :You're not on that channel!
 
 void Server::PART(t_svec recToken, int fd)
 {
@@ -272,9 +246,11 @@ void Server::PART(t_svec recToken, int fd)
 	Channel*	channel = this->channels[recToken[1]];
 	//add exception if leaver is not in channel
 	User		leaver = *(this->users[fd]);
+
 	std::string	confirm = this->base_msg + "PART :" + channel->channel_name + "\r\n";
 	channel->channelMessage(NULL, confirm);
-	channel->removeMember(leaver);
+	if (channel->removeMember(leaver) == 0)
+		this->channels.erase(channel->channel_name);
 }
 
 //WHO is a little it broken
@@ -327,12 +303,12 @@ void Server:: QUIT(t_svec recToken, int fd)
 	std::cout << "Shutting down the server" << std::endl;
 	std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: leaving]" + "\r\n";
 	write(current->fd_user, quit.c_str(), quit.length());
-	// for (int i = 0; i < this->nfds; i++)
-	// {
+	for (int i = 0; i < this->nfds; i++)
+	{
 		shutdown(this->fds[i].fd, SHUT_RDWR);
 		close(this->fds[i].fd);
 		std::cout << "Connection closed " <<  this->fds[i].fd << std::endl;
-	// }
+	}
 	recToken.clear();
 	shutdown(this->listenfd, SHUT_RDWR);
 	close(this->listenfd);
