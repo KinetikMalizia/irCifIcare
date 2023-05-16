@@ -67,7 +67,8 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			errorMessage += " " + parameter1 + " " + parameter2 + " :is not a recognised channel mode.";
 			break;
 		case 482:
-			errorMessage += " CHANOPRIVSNEEDED " + parameter1 + " :You're not a channel operator";
+		//[ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You must have channel op access or above to unset channel mode o
+			errorMessage += + " " + parameter1 + " " + parameter2 + " :You're not a channel operator";
 			break;
 		case 501:
 			errorMessage += "UMODEUNKNOWNFLAG :Unknown MODE flag";

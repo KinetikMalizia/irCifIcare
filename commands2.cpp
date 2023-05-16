@@ -49,6 +49,10 @@ void Server:: MODE(t_svec recToken, int fd)
 				}
 				if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
+				else if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) == 3)
+				{
+					err_msg(482, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "", "");
+				}
 			}
 		}
 		if (pars[0] == '-')
@@ -63,9 +67,12 @@ void Server:: MODE(t_svec recToken, int fd)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 			}
 		}
+		if(this->channels[recToken[1]]->isOper(current->user_nick))
+		{
 		std::string chan_name = this->channels[recToken[1]]->channel_name;
 		std::string rply = (this->base_msg + "MODE " + chan_name + " :" + pars[0] + this->channels[recToken[1]]->channel_mode());
 		this->channels[recToken[1]]->channelMessage(NULL, rply);
+		}
 	}
 }
 
