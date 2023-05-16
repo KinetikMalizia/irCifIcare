@@ -69,9 +69,9 @@ void Server:: MODE(t_svec recToken, int fd)
 		}
 		if(this->channels[recToken[1]]->isOper(current->user_nick))
 		{
-		std::string chan_name = this->channels[recToken[1]]->channel_name;
-		std::string rply = (this->base_msg + "MODE " + chan_name + " :" + pars[0] + this->channels[recToken[1]]->channel_mode());
-		this->channels[recToken[1]]->channelMessage(NULL, rply);
+			std::string chan_name = this->channels[recToken[1]]->channel_name;
+			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + pars[0] + this->channels[recToken[1]]->channel_mode());
+			this->channels[recToken[1]]->channelMessage(NULL, rply);
 		}
 	}
 }
