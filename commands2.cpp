@@ -310,18 +310,18 @@ void Server:: QUIT(t_svec recToken, int fd)
 	std::cout << "Shutting down the server" << std::endl;
 	std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: leaving]" + "\r\n";
 	write(current->fd_user, quit.c_str(), quit.length());
-	for (int i = 0; i < this->nfds; i++)
-	{
+	// for (int i = 0; i < this->nfds; i++)
+	// {
 		shutdown(this->fds[i].fd, SHUT_RDWR);
 		close(this->fds[i].fd);
 		std::cout << "Connection closed " <<  this->fds[i].fd << std::endl;
-	}
+	// }
 	recToken.clear();
 	shutdown(this->listenfd, SHUT_RDWR);
 	close(this->listenfd);
 }
+//only close the client that quit not shut down the whole server  / only if it was the last client
+//clients can leave with an argument that has to be printed in the message
 //  [ client : 8000 ] QUIT :leaving
-//  [ client : 8000 ] QUIT :leaving
-//  [ server : 6667 ] ERROR :Closing link: (~nikki@185.25.195.185) [Quit: leaving]
 //  [ server : 6667 ] ERROR :Closing link: (~nikki@185.25.195.185) [Quit: leaving]
 //  [ server : 6667 ] ERROR : Closing link: :nikki!~nikki@2drunk2code [Quit: leaving]
