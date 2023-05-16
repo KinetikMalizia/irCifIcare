@@ -43,7 +43,7 @@ void Server:: JOIN(t_svec recToken, int fd)
 			this->channels[recToken[1]] = new Channel(recToken[1]);
 			std::cout << "New channel created: " << recToken[1] << std::endl;
 		}
-		catch (const std::exception& e) 
+		catch (const std::exception& e)
 		{
 			std::cout << e.what(); // information from length_error printed
 			return ;
@@ -51,6 +51,14 @@ void Server:: JOIN(t_svec recToken, int fd)
 		this->channels[recToken[1]]->oper.push_back(current);
 	}
 	Channel chan = *(this->channels.find(recToken[1])->second);
+	//check that the mode is not invite only and if it is, is the person on the list?
+	std::cout << "current nick" << current->user_nick << std::endl;
+	if (chan.mode_map['i'] == 1 && (chan.isInviteList(current->user_nick) == 0))
+	{
+		std::cout << "channel is invite only and you have not been invited " << std::endl;
+		err_msg(473, fd, chan.channel_name,"","","");
+		return ;
+	}
 	// :*.freenode.net 332 aabbccdd #h3llo :this is the start topic
 	std::cout << "Join the CHANNEL\n";
 	this->channels[recToken[1]]->addMember(*current);
@@ -96,7 +104,7 @@ void Server:: PRIVMSG(t_svec recToken, int fd)
 	else
 	{
 		int		target_fd = translate(recToken[1]);
-		
+
 		if (target_fd < 0)
 			this->err_msg(401, fd, recToken[1], "", "", "");
 		else
