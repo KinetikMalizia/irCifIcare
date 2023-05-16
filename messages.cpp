@@ -49,13 +49,13 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 			errorMessage += "USERNOTINCHANNEL " + parameter1 + " " + parameter2 + " :They aren't on that channel";
 			break;
 		case 442:
-			errorMessage += "NOTONCHANNEL " + parameter1 + " :You're not on that channel";
+			errorMessage += " NOTONCHANNEL " + parameter1 + " :You're not on that channel";
 			break;
 		case 443:
-			errorMessage += "USERONCHANNEL " + parameter1 + " " + parameter2 + " :is already on channel";
+			errorMessage += " USERONCHANNEL " + parameter1 + " " + parameter2 + " :is already on channel";
 			break;
 		case 461:
-			errorMessage += "NEEDMOREPARAMS " + parameter1 + " :Not enough parameters";
+			errorMessage += " NEEDMOREPARAMS " + parameter1 + " :Not enough parameters";
 			break;
 		case 462:
 			errorMessage += "ALREADYREGISTRED :You may not reregister";
@@ -66,12 +66,18 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 		case 472:
 			errorMessage += " " + parameter1 + " " + parameter2 + " :is not a recognised channel mode.";
 			break;
+		case 473:
+			errorMessage += " ERR_INVITEONYLCHAN " + parameter1 + " :Cannot join channel. (+i)";
+			break;
 		case 482:
 		//[ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You must have channel op access or above to unset channel mode o
 			errorMessage += + " " + parameter1 + " " + parameter2 + " :You're not a channel operator";
 			break;
 		case 501:
 			errorMessage += "UMODEUNKNOWNFLAG :Unknown MODE flag";
+			break;
+		case 650:
+			errorMessage += parameter1 + ":<channel> [:<topic>]";
 			break;
 		default:
 			errorMessage += " " + parameter1 + " :Unknown error";
@@ -81,6 +87,7 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 	write(fd, errorMessage.c_str(), errorMessage.length());
 	return errorMessage;
 }
+
 
 
 std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std::string parameter2="", std::string parameter3="", std::string info="")

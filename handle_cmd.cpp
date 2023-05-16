@@ -2,20 +2,20 @@
 
 int Server:: handle_cmds(t_svec recToken, int fd)
 {
-	std:: string all_commands[13] = {"INVITE", "KICK", "TOPIC", "PART", "WHO", "USER", "NICK",
-										"JOIN", "PING", "PRIVMSG", "MODE", "NOTICE", "PASS"};
+	std:: string all_commands[14] = {"INVITE", "KICK", "TOPIC", "PART", "WHO", "USER", "NICK",
+										"JOIN", "PING", "PRIVMSG", "MODE", "NOTICE", "PASS", "QUIT"};
 	count_args(recToken);
 	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC,
 														&Server::PART, &Server::WHO, &Server::USER, &Server::NICK,
 														&Server::JOIN, &Server::PING, &Server::PRIVMSG, &Server::MODE,
-														&Server::NOTICE, &Server::PASS};
+														&Server::NOTICE, &Server::PASS, &Server::QUIT};
 	User commander = *this->users.find(fd)->second;
 	if (commander.registered == 0 && recToken.front() != "PASS" && this->password != "NOPASSWD")
 	{
 		std::cout << "ignored: " << recToken.front() << std::endl;
 		return (-1);
 	}
-	for (int i = 0; i < 13; i++)
+	for (int i = 0; i < 14; i++)
 	{
 		if (all_commands[i].compare(recToken.front()) == 0)
 		{
