@@ -116,6 +116,9 @@ std::string Server::rpl_msg(int msg_code, int fd, std::string parameter1="", std
 		case 336:
 			rpl_message += parameter1;
 			break;
+		case 324:
+			rpl_message += parameter1 + " " + parameter2 + " :" + parameter3;
+			break;
 		case 341:
 			rpl_message += parameter1 + " " + parameter2 + " :" + parameter3;
 			break;

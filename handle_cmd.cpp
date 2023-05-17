@@ -8,7 +8,9 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC,
 														&Server::PART, &Server::WHO, &Server::USER, &Server::NICK,
 														&Server::JOIN, &Server::PING, &Server::PRIVMSG, &Server::MODE,
-														&Server::NOTICE, &Server::PASS, &Server::QUIT};
+													&Server::NOTICE, &Server::PASS, &Server::QUIT};
+	if (this->users.find(fd) == this->users.end())
+		return (-1);
 	User commander = *this->users.find(fd)->second;
 	if (commander.registered == 0 && recToken.front() != "PASS" && this->password != "NOPASSWD")
 	{

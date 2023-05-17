@@ -5,6 +5,12 @@ User::User(void)
 	this->last_ping = 0;
 	this->registered = 0;
 	this->buffer = "";
+	this->user_name = "";
+	this->user_mode = "";
+	this->user_nick = "";
+	this->full_name = "";
+	this->server = "";
+	this->hostname = "";
 }
 
 User::~User(void)

@@ -12,21 +12,23 @@ void	tokenize(std::string str, char delim, t_svec &out)
 		back = s.find('\n');
 		if (back != std::string::npos && s[0] != ':')
 		{
-			// std::cout << "sep: " << s.substr(0,back) << std::endl;
+			std::cout << "sep: " << s.substr(0,back) << std::endl;
 			cut = s.substr(0,back);
 			if(cut[cut.length()-1] == '\r')
 				cut.erase(cut.length()-1, 1);
 			out.push_back(cut);
 			s.erase(0,back + 1);
 		}
-		if (s[0] == ':')
+		if (!s.empty() && s[0] == ':')
 		{
 			std::getline(ss, end);
 			s.erase(0,1);
 			s += ' ';
 			s += end;
+			if(!s.empty() && s[s.length()-1] == '\n')
+				s.erase(s.length()-1, 1);
 		}
-		if(s[s.length()-1] == '\r')
+		if(!s.empty() && s[s.length()-1] == '\r')
 			s.erase(s.length()-1, 1);
 		out.push_back(s);
 	}

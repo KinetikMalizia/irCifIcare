@@ -4,19 +4,21 @@ void Server:: MODE(t_svec recToken, int fd)
 {
 	User *current = (this->users).find(fd)->second;
 	std::string cmp = recToken[1];
-	if(cmp.compare(current->user_nick) == 0)
-	{
-		std::cout << "recieved MODE\n";
-		std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
-		write(fd, cont.c_str(), cont.length());
-	}
+//	if(cmp.compare(current->user_nick) == 0)
+//	{
+//		std::cout << "recieved MODE\n";
+//		std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
+//		write(fd, cont.c_str(), cont.length());
+//	}
 	if (channelExists(recToken[1]))
 	{
 		int	target_fd = 0;
+		std::string pars = "";
 		if(recToken.size() > 2)
 			target_fd = translate(recToken[3]);
 		// std::cout << "TOPIC IS: " << this->channels[recToken[1]]->topic_name << "\n";
-		std::string pars = recToken[2];
+		if(recToken.size())
+			pars = recToken[2];
 		// std::cout << "rec3 : " << recToken[3] << std::endl;
 		// std::cout << "pars is : " << pars << "\n";
 		if (pars[0] == '+')
@@ -91,12 +93,14 @@ void Server:: MODE(t_svec recToken, int fd)
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
 			}
 		}
-		if(this->channels[recToken[1]]->isOper(current->user_nick) && pars[0] != 'o')
+		if(!pars.empty() && pars[1] != 'o')
 		{
 			std::string chan_name = this->channels[recToken[1]]->channel_name;
-			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + this->channels[recToken[1]]->channel_mode() + "\r\n");
+			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + pars[0] +this->channels[recToken[1]]->channel_mode() + "\r\n");
 			this->channels[recToken[1]]->channelMessage(NULL, rply);
 		}
+		if (pars.empty())
+			rpl_msg(324, fd, current->user_nick,  this->channels[recToken[1]]->channel_name,  this->channels[recToken[1]]->channel_mode(), "");
 	}
 }
 
@@ -321,20 +325,18 @@ void Server::PASS(t_svec recToken, int fd)
 void Server:: QUIT(t_svec recToken, int fd)
 {
 	User *current = (this->users).find(fd)->second;
+	std::string combine;
 	std:: cout << "current Token: " << recToken[1] << std::endl;
-	if (recToken[1].compare("leaving") == 0)
-	{
-		std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: leaving]" + "\r\n";
-		write(current->fd_user, quit.c_str(), quit.length());
-		remove_from_poll(&this->fds[fd], this->nfds, fd);
-	}
-	else
-	{
-		std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: " + recToken[1].append("]") + "\r\n";
-		write(current->fd_user, quit.c_str(), quit.length());
-		remove_from_poll(&this->fds[fd], this->nfds, fd);
-	}
-	//if it was the last client do we shut down the server?
+	if (recToken.size() < 2)
+		return ;
+	// for (int i = 1; i < recToken.size(); i++)
+	// 	combine += recToken[i];
+	std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: " + recToken[1] + "]" + "\r\n";
+	write(current->fd_user, quit.c_str(), quit.length());
+	remove_from_poll(&this->fds[fd], this->nfds, fd);
+	removeAllChannel(*current);
+	this->users.erase(fd);
+	delete current;
 }
 //only close the client that quit not shut down the whole server  / only if it was the last client
 //clients can leave with an argument that has to be printed in the message

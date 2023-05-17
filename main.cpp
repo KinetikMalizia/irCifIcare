@@ -53,9 +53,10 @@ int main(int ac, char **av)
 				continue ;
 			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 			{
-				//remove user now
-				std::cout << "Error revents =" << ourServer.fds[i].fd << std::endl;
-				running = false;
+				ourServer.remove_from_poll(&ourServer.fds[i], ourServer.nfds, i);
+				ourServer.removeAllChannel(*ourServer.users.find(i)->second);
+				ourServer.users.erase(i);
+				delete ourServer.users[i];
 				break;
 			}
 			if (ourServer.fds[i].fd == ourServer.listenfd)
@@ -81,7 +82,7 @@ int main(int ac, char **av)
 				curr->buffer += std::string(recvline);
 				ending = lastN(curr->buffer, 1);
 				if (ending == "\n")
-				{
+				{	
 					tokenize(curr->buffer, ' ' ,recToken);
 					ourServer.find_cmd(recToken, ourServer.fds[i].fd);
 					curr->buffer = "";
@@ -93,8 +94,6 @@ int main(int ac, char **av)
 					}
 					recToken.clear();
 				}
-				// else
-				// 	std::cout << "last 2 chars: " << (int)ending[0] << " " << (int)ending[1] << std::endl;
 			}
 		}
 	}

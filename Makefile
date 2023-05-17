@@ -1,4 +1,4 @@
-NAME = serv
+NAME = ircserv
 
 SRCS =	main.cpp parsing.cpp server.cpp user.cpp channel.cpp messages.cpp \
 		handle_cmd.cpp commands.cpp commands2.cpp

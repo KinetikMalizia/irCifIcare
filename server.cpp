@@ -73,6 +73,7 @@ int Server:: accept_connection(int listenfd)
 	//get out of infinite loop and then read and write
 
 	connfd = accept(this->listenfd, (struct sockaddr *)NULL, NULL);
+	fcntl(connfd, F_SETFL, O_NONBLOCK);
 	this->fds[nfds].fd = connfd;
 	this->fds[nfds].events = POLLIN;
 	std::cout << "New connection established " << this->fds[nfds].fd << std::endl;
@@ -99,6 +100,19 @@ void	Server::print_users(void)
 	for (std::map<int, User*>::iterator iter = this->users.begin(); iter != this->users.end(); iter++)
 	{
 		std::cout<<(*iter).first<<"\t"<<(*iter).second<<"\n";
+	}
+}
+
+void Server:: removeAllChannel(User& user)
+{
+	std::map<std::string, Channel*>::iterator chans;
+	for (chans = this->channels.begin(); chans == this->channels.end(); chans++)
+	{ 
+		if (user.user_nick.empty())
+			return ;
+		if (chans->second->isMember(user.user_nick))
+			if (chans->second->removeMember(user) == 0)
+				this->channels.erase(chans->second->channel_name);
 	}
 }
 
