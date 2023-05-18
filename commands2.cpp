@@ -14,10 +14,10 @@ void Server:: MODE(t_svec recToken, int fd)
 	{
 		int	target_fd = 0;
 		std::string pars = "";
-		if(recToken.size() > 2)
+		if(recToken.size() > 3)
 			target_fd = translate(recToken[3]);
 		// std::cout << "TOPIC IS: " << this->channels[recToken[1]]->topic_name << "\n";
-		if(recToken.size())
+		if(recToken.size() > 2)
 			pars = recToken[2];
 		// std::cout << "rec3 : " << recToken[3] << std::endl;
 		// std::cout << "pars is : " << pars << "\n";
@@ -64,7 +64,7 @@ void Server:: MODE(t_svec recToken, int fd)
 					// std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
 					if(recToken.size() > 3)
 					{
-						this->channels[recToken[1]]->limit = std::stoi(recToken[3]);
+						this->channels[recToken[1]]->limit = std::atoi(recToken[3].c_str());
 						recToken.erase(recToken.begin() + 2);
 					}
 					else

@@ -35,6 +35,15 @@ void Server:: NICK(t_svec recToken, int fd)
 void Server:: JOIN(t_svec recToken, int fd)
 {
 	User *current = (this->users).find(fd)->second;
+	std::string pass = "";
+
+	if (recToken.size() < 2)
+	{
+		err_msg(461,fd,"","","","");
+		return ;
+	}
+	if (recToken.size() > 2)
+		pass = recToken[2];
 	if (!channelExists(recToken[1]))
 	{
 		try
@@ -56,6 +65,11 @@ void Server:: JOIN(t_svec recToken, int fd)
 	{
 		std::cout << "channel is invite only and you have not been invited " << std::endl;
 		err_msg(473, fd, chan.channel_name,"","","");
+		return ;
+	}
+	else if (chan.mode_map['k'] == 1 && pass != chan.password && !chan.isInviteList(current->user_nick))
+	{
+		err_msg(475,fd,current->user_nick,chan.channel_name,"","");
 		return ;
 	}
 	// :*.freenode.net 332 aabbccdd #h3llo :this is the start topic

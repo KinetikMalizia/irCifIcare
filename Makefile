@@ -23,7 +23,7 @@ fclean:		clean
 
 run: $(NAME)
 	@printf "\n\033[32;1mvvv output vvv \033[0m\n\n"
-	@./serv
+	@./$(NAME)
 	@printf "\n\n\n"
 	@ make clean
 

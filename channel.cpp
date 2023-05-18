@@ -2,7 +2,6 @@
 
 Channel::Channel(void)
 {
-	this->c_time = std::time(NULL);
 	this->mode_map.insert(std::pair<char,int>('i',0));
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
@@ -18,7 +17,6 @@ Channel::~Channel(void)
 
 Channel::Channel(std::string name): channel_name(name), nmembers(0)
 {
-	this->c_time = std::time(NULL);
 	this->mode_map.insert(std::pair<char,int>('i',0));
 	this->mode_map.insert(std::pair<char, int>('t', 1));
 	this->mode_map.insert(std::pair<char, int>('k', 0));
@@ -79,18 +77,27 @@ int	Channel::isInviteList(std::string nick)
 
 int	Channel::removeMember(User& member)
 {
+	std::vector<User*>::iterator found;
+
 	if (this->isOper(member.user_nick))
 	{
-		std::vector<User*>::iterator found;
 
 		for (found = oper.begin(); found != oper.end(); found++)
 		{
-			// std::cout << "to find: " << member.user_nick << std::endl;
-			// std::cout << (*found)->user_nick << std::endl;
 			if ((*found)->user_nick == member.user_nick)
 			{
 				oper.erase(found);
-				std::cout << "found!\n";
+				break;
+			}
+		}
+	}
+	if (this->isInviteList(member.user_nick))
+	{
+		for (found = invite.begin(); found != invite.end(); found++)
+		{
+			if ((*found)->user_nick == member.user_nick)
+			{
+				invite.erase(found);
 				break;
 			}
 		}

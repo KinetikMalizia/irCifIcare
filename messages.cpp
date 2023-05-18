@@ -69,8 +69,10 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 		case 473:
 			errorMessage += " ERR_INVITEONYLCHAN " + parameter1 + " :Cannot join channel. (+i)";
 			break;
+		case 475:
+			errorMessage += " ERR_BADPASSWORD " + parameter2 + " :Cannot join channel (incorrect channel key)";
+			break;
 		case 482:
-		//[ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You must have channel op access or above to unset channel mode o
 			errorMessage += + " " + parameter1 + " " + parameter2 + " :You're not a channel operator";
 			break;
 		case 501:
