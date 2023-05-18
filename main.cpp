@@ -67,7 +67,7 @@ int main(int ac, char **av)
 				int n = read(ourServer.fds[i].fd, recvline, MAXLINE - 1);
 				if (n < 0)
 				{
-					std::cerr << "READ ERROR!\n";
+					std::cout << "READ ERROR!" << std::endl;
 					running = false;
 					break;
 				}
