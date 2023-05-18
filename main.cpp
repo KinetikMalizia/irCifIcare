@@ -53,8 +53,8 @@ int main(int ac, char **av)
 				continue ;
 			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 			{
-				std::cout << "Error revents" << std::endl;
-				ourServer.remove_from_poll(&ourServer.fds[i], ourServer.nfds, i);
+				std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
+				ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, i);
 				ourServer.removeAllChannel(*ourServer.users.find(i)->second);
 				ourServer.users.erase(i);
 				delete ourServer.users[i];
@@ -68,18 +68,14 @@ int main(int ac, char **av)
 				int n = read(ourServer.fds[i].fd, recvline, MAXLINE - 1);
 				if (n < 0)
 				{
-<<<<<<< HEAD
-					std::cout << "READ ERROR!" << std::endl;
-=======
 					std::cout << "READ ERROR!\n"  <<  std::endl;
->>>>>>> c5f448a5872c346c662bfd63591ab3b334b95597
 					running = false;
 					break;
 				}
 				else if (n == 0)
 				{
-					std::cout << "Connection closed by client" << std::endl;
-					ourServer.remove_from_poll(&ourServer.fds[i], ourServer.nfds, i);
+					std::cout << "Connection closed by client with fd: " << ourServer.fds[i].fd << std::endl;
+					ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, i);
 					ourServer.removeAllChannel(*ourServer.users.find(i)->second);
 					ourServer.users.erase(i);
 					delete ourServer.users[i];
