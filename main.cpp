@@ -53,6 +53,7 @@ int main(int ac, char **av)
 				continue ;
 			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 			{
+				std::cout << "Error revents" << std::endl;
 				ourServer.remove_from_poll(&ourServer.fds[i], ourServer.nfds, i);
 				ourServer.removeAllChannel(*ourServer.users.find(i)->second);
 				ourServer.users.erase(i);
@@ -67,13 +68,21 @@ int main(int ac, char **av)
 				int n = read(ourServer.fds[i].fd, recvline, MAXLINE - 1);
 				if (n < 0)
 				{
+<<<<<<< HEAD
 					std::cout << "READ ERROR!" << std::endl;
+=======
+					std::cout << "READ ERROR!\n"  <<  std::endl;
+>>>>>>> c5f448a5872c346c662bfd63591ab3b334b95597
 					running = false;
 					break;
 				}
 				else if (n == 0)
 				{
 					std::cout << "Connection closed by client" << std::endl;
+					ourServer.remove_from_poll(&ourServer.fds[i], ourServer.nfds, i);
+					ourServer.removeAllChannel(*ourServer.users.find(i)->second);
+					ourServer.users.erase(i);
+					delete ourServer.users[i];
 					break;
 				}
 				recvline[n] = '\0';
@@ -101,8 +110,9 @@ int main(int ac, char **av)
 	{
 		shutdown(ourServer.fds[i].fd, SHUT_RDWR);
 		close(ourServer.fds[i].fd);
-		std::cout << "Connection closed " <<  ourServer.fds[i].fd << std::endl;
+//		std::cout << "Connection closed " <<  ourServer.fds[i].fd << std::endl;
 	}
+	std::cout << "SHUTTING DOWN" << std::endl;
 	//loop waiting for incoming connects or data on connected sockets
 	// add poll in the infinite loop ?
 	// loop through current size to close all the fds
