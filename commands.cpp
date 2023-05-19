@@ -22,6 +22,15 @@ void Server:: NICK(t_svec recToken, int fd)
 	User *current = (this->users).find(fd)->second;
 	std::cout << "recieved NICK\n";
 	std::string	reponse;
+	std::string	check = ALLOWED;
+	for(int r = 0; recToken[1][r]; r++)
+	{
+		if (check.find(recToken[1][r]) == std::string::npos)
+		{
+			err_msg(432,fd,recToken[1],"","","");
+			return ;
+		}
+	}
 	if (!isNickUsed(recToken[1]))
 	{
 		reponse = this->base_msg + " NICK :" + recToken[1] + "\r\n";

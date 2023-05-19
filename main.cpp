@@ -113,7 +113,7 @@ int main(int ac, char **av)
 		}
 
 	}
-	printf("exiting safely\n");
+	//printf("exiting safely\n");
 	system("pause");
 
 	for (i = 1; i < ourServer.nfds; i++)

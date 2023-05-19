@@ -27,4 +27,6 @@ std::string	lastN(std::string input, int n);
 std::string	toUpper(std::string str);
 
 typedef std::vector<std::string>	t_svec;
+
+# define ALLOWED "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_[]{}\\|"
 #endif
