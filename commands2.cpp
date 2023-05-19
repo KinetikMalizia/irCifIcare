@@ -90,17 +90,17 @@ void Server:: MODE(t_svec recToken, int fd)
 					this->channels[recToken[1]]->add_mode(target_fd, '-', *current);
 				}
 				else if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
-					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
+					err_msg(472, fd, std::string(1, pars[i]), "", "", "");
 			}
 		}
 		if(!pars.empty() && pars[1] != 'o')
 		{
 			std::string chan_name = this->channels[recToken[1]]->channel_name;
-			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + pars[0] +this->channels[recToken[1]]->channel_mode() + "\r\n");
+			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + this->channels[recToken[1]]->channel_mode() + "\r\n");
 			this->channels[recToken[1]]->channelMessage(NULL, rply);
 		}
 		if (pars.empty())
-			rpl_msg(324, fd, current->user_nick,  this->channels[recToken[1]]->channel_name,  this->channels[recToken[1]]->channel_mode(), "");
+			rpl_msg(324, fd, this->channels[recToken[1]]->channel_name,  this->channels[recToken[1]]->channel_mode(), "", "");
 	}
 }
 
