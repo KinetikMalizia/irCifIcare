@@ -2,6 +2,8 @@
 
 void Server:: USER(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	User *current = (this->users).find(fd)->second;
 	current->setInfo(recToken, fd);
 	std::string cont = first_message(fd);
@@ -15,6 +17,8 @@ void Server:: USER(t_svec recToken, int fd)
 
 void Server:: NICK(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	User *current = (this->users).find(fd)->second;
 	std::cout << "recieved NICK\n";
 	std::string	reponse;
@@ -34,6 +38,8 @@ void Server:: NICK(t_svec recToken, int fd)
 
 void Server:: JOIN(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	User *current = (this->users).find(fd)->second;
 	std::string pass = "";
 
@@ -89,6 +95,8 @@ void Server:: JOIN(t_svec recToken, int fd)
 
 void Server:: PING(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	User *current = (this->users).find(fd)->second;
 	std::string pong = "PONG " + recToken[1] + "\r\n";
 	// snprintf(buff, sizeof(buff), "%s", pong.c_str());
@@ -101,6 +109,8 @@ void Server:: PING(t_svec recToken, int fd)
 
 void Server:: PRIVMSG(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	User *current = (this->users).find(fd)->second;
 	std::cout << "recieved PRIVMSG\n";
 	if (recToken[1][0] == '#')
@@ -130,6 +140,8 @@ void Server:: PRIVMSG(t_svec recToken, int fd)
 
 void Server::NAMES(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	if (!this->channelExists(recToken[1]))
 	{
 		std::cout << "channel doesnt exist\n";
@@ -160,6 +172,8 @@ void Server:: NOTICE(t_svec recToken, int fd)
 {
 	// NOTICE jcarlen :hello
 	//:KinKangs!~fmalizia@freenode/user/KinKangs NOTICE KinKangs :hello
+	if (recToken.size() < 2)
+		return ;
 	std::string	message = this->base_msg;
 
 	if (!this->channelExists(recToken[1]))

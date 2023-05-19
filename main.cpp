@@ -1,5 +1,8 @@
 #include "headers/irc.h"
+#include <signal.h>
 
+volatile sig_atomic_t stop;
+void inthand(int signum);
 
 int main(int ac, char **av)
 {
@@ -28,80 +31,91 @@ int main(int ac, char **av)
 	User *curr;
 	t_svec	recToken;
 
-	memset(ourServer.fds, 0, sizeof(ourServer.fds));
-	// Set up the initial listening socket
-	ourServer.fds[0].fd = ourServer.listenfd;
-	ourServer.fds[0].events = POLLIN;
-	//initialize the timeout to 3 minutes
-	timeout = (3 * 60 * 1000);
-	bool running = true;
-	//bool start = true;
-	while (running)
+
+	signal(SIGINT, inthand);
+
+	while (!stop)
 	{
-		ourServer.pollfd = poll(ourServer.fds, ourServer.nfds, timeout);
-		if (ourServer.pollfd < 0)
+		memset(ourServer.fds, 0, sizeof(ourServer.fds));
+		// Set up the initial listening socket
+		ourServer.fds[0].fd = ourServer.listenfd;
+		ourServer.fds[0].events = POLLIN;
+		//initialize the timeout to 3 minutes
+		timeout = (3 * 60 * 1000);
+		bool running = true;
+		//bool start = true;
+		while (running)
 		{
-			std::cout << "Poll failed" << std::endl;
-			running = false;
-			break;
-		}
-		current_size = ourServer.nfds;
-		for (i = 0; i < current_size; i++)
-		{
-			//loop through to find the fds that returned POLLIN
-			if (ourServer.fds[i].revents == 0)
-				continue ;
-			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
+			ourServer.pollfd = poll(ourServer.fds, ourServer.nfds, timeout);
+			if (ourServer.pollfd < 0)
 			{
-				std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
-				ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, i);
-				ourServer.removeAllChannel(*ourServer.users.find(i)->second);
-				ourServer.users.erase(i);
-				delete ourServer.users[i];
+				std::cout << "Poll failed" << std::endl;
+				running = false;
 				break;
 			}
-			if (ourServer.fds[i].fd == ourServer.listenfd)
-				ourServer.accept_connection(ourServer.listenfd);
-			else
+			current_size = ourServer.nfds;
+			for (i = 0; i < current_size; i++)
 			{
-				std::memset(recvline, 0, MAXLINE);
-				int n = read(ourServer.fds[i].fd, recvline, MAXLINE - 1);
-				if (n < 0)
+				//loop through to find the fds that returned POLLIN
+				if (ourServer.fds[i].revents == 0)
+					continue ;
+				if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 				{
-					std::cout << "READ ERROR!\n"  <<  std::endl;
-					running = false;
-					break;
-				}
-				else if (n == 0)
-				{
-					std::cout << "Connection closed by client with fd: " << ourServer.fds[i].fd << std::endl;
+					std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
 					ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, i);
 					ourServer.removeAllChannel(*ourServer.users.find(i)->second);
 					ourServer.users.erase(i);
 					delete ourServer.users[i];
+
 					break;
 				}
-				recvline[n] = '\0';
-				std::cout << "Received: " << recvline << std::endl;
-				curr = ourServer.users.find(ourServer.fds[i].fd)->second;
-				curr->buffer += std::string(recvline);
-				ending = lastN(curr->buffer, 1);
-				if (ending == "\n")
-				{	
-					tokenize(curr->buffer, ' ' ,recToken);
-					ourServer.find_cmd(recToken, ourServer.fds[i].fd);
-					curr->buffer = "";
-					if (std::strncmp((char*)recvline, "QSERV\r\n", 5) == 0)
+				if (ourServer.fds[i].fd == ourServer.listenfd)
+					ourServer.accept_connection(ourServer.listenfd);
+				else
+				{
+					std::memset(recvline, 0, MAXLINE);
+					int n = read(ourServer.fds[i].fd, recvline, MAXLINE - 1);
+					if (n < 0)
 					{
-						std::cout << "Shutting down server" << std::endl;
+						std::cout << "READ ERROR!\n"  <<  std::endl;
 						running = false;
 						break;
 					}
-					recToken.clear();
+					else if (n == 0)
+					{
+						std::cout << "Connection closed by client with fd: " << ourServer.fds[i].fd << std::endl;
+						ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, i);
+						ourServer.removeAllChannel(*ourServer.users.find(i)->second);
+						ourServer.users.erase(i);
+						delete ourServer.users[i];
+						break;
+					}
+					recvline[n] = '\0';
+					std::cout << "Received: " << recvline << std::endl;
+					curr = ourServer.users.find(ourServer.fds[i].fd)->second;
+					curr->buffer += std::string(recvline);
+					ending = lastN(curr->buffer, 1);
+					if (ending == "\n")
+					{
+						tokenize(curr->buffer, ' ' ,recToken);
+						ourServer.find_cmd(recToken, ourServer.fds[i].fd);
+						curr->buffer = "";
+						if (std::strncmp((char*)recvline, "QSERV\r\n", 5) == 0)
+						{
+							std::cout << "Shutting down server" << std::endl;
+							running = false;
+							break;
+						}
+						recToken.clear();
+					}
 				}
 			}
 		}
+
 	}
+	printf("exiting safely\n");
+	system("pause");
+
 	for (i = 1; i < ourServer.nfds; i++)
 	{
 		shutdown(ourServer.fds[i].fd, SHUT_RDWR);
@@ -116,3 +130,9 @@ int main(int ac, char **av)
 	close(ourServer.listenfd);
 	return 0;
 }
+
+void inthand(int signum) {
+		stop = 1;
+		// remove_from_poll()
+		(void)signum;
+	}
