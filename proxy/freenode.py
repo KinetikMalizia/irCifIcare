@@ -88,8 +88,8 @@ port_proxy = 8000
 
 port_server = 6667
 #ip_server = '127.0.0.1'
-ip_server = '149.28.246.185' # freenode
-# ip_server = '159.65.18.165' # testnet.ergo.chat
+#ip_server = '149.28.246.185' # freenode
+ip_server = '159.65.18.165' # testnet.ergo.chat
 
 
 # KIWIIRC
