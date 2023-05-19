@@ -5,13 +5,24 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "lldb-vscode",
+			"name": "(lldb) Launch",
+			"type": "cppdbg",
 			"request": "launch",
-			"name": "Debug",
-			"program": "${workspaceRoot}/serv",
+			"program": "${workspaceFolder}/ircserv",
 			"args": [],
-			"env": [],
-			"cwd": "${workspaceRoot}"
-		}
+			"stopAtEntry": false,
+			"cwd": "${workspaceRoot}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "lldb"
+		},
+		// {
+		// 	"type": "cppdbg",
+		// 	"request": "launch",
+		// 	"name": "Debug",
+		// 	"program": "${workspaceRoot}/ircserv",
+		// 	"args": [],
+		// 	"cwd": "${workspaceRoot}"
+		// }
 	]
 }

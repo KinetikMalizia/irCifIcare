@@ -24,8 +24,6 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 			(this->*action[i])(recToken, fd);
 			return (0);
 		}
-		// else
-		// 	err_msg(0, fd, "", "", "", "");
 	}
 	return (-1);
 }
@@ -36,7 +34,5 @@ void Server:: count_args(t_svec recToken)
 	this->args = 0;
 
 	for (itr = recToken.begin(); itr != recToken.end(); itr++)
-	{
 		this->args++;
-	}
 }

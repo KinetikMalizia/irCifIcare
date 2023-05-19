@@ -2,6 +2,8 @@
 
 void Server:: MODE(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	User *current = (this->users).find(fd)->second;
 	std::string cmp = recToken[1];
 //	if(cmp.compare(current->user_nick) == 0)
@@ -106,6 +108,8 @@ void Server:: MODE(t_svec recToken, int fd)
 
 void Server:: INVITE(t_svec recToken, int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	std::string invited = recToken[1];
 	std::string channel = recToken[2];
 	std::cout << "invited " << invited << std::endl;
@@ -174,6 +178,8 @@ void Server:: INVITE(t_svec recToken, int fd)
 
 void Server:: KICK(t_svec recToken,int fd)
 {
+	if (recToken.size() < 2)
+		return ;
 	if (!this->channelExists(recToken[1]))
 	{
 		std::cout << "channel doesnt exist\n";
@@ -202,6 +208,8 @@ void Server:: KICK(t_svec recToken,int fd)
 
 void Server::TOPIC(t_svec recToken, int fd)
 { //outside of the channel asking for topic with channel name does not work
+	if (recToken.size() < 2)
+		return ;
 	User *current = (this->users).find(fd)->second;
 	if (recToken.size() == 2)// only 1 argument to set the topic
 	{
@@ -307,6 +315,8 @@ void Server::WHO(t_svec recToken, int fd)
 void Server::PASS(t_svec recToken, int fd)
 {
 	User *check = this->users.find(fd)->second;
+	if (recToken.size() < 2)
+		return ;
 	std::string	pass = recToken[1];
 
 	if(check->registered == 1)
