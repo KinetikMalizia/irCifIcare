@@ -2,11 +2,11 @@
 
 int Server:: handle_cmds(t_svec recToken, int fd)
 {
-	std:: string all_commands[14] = {"INVITE", "KICK", "TOPIC", "PART", "WHO", "USER", "NICK",
+	std:: string all_commands[14] = {"INVITE", "KICK", "TOPIC", "PART", "USER", "NICK",
 										"JOIN", "PING", "PRIVMSG", "MODE", "NOTICE", "PASS", "QUIT"};
 	count_args(recToken);
 	void (Server:: *action[])(t_svec recToken, int fd) = {&Server::INVITE, &Server::KICK, &Server::TOPIC,
-														&Server::PART, &Server::WHO, &Server::USER, &Server::NICK,
+														&Server::PART, &Server::USER, &Server::NICK,
 														&Server::JOIN, &Server::PING, &Server::PRIVMSG, &Server::MODE,
 													&Server::NOTICE, &Server::PASS, &Server::QUIT};
 	if (this->users.find(fd) == this->users.end())

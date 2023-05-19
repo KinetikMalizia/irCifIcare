@@ -6,32 +6,21 @@ void Server:: MODE(t_svec recToken, int fd)
 		return ;
 	User *current = (this->users).find(fd)->second;
 	std::string cmp = recToken[1];
-//	if(cmp.compare(current->user_nick) == 0)
-//	{
-//		std::cout << "recieved MODE\n";
-//		std::string cont = current->user_nick + "!" + current->user_name + "@" + current->hostname + " MODE " + current->user_nick + ":+" + current->user_mode + "\r\n";
-//		write(fd, cont.c_str(), cont.length());
-//	}
+
 	if (channelExists(recToken[1]))
 	{
 		int	target_fd = 0;
 		std::string pars = "";
 		if(recToken.size() > 3)
 			target_fd = translate(recToken[3]);
-		// std::cout << "TOPIC IS: " << this->channels[recToken[1]]->topic_name << "\n";
 		if(recToken.size() > 2)
 			pars = recToken[2];
-		// std::cout << "rec3 : " << recToken[3] << std::endl;
-		// std::cout << "pars is : " << pars << "\n";
 		if (pars[0] == '+')
 		{
 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
 			{
 				if(pars[i] == 'o')
 				{
-					// [ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You must have channel halfop access or above to unset channel mode i
-					// [ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You must have channel op access or above to unset channel mode o
-					// [ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You do not have access to change the topic on this channel[ server : 6667 ] :*.freenode.net 482 jcarlen #adc :You do not have access to change the topic on this channel
 					if(recToken.size() > 3)
 					{
 						this->channels[recToken[1]]->add_mode(target_fd, '+', *current);
@@ -45,9 +34,6 @@ void Server:: MODE(t_svec recToken, int fd)
 				}
 				if(pars[i] == 'k')
 				{
-					//  [ server : 6667 ] :*.freenode.net 696 jcarlen #adc k * :You must specify a parameter for the key mode. Syntax: <key>.
-					// std::cout << "rec3 : " << recToken[3] << std::endl;
-					// std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
 					if(recToken.size() > 3)
 					{
 						this->channels[recToken[1]]->password = recToken[3];
@@ -61,9 +47,6 @@ void Server:: MODE(t_svec recToken, int fd)
 				}
 				if(pars[i] == 'l')
 				{
-					// [ server : 6667 ] :*.freenode.net 696 jcarlen #adc l * :You must specify a parameter for the limit mode. Syntax: <limit>.
-					// std::cout << "rec3 : " << recToken[3] << std::endl;
-					// std::cout << "channel is : " << this->channels[recToken[1]]->channel_name << std::endl;
 					if(recToken.size() > 3)
 					{
 						this->channels[recToken[1]]->limit = std::atoi(recToken[3].c_str());
@@ -88,9 +71,7 @@ void Server:: MODE(t_svec recToken, int fd)
 			for (int i = 1; i < static_cast<int>(pars.length()); i++)
 			{
 				if(pars[i] == 'o')
-				{
 					this->channels[recToken[1]]->add_mode(target_fd, '-', *current);
-				}
 				else if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
 					err_msg(472, fd, std::string(1, pars[i]), "", "", "");
 			}
@@ -287,29 +268,6 @@ void Server::PART(t_svec recToken, int fd)
 	channel->channelMessage(NULL, confirm);
 	if (channel->removeMember(leaver) == 0)
 		this->channels.erase(channel->channel_name);
-}
-
-//WHO is a little it broken
-void Server::WHO(t_svec recToken, int fd)
-{
-	if (!this->channelExists(recToken[1]))
-	{
-		std::cout << "channel doesnt exist\n";
-		err_msg(403,fd,recToken[1],"","","");
-		return ;
-	}
-	Channel*	channel = this->channels[recToken[1]];
-	std::map<int, User*>::iterator	itr;
-	User		asker = *(this->users[fd]);
-	std::string	first = this->hostname + " 352 " + asker.user_nick + " " + channel->channel_name + " ~";
-	std::string	message;
-
-	for (itr=channel->members.begin(); itr!=channel->members.end(); itr++)
-	{
-		User curr = *(itr->second);
-		message = first + curr.user_name + " " + curr.hostname + " " + this->hostname + " H :0 " + curr.full_name + "\r\n";
-		write(fd, message.c_str(), message.length());
-	}
 }
 
 void Server::PASS(t_svec recToken, int fd)

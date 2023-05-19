@@ -43,7 +43,6 @@ int main(int ac, char **av)
 		//initialize the timeout to 3 minutes
 		timeout = (3 * 60 * 1000);
 		bool running = true;
-		//bool start = true;
 		while (running)
 		{
 			ourServer.pollfd = poll(ourServer.fds, ourServer.nfds, timeout);
@@ -64,9 +63,10 @@ int main(int ac, char **av)
 					std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
 					ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, i);
 					ourServer.removeAllChannel(*ourServer.users.find(i)->second);
+					close(ourServer.fds[i].fd);
 					ourServer.users.erase(i);
+					stop = 1;
 					delete ourServer.users[i];
-
 					break;
 				}
 				if (ourServer.fds[i].fd == ourServer.listenfd)
@@ -104,6 +104,7 @@ int main(int ac, char **av)
 						{
 							std::cout << "Shutting down server" << std::endl;
 							running = false;
+							stop = 1;
 							break;
 						}
 						recToken.clear();
@@ -131,8 +132,9 @@ int main(int ac, char **av)
 	return 0;
 }
 
-void inthand(int signum) {
-		stop = 1;
-		// remove_from_poll()
-		(void)signum;
-	}
+void inthand(int signum)
+{
+	stop = 1;
+	// remove_from_poll()
+	(void)signum;
+}
