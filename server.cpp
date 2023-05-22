@@ -149,7 +149,7 @@ void Server::check_user_pings()
 	{
 		int fd = it->first; 	
 		User* user = it->second;
-		if (current_time - user->last_ping > 12 && user->last_ping)
+		if (current_time - user->last_ping > 120 && user->last_ping)
 		{
 			std::cout << "User " << user->user_nick << " timed out" << std::endl;
 			close(fd);
