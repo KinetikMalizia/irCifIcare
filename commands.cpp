@@ -87,6 +87,12 @@ void Server:: JOIN(t_svec recToken, int fd)
 		err_msg(475,fd,current->user_nick,chan.channel_name,"","");
 		return ;
 	}
+	else if (chan.mode_map['l'] == 1 && chan.nmembers >= chan.limit)
+	{
+		err_msg(471,fd,current->user_nick,chan.channel_name,"","");
+		return ;
+		//testnet.ergo.chat 471 estebann #hehe :Cannot join channel (+l)
+	}
 	// :*.freenode.net 332 aabbccdd #h3llo :this is the start topic
 	std::cout << "Join the CHANNEL\n";
 	this->channels[recToken[1]]->addMember(*current);

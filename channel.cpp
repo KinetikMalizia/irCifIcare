@@ -161,12 +161,14 @@ int Channel::update_mode(char key, int value, User &member)
 {
 	if (this->isOper(member.user_nick))
 	{
-		if (this->mode_map.find(key) != this->mode_map.end())
+		if(this->mode_map.find(key) != this->mode_map.end())
 			this->mode_map[key] = value;
-		if(this->password.empty())
+		else if(this->password.empty())
 			this->mode_map['k'] = 0;
-		if(this->limit == 0)
+		else if(this->limit == 0)
 			this->mode_map['l'] = 0;
+		else if(key == 'l' && value == 0)
+			this->limit = 0;
 		else
 			return(-1);
 	}

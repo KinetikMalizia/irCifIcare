@@ -25,6 +25,7 @@ int Server:: handle_cmds(t_svec recToken, int fd)
 			return (0);
 		}
 	}
+	check_user_pings();
 	return (-1);
 }
 

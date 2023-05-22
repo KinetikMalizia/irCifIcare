@@ -63,6 +63,9 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 		case 464:
 			errorMessage += " PASSWDMISMATCH :Password incorrect";
 			break;
+		case 471:
+			errorMessage += " " + parameter1 + " " + parameter2 + " :Cannot join channel (+l)";
+			break;
 		case 472:
 			errorMessage += " " + parameter1 + " " + parameter2 + " :is not a recognised channel mode.";
 			break;
