@@ -63,6 +63,9 @@ std::string Server::err_msg(int errorCode, int fd, std::string parameter1="", st
 		case 464:
 			errorMessage += " PASSWDMISMATCH :Password incorrect";
 			break;
+		case 471:
+			errorMessage += " " + parameter1 + " " + parameter2 + " :Cannot join channel (+l)";
+			break;
 		case 472:
 			errorMessage += " " + parameter1 + " " + parameter2 + " :is not a recognised channel mode.";
 			break;
@@ -150,7 +153,7 @@ std::string Server:: first_message(int fd)
 int Server:: welcome_msg()
 {
 	std:: cout << "\x1b[31mLet's get started!" << std:: endl;
-	std::cout << "\x1b[38;5;255m----------------------------------------\nServer started, listening on port " << SERVER_PORT << "\n----------------------------------------" << std::endl;
+	std::cout << "\x1b[38;5;255m----------------------------------------\nServer started, listening on port " << this->port << "\n----------------------------------------" << std::endl;
 	return (0);
 }
 

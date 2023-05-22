@@ -23,7 +23,8 @@ fclean:		clean
 
 run: $(NAME)
 	@printf "\n\033[32;1mvvv output vvv \033[0m\n\n"
-	@./$(NAME)
+	@printf "\n\033[32;1m>>>no password setup<<<< \033[0m\n\n"
+	@./$(NAME) 6667 NOPASSWD
 	@printf "\n\n\n"
 	@ make clean
 

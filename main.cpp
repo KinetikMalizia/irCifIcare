@@ -7,15 +7,16 @@ void inthand(int signum);
 int main(int ac, char **av)
 {
 	Server ourServer("2drunk2code", "TEST", "TEST");
-	if (av[1])
-		ourServer.password = av[1];
-	// int listenfd;
-	//int connfd;
-	(void)ac;
-	(void)av;
 
-	// if (ac < 3)
-	// 	std::cout << "Please enter a valid port number and password for connection" << std:: endl;
+	if (ac < 3)
+	{
+		std::cout << "Please enter a valid port number and password for connection" << std:: endl;
+		return (0);
+	}
+	ourServer.port = std::atoi(av[1]);
+	if (av[2])
+		ourServer.password = av[2];
+
 	ourServer.listenfd = ourServer.create_socket();
 
 	// char buff[MAXLINE];
