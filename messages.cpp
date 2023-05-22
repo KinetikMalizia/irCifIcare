@@ -150,7 +150,7 @@ std::string Server:: first_message(int fd)
 int Server:: welcome_msg()
 {
 	std:: cout << "\x1b[31mLet's get started!" << std:: endl;
-	std::cout << "\x1b[38;5;255m----------------------------------------\nServer started, listening on port " << SERVER_PORT << "\n----------------------------------------" << std::endl;
+	std::cout << "\x1b[38;5;255m----------------------------------------\nServer started, listening on port " << this->port << "\n----------------------------------------" << std::endl;
 	return (0);
 }
 

@@ -46,7 +46,7 @@ int Server:: create_socket()
 	std::memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port = htons(SERVER_PORT);
+	servaddr.sin_port = htons(this->port);
 
 	if (bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) == -1) {
 		std::cerr << "BIND ERROR\n";
