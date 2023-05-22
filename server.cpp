@@ -106,8 +106,8 @@ void	Server::print_users(void)
 void Server:: removeAllChannel(User& user)
 {
 	std::map<std::string, Channel*>::iterator chans;
-	if (this->channels.empty() == 1)
-		return ;
+	// if (this->channels.empty() == 1)
+	// 	return ;
 	for (chans = this->channels.begin(); chans != this->channels.end(); chans++)
 	{
 		if (user.user_nick.empty())
@@ -116,8 +116,12 @@ void Server:: removeAllChannel(User& user)
 		{
 			if (chans->second->removeMember(user) == 0)
 			{
-				delete this->channels[chans->second->channel_name];
+				Channel* del =  this->channels[chans->second->channel_name];
+				this->channels.erase(chans->second->channel_name);
+				delete del;
 				// this->channels.erase(chans->second->channel_name);
+				if (this->channels.empty())
+					return ;
 			}
 		}
 	}

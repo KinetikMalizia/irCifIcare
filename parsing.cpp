@@ -12,7 +12,6 @@ void	tokenize(std::string str, char delim, t_svec &out)
 		back = s.find('\n');
 		if (back != std::string::npos && s[0] != ':')
 		{
-			std::cout << "sep: " << s.substr(0,back) << std::endl;
 			cut = s.substr(0,back);
 			if(cut[cut.length()-1] == '\r')
 				cut.erase(cut.length()-1, 1);
@@ -26,7 +25,7 @@ void	tokenize(std::string str, char delim, t_svec &out)
 			s += ' ';
 			s += end;
 			if(!s.empty() && s[s.length()-1] == '\n')
-				s.erase(s.length()-1, 1);
+				s.erase(s.length(), 1);
 		}
 		if(!s.empty() && s[s.length()-1] == '\r')
 			s.erase(s.length()-1, 1);

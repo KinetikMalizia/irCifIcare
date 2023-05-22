@@ -174,7 +174,6 @@ int Channel::update_mode(char key, int value, User &member)
 	}
 	else
 	{
-		std::cout << "ur not opper kekw" << std::endl;
 		return 3;
 	}
 	channel_mode();

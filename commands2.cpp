@@ -287,8 +287,10 @@ void Server::PART(t_svec recToken, int fd)
 	channel->channelMessage(NULL, confirm);
 	if (channel->removeMember(leaver) == 0)
 	{
-		delete this->channels[channel->channel_name];
+		Channel* del =  this->channels[channel->channel_name];
 		this->channels.erase(channel->channel_name);
+		delete del;
+		// this->channels[channel->channel_name] = 0;
 	}
 }
 
