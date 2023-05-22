@@ -128,11 +128,12 @@ Server::~Server()
 
 void Server::remove_from_poll(struct pollfd fds[], int& nfds, int fd)
 {
-	for (int i = 0; i < nfds; i++)
+	for (int i = 0; i <= nfds; i++)
 	{
 		if (fds[i].fd == fd)
 		{
 			fds[i] = fds[nfds - 1];
+			// close(fds[i].fd);
 			nfds--;
 			break;
 		}
@@ -146,15 +147,16 @@ void Server::check_user_pings()
 	std::map<int, User*>::iterator it = users.begin();
 	while (it != users.end())
 	{
-		int fd = it->first;
+		int fd = it->first; 	
 		User* user = it->second;
-		if (current_time - user->last_ping > 120 && user->last_ping)
+		if (current_time - user->last_ping > 12 && user->last_ping)
 		{
 			std::cout << "User " << user->user_nick << " timed out" << std::endl;
 			close(fd);
 			users.erase(it);
 			this->users.erase(fd);
 			remove_from_poll(this->fds, this->nfds, fd);
+			it = users.begin();
 		}
 		else
 		{

@@ -2,6 +2,7 @@
 
 void Server:: MODE(t_svec recToken, int fd)
 {
+	int error = 0;
 	if (recToken.size() < 2)
 		return ;
 	User *current = (this->users).find(fd)->second;
@@ -29,7 +30,7 @@ void Server:: MODE(t_svec recToken, int fd)
 					else
 					{
 						err_msg(696, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "o", "");
-						break;
+						error += 1;
 					}
 				}
 				if(pars[i] == 'k')
@@ -42,7 +43,7 @@ void Server:: MODE(t_svec recToken, int fd)
 					else
 					{
 						err_msg(696, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "k", "");
-						break;
+						error += 1;
 					}
 				}
 				if(pars[i] == 'l')
@@ -55,11 +56,14 @@ void Server:: MODE(t_svec recToken, int fd)
 					else
 					{
 						err_msg(696, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "l", "");
-						break;
+						error += 1;
 					}
 				}
 				if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) < 0)
+				{
+					error += 1;
 					err_msg(472, fd, current->user_nick, std::string(1, pars[i]), "", "");
+				}
 				else if(this->channels[recToken[1]]->update_mode(pars[i], 1, *current) == 3)
 				{
 					err_msg(482, fd, current->user_nick, this->channels[recToken[1]]->channel_name, "", "");
@@ -73,10 +77,18 @@ void Server:: MODE(t_svec recToken, int fd)
 				if(pars[i] == 'o')
 					this->channels[recToken[1]]->add_mode(target_fd, '-', *current);
 				else if(this->channels[recToken[1]]->update_mode(pars[i], 0, *current) < 0)
+				{
 					err_msg(472, fd, std::string(1, pars[i]), "", "", "");
+				}
 			}
 		}
-		if(!pars.empty() && pars[1] != 'o')
+		if(!pars.empty() && pars[1] != 'o' && error > 0)
+		{
+			std::string chan_name = this->channels[recToken[1]]->channel_name;
+			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + this->channels[recToken[1]]->channel_mode() + "\r\n");
+			this->channels[recToken[1]]->channelMessage(NULL, rply);
+		}
+		else if(error == 0)
 		{
 			std::string chan_name = this->channels[recToken[1]]->channel_name;
 			std::string rply = (this->base_msg + "MODE " + chan_name + " :" + this->channels[recToken[1]]->channel_mode() + "\r\n");
@@ -267,7 +279,10 @@ void Server::PART(t_svec recToken, int fd)
 	std::string	confirm = this->base_msg + "PART :" + channel->channel_name + "\r\n";
 	channel->channelMessage(NULL, confirm);
 	if (channel->removeMember(leaver) == 0)
+	{
+		delete this->channels[channel->channel_name];
 		this->channels.erase(channel->channel_name);
+	}
 }
 
 void Server::PASS(t_svec recToken, int fd)

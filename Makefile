@@ -8,7 +8,7 @@ CXX  = g++
 
 RM  = rm -f
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g -fsanitize=address
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=address
 
 all:		$(NAME)
 
