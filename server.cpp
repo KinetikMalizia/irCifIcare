@@ -106,25 +106,20 @@ void	Server::print_users(void)
 void Server:: removeAllChannel(User& user)
 {
 	std::map<std::string, Channel*>::iterator chans;
-	std::cout << "deleting -1 : " <<  std::endl;
 	if (this->channels.empty() == 1)
-	{
-		std::cout << "deleting 0 : " <<  std::endl;
 		return ;
-	}
-
-	for (chans = this->channels.begin(); chans == this->channels.end(); chans++)
+	for (chans = this->channels.begin(); chans != this->channels.end(); chans++)
 	{
-		std::cout << "deleting 1 : " << chans->second->channel_name << std::endl;
 		if (user.user_nick.empty())
 			return ;
 		if (chans->second->isMember(user.user_nick))
+		{
 			if (chans->second->removeMember(user) == 0)
 			{
-				std::cout << "deleting 2: " << chans->second->channel_name << std::endl;
 				delete this->channels[chans->second->channel_name];
-				this->channels.erase(chans->second->channel_name);
+				// this->channels.erase(chans->second->channel_name);
 			}
+		}
 	}
 }
 

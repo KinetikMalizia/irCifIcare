@@ -324,7 +324,7 @@ void Server:: QUIT(t_svec recToken, int fd)
 	std::string quit = "ERROR : Closing link: " + this->base_msg + "[Quit: " + recToken[1] + "]" + "\r\n";
 	write(current->fd_user, quit.c_str(), quit.length());
 	removeAllChannel(*current);
-	remove_from_poll(&this->fds[fd], this->nfds, fd);
+	remove_from_poll(&this->fds[0], this->nfds, fd);
 	this->users.erase(fd);
 	delete current;
 }

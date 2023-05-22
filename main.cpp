@@ -36,13 +36,14 @@ int main(int ac, char **av)
 	memset(ourServer.fds, 0, sizeof(ourServer.fds));
 	// Set up the initial listening socket
 	ourServer.fds[0].fd = ourServer.listenfd;
+	std::cout << "listenfd is: " << ourServer.listenfd <<std::endl;
 	ourServer.fds[0].events = POLLIN;
 	//initialize the timeout to 3 minutes
 	timeout = (3 * 60 * 1000);
 	bool running = true;
 	while (running)
 	{
-		ourServer.pollfd = poll(ourServer.fds, ourServer.nfds, timeout);
+		ourServer.pollfd = poll(ourServer.fds, ourServer.nfds, timeout);	
 		if (ourServer.pollfd < 0)
 		{
 			std::cout << "Poll failed" << std::endl;
@@ -57,17 +58,14 @@ int main(int ac, char **av)
 				continue ;
 			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
 			{
-				for (i = 0; i < current_size; i++)
-				{
-					std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
-					ourServer.remove_from_poll(&ourServer.fds[i], ourServer.nfds, i);
-					ourServer.removeAllChannel(*ourServer.users.find(i)->second);
-					close(ourServer.fds[i].fd);
-					ourServer.users.erase(i);
-					delete ourServer.users[i];
-				}
-					current_size -= 1;
-					// break;
+				std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
+				ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, ourServer.fds[i].fd);
+				ourServer.removeAllChannel(*ourServer.users.find(ourServer.fds[i].fd)->second);
+				close(ourServer.fds[i].fd);
+				ourServer.users.erase(ourServer.fds[i].fd);
+				delete ourServer.users[ourServer.fds[i].fd];
+				current_size -= 1;
+				break;
 			}
 			if (ourServer.fds[i].fd == ourServer.listenfd)
 				ourServer.accept_connection(ourServer.listenfd);
@@ -78,20 +76,21 @@ int main(int ac, char **av)
 				if (n < 0)
 				{
 					std::cout << "READ ERROR!\n"  <<  std::endl;
-					running = false;
 					break;
 				}
 				else if (n == 0)
 				{
 					std::cout << "Connection closed by client with fd: " << ourServer.fds[i].fd << std::endl;
-					ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, i);
-					ourServer.removeAllChannel(*ourServer.users.find(i)->second);
-					ourServer.users.erase(i);
-					delete ourServer.users[i];
+					ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, ourServer.fds[i].fd);
+					ourServer.removeAllChannel(*ourServer.users.find(ourServer.fds[i].fd)->second);
+					ourServer.users.erase(ourServer.fds[i].fd);
+					delete ourServer.users[ourServer.fds[i].fd];
 					break;
 				}
 				recvline[n] = '\0';
 				std::cout << "Received: " << recvline << std::endl;
+				if (ourServer.users.find(ourServer.fds[i].fd) == ourServer.users.end())
+					break;
 				curr = ourServer.users.find(ourServer.fds[i].fd)->second;
 				curr->buffer += std::string(recvline);
 				ending = lastN(curr->buffer, 1);
@@ -116,16 +115,16 @@ int main(int ac, char **av)
 	for (i = 1; i < ourServer.nfds; i++)
 	{
 		ourServer.removeAllChannel(*ourServer.users.find(ourServer.fds[i].fd)->second);
-		delete ourServer.users[i];
-		ourServer.users.erase(i);
+		delete ourServer.users[ourServer.fds[i].fd];
+		ourServer.users.erase(ourServer.fds[i].fd);
 		shutdown(ourServer.fds[i].fd, SHUT_RDWR);
 		close(ourServer.fds[i].fd);
 		std::cout << "Connection closed " <<  ourServer.fds[i].fd << std::endl;
 	}
+	if (!ourServer.channels.empty())
+		for (std::map<std::string,Channel*>::iterator chans = ourServer.channels.begin(); chans != ourServer.channels.end(); chans++)
+			delete ourServer.channels[chans->second->channel_name];
 	std::cout << "SHUTTING DOWN" << std::endl;
-	//loop waiting for incoming connects or data on connected sockets
-	// add poll in the infinite loop ?
-	// loop through current size to close all the fds
 	shutdown(ourServer.listenfd, SHUT_RDWR);
 	close(ourServer.listenfd);
 	return 0;
@@ -133,8 +132,13 @@ int main(int ac, char **av)
 
 void inthand(int signum)
 {
-	signal(SIGINT, inthand);
-    printf("\n Cannot be terminated using Ctrl+C \n");
-    fflush(stdout);
+	if (signum == SIGINT)
+	{
+		std::cout << "\nNOOT NOOT!\n";
+		return ;
+	}
+	
+	// signal(SIGINT, inthand);
+    // fflush(stdout);
 	(void)signum;
 }
