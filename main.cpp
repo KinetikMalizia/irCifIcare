@@ -115,7 +115,7 @@ int main(int ac, char **av)
 
 	for (i = 1; i < ourServer.nfds; i++)
 	{
-		ourServer.removeAllChannel(*ourServer.users.find(i)->second);
+		ourServer.removeAllChannel(*ourServer.users.find(ourServer.fds[i].fd)->second);
 		delete ourServer.users[i];
 		ourServer.users.erase(i);
 		shutdown(ourServer.fds[i].fd, SHUT_RDWR);

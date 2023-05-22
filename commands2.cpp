@@ -215,6 +215,7 @@ void Server::TOPIC(t_svec recToken, int fd)
 		// we need to check if the user is the channel
 		std::cout << "am i here topic only outside of the channel" << std::endl;
 		Channel	*chan = this->channels.find(recToken[1])->second;
+		std::cout << chan << std::endl;
 		if (chan == NULL)
 		{
 			std::cout << "Channel doesnt exist" << std::endl;
@@ -234,7 +235,13 @@ void Server::TOPIC(t_svec recToken, int fd)
 	else if (recToken.size() == 3) //there is a channel and topic name
 	{
 		Channel	*chan = this->channels.find(recToken[1])->second;
-		if (!(chan->isMember(current->user_nick)))
+		if (chan == NULL)
+		{
+			std::cout << "Channel doesnt exist" << std::endl;
+			err_msg(403,fd,recToken[1],"","","");
+			return ;
+		}
+		if ((chan->isMember(current->user_nick)) != 0)
 		{
 			//if im not in the channel
 			err_msg(442, fd, chan->channel_name, "", "", "");
