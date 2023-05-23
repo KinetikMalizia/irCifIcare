@@ -56,35 +56,33 @@ int main(int ac, char **av)
 			//loop through to find the fds that returned POLLIN
 			if (ourServer.fds[i].revents == 0)
 				continue ;
-			if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
-			{
-				std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
-				ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, ourServer.fds[i].fd);
-				ourServer.removeAllChannel(*ourServer.users.find(ourServer.fds[i].fd)->second);
-				close(ourServer.fds[i].fd);
-				ourServer.users.erase(ourServer.fds[i].fd);
-				delete ourServer.users[ourServer.fds[i].fd];
-				current_size -= 1;
-				break;
-			}
+			// if (ourServer.fds[i].revents != POLLIN)//POLLIN == data is ready to read
+			// {
+			// 	std::cout << "Error revents on fd: " << ourServer.fds[i].fd << std::endl;
+			// 	ourServer.removeAllChannel(*ourServer.users.find(ourServer.fds[i].fd)->second);
+			// 	ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, ourServer.fds[i].fd);
+			// 	close(ourServer.fds[i].fd);
+			// 	ourServer.users.erase(ourServer.fds[i].fd);
+			// 	delete ourServer.users[ourServer.fds[i].fd];
+			// 	current_size -= 1;
+			// 	break;
+			// }
 			if (ourServer.fds[i].fd == ourServer.listenfd)
 				ourServer.accept_connection(ourServer.listenfd);
 			else
 			{
 				std::memset(recvline, 0, MAXLINE);
 				int n = read(ourServer.fds[i].fd, recvline, MAXLINE - 1);
-				if (n < 0)
+				if (n <= 0)
 				{
-					std::cout << "READ ERROR!\n"  <<  std::endl;
-					break;
-				}
-				else if (n == 0)
-				{
-					std::cout << "Connection closed by client with fd: " << ourServer.fds[i].fd << std::endl;
-					ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, ourServer.fds[i].fd);
-					ourServer.removeAllChannel(*ourServer.users.find(ourServer.fds[i].fd)->second);
-					ourServer.users.erase(ourServer.fds[i].fd);
-					delete ourServer.users[ourServer.fds[i].fd];
+					int fd_to_remove = ourServer.fds[i].fd;
+					std::cout << "Connection closed by client with fd: " << fd_to_remove << std::endl;
+					ourServer.removeAllChannel(*ourServer.users.find(fd_to_remove)->second);
+					close(fd_to_remove);
+					delete ourServer.users[fd_to_remove];
+					ourServer.users.erase(fd_to_remove);
+					ourServer.remove_from_poll(&ourServer.fds[0], ourServer.nfds, fd_to_remove);
+					current_size -= 1;
 					break;
 				}
 				recvline[n] = '\0';

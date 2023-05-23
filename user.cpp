@@ -16,11 +16,10 @@ User::User(void)
 User::~User(void)
 {	}
 
-int	User::setInfo(t_svec tokens, int fd_user)
+int	User::setInfo(t_svec tokens)
 {
 	t_svec::iterator itr;
 
-	this->fd_user = fd_user;
 	for (itr = tokens.begin(); itr != tokens.end(); itr++)
 	{
 		if (itr == tokens.begin() + 1)

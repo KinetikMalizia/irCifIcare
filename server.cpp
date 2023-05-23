@@ -91,6 +91,7 @@ int Server:: add_client(int client_fd) //accept connections when users connect (
 	// add client address
 	// adding select ??
 	this->users[client_fd] = new User();
+	this->users[client_fd]->fd_user = client_fd;
 	return(0);
 }
 
@@ -105,24 +106,30 @@ void	Server::print_users(void)
 
 void Server:: removeAllChannel(User& user)
 {
-	std::map<std::string, Channel*>::iterator chans;
+	std::map<std::string, Channel*>::iterator chans = this->channels.begin();
 	// if (this->channels.empty() == 1)
 	// 	return ;
-	for (chans = this->channels.begin(); chans != this->channels.end(); chans++)
+	while (chans != this->channels.end())
 	{
+		
 		if (user.user_nick.empty())
 			return ;
 		if (chans->second->isMember(user.user_nick))
 		{
 			if (chans->second->removeMember(user) == 0)
 			{
-				Channel* del =  this->channels[chans->second->channel_name];
-				this->channels.erase(chans->second->channel_name);
-				delete del;
-				// this->channels.erase(chans->second->channel_name);
+				Channel *ptr = chans->second;
+				chans = this->channels.erase(chans);
+				delete ptr;
 				if (this->channels.empty())
 					return ;
 			}
+			else
+				chans++;
+		}
+		else
+		{
+			chans++;
 		}
 	}
 }
@@ -151,10 +158,10 @@ void Server::remove_from_poll(struct pollfd fds[], int& nfds, int fd)
 
 void Server::check_user_pings()
 {
-	std::map<int, User*> users = this->users;
+	// std::map<int, User*> users = this->users;
 	time_t current_time = time(NULL);
 	std::map<int, User*>::iterator it = users.begin();
-	while (it != users.end())
+	while (it != this->users.end())
 	{
 		int fd = it->first;
 		User* user = it->second;
@@ -162,10 +169,9 @@ void Server::check_user_pings()
 		{
 			std::cout << "User " << user->user_nick << " timed out" << std::endl;
 			close(fd);
-			users.erase(it);
-			this->users.erase(fd);
-			remove_from_poll(this->fds, this->nfds, fd);
-			it = users.begin();
+			it = this->users.erase(it);
+			// this->users.erase(fd);
+			remove_from_poll(&this->fds[0], this->nfds, fd);
 		}
 		else
 		{
@@ -240,7 +246,7 @@ int	Server::channelExists(std::string name)
 int	Server::FillUserInfo(t_svec tokens, int user_fd)
 {
 		User *current = (this->users).find(user_fd)->second;
-		current->setInfo(tokens, user_fd);
+		current->setInfo(tokens);
 		return (0);
 }
 

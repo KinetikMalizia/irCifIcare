@@ -241,7 +241,7 @@ void Server::TOPIC(t_svec recToken, int fd)
 			err_msg(403,fd,recToken[1],"","","");
 			return ;
 		}
-		if ((chan->isMember(current->user_nick)) != 0)
+		if ((chan->isMember(current->user_nick)) == 0)
 		{
 			//if im not in the channel
 			err_msg(442, fd, chan->channel_name, "", "", "");

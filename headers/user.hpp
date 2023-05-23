@@ -9,7 +9,7 @@ class User
 	public:
 			User();
 			~User();
-			int	setInfo(t_svec tokens, int fd_user);
+			int	setInfo(t_svec tokens);
 			
 
 			int			fd_user;

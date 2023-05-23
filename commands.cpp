@@ -5,7 +5,7 @@ void Server:: USER(t_svec recToken, int fd)
 	if (recToken.size() < 2)
 		return ;
 	User *current = (this->users).find(fd)->second;
-	current->setInfo(recToken, fd);
+	current->setInfo(recToken);
 	std::string cont = first_message(fd);
 	// std::string cont = ":" + this->hostname + " 001 " + current->user_nick + " :" +
 	// 				"Welcome to 2drunk2code server!!! " + current->user_nick + "!~" + current->user_nick + "@" +

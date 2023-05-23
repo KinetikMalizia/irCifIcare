@@ -4,7 +4,7 @@
 # include "irc.h"
 # define MAXLINE 4096
 # define SERVER_PORT 6667
-# define POLL_SIZE 10
+# define POLL_SIZE 100
 # define RED \x1b[31m
 typedef std::vector<std::string>	t_svec;
 

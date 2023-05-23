@@ -2,7 +2,6 @@
 # define IRC_H
 
 # define SERVER_PORT 6667
-# define POLL_SIZE 10
 
 # include <sys/socket.h>
 # include <sys/select.h>
